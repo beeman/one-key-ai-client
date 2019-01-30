@@ -1,0 +1,14 @@
+<nz-layout class="full-height">
+  <nz-header>
+    <div class="logo"></div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" class="menu">
+      <li nz-menu-item>介绍</li>
+      <li nz-menu-item [routerLink]="[ '/performance']" [nzSelected]="true">性能</li>
+      <li nz-menu-item>驱动</li>
+      <li nz-menu-item>环境管理</li>
+    </ul>
+  </nz-header>
+  <nz-content class="full-height">
+    <router-outlet></router-outlet>
+  </nz-content>
+</nz-layout>
