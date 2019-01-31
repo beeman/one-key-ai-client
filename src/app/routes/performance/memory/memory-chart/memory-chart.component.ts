@@ -19,8 +19,10 @@ export class MemoryChartComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private readonly performanceService: PerformanceService, private readonly logger: NGXLogger) { }
 
   ngAfterViewInit(){
-    this.chart = echarts.init(<HTMLDivElement>(document.getElementById('memContent')));
-    this.chart.setOption(PerformanceChartsOption.getOption());
+    setTimeout(() => {
+      this.chart = echarts.init(<HTMLDivElement>(document.getElementById('memContent')));
+      this.chart.setOption(PerformanceChartsOption.getOption());
+    }, 0);
   }
 
   ngOnInit() {

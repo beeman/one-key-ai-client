@@ -19,8 +19,10 @@ export class CpuChartComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     // 初始化图表
-    this.chart = echarts.init(<HTMLDivElement>(document.getElementById('cpuContent')));
-    this.chart.setOption(PerformanceChartsOption.getOption());
+    setTimeout(() => {
+      this.chart = echarts.init(<HTMLDivElement>(document.getElementById('cpuContent')));
+      this.chart.setOption(PerformanceChartsOption.getOption());
+    }, 0);
   }
 
   ngOnInit() {
