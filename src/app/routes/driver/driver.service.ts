@@ -19,18 +19,22 @@ export class DriverService {
   constructor(private http: HttpClient, private socketService: InfoSocketService, private logger: NGXLogger) {
     this.driverDevices$ = this.socketService.getMessage('driverDevices').pipe(
       map((value) => {
-        this.lastDriverDevice = value['data'];
-        return this.lastDriverDevice;
+        return value['data'];
       }),
     );
     this.driverList$ = this.socketService.getMessage('driverList').pipe(
       map((value) => {
-        this.lastDriverList = value['data'];
-        return this.lastDriverList;
+        return value['data'];
       }),
     );
 
-    this.update();
+    this.getDriverDevices().subscribe((value) => {
+      this.lastDriverDevice = value;
+    });
+
+    this.getDriverList().subscribe((value) => {
+      this.lastDriverList = value;
+    });
   }
 
   public autoinstall(): void {

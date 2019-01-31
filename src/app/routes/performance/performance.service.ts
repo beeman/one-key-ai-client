@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfoSocketService } from 'src/app/core/info-socket.service';
+import { NGXLogger } from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
@@ -12,15 +13,18 @@ export class PerformanceService {
   private message$: Observable<any> = null;
   private messages = [];
 
-  constructor(private readonly socketService: InfoSocketService) {
+  constructor(private readonly socketService: InfoSocketService, private readonly logger: NGXLogger) {
     this.message$ = this.socketService.getMessage('topInfo').pipe(
       map((value) => {
         const jsonValue = JSON.parse(value);
         jsonValue.top.time = this.parseTime(jsonValue.top.time);
-        this.saveMessage(jsonValue);
         return jsonValue;
       }),
     );
+
+    this.message$.subscribe((value) => {
+      this.saveMessage(value);
+    });
   }
 
   public getMessage(): Observable<any> {
