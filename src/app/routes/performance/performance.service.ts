@@ -1,59 +1,41 @@
 import { Injectable } from '@angular/core';
-import * as io from 'socket.io-client';
-import { fromEvent, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { InfoSocketService } from 'src/app/core/info-socket.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PerformanceService {
-  private socket: SocketIOClient.Socket = null;
+  private readonly messageLength = 60;
+
   private message$: Observable<any> = null;
+  private messages = [];
 
-  constructor() {
-    this.openSocket();
-  }
-
-  public message() {
-    return this.message$;
-  }
-
-  public startGetMessage() {
-    if (!this.socket) {
-      this.openSocket();
-    }
-    if (this.socket.disconnected) {
-      this.socket.on('connect', (data) => {
-        this.socket.emit('getMessage');
-      });
-    } else {
-      this.socket.emit('getMessage');
-    }
-  }
-
-  public stopGetMessage() {
-    if (this.socket) {
-      this.socket.emit('stopGetMessage');
-    }
-  }
-
-  private closeSocket(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = null;
-    }
-  }
-
-  private openSocket(): void {
-    this.closeSocket();
-    this.socket = io('http://localhost:3000');
-    this.message$ = fromEvent<string>(this.socket, 'message').pipe(
+  constructor(private readonly socketService: InfoSocketService) {
+    this.message$ = this.socketService.performanceMessage().pipe(
       map((value) => {
         const jsonValue = JSON.parse(value);
         jsonValue.top.time = this.parseTime(jsonValue.top.time);
+        this.saveMessage(jsonValue);
         return jsonValue;
       }),
     );
+  }
+
+  public getMessage(): Observable<any> {
+    return this.message$;
+  }
+
+  public getMessages(): any[] {
+    return this.messages;
+  }
+
+  private saveMessage(message: any): void {
+    this.messages.push(message);
+    if (this.messages.length > this.messageLength) {
+      this.messages.shift();
+    }
   }
 
   private parseTime(data: any): Date {

@@ -11,11 +11,9 @@ export class PerformanceMainComponent implements OnInit, OnDestroy {
   constructor(private performanceService: PerformanceService) { }
 
   ngOnInit() {
-    this.performanceService.startGetMessage();
   }
 
   ngOnDestroy() {
-    this.performanceService.stopGetMessage();
   }
 
 }

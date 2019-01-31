@@ -25,7 +25,7 @@ export class AllComponent implements OnInit, OnDestroy {
   }
 
   public startGetMessage() {
-    this.subscription = this.performanceService.message().subscribe((data) => {
+    this.subscription = this.performanceService.getMessage().subscribe((data) => {
       this.text = JSON.stringify(data);
     });
   }
