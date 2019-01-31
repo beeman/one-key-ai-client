@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { fromEvent, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,23 @@ export class PerformanceService {
   private openSocket(): void {
     this.closeSocket();
     this.socket = io('http://localhost:3000');
-    this.message$ = fromEvent<string>(this.socket, 'message');
+    this.message$ = fromEvent<string>(this.socket, 'message').pipe(
+      map((value) => {
+        const jsonValue = JSON.parse(value);
+        jsonValue.top.time = this.parseTime(jsonValue.top.time);
+        return jsonValue;
+      }),
+    );
   }
+
+  private parseTime(data: any): Date {
+    const timeValues = data.trim().split(':');
+    const now = new Date();
+    now.setHours(timeValues[0]);
+    now.setMinutes(timeValues[1]);
+    now.setSeconds(timeValues[2]);
+
+    return now;
+  }
+
 }

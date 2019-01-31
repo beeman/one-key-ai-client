@@ -6,9 +6,10 @@ import { CpuComponent } from './cpu/cpu.component';
 import { AllComponent } from './all/all.component';
 import { PerformanceMainComponent } from './performance-main/performance-main.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MemoryComponent } from './memory/memory.component';
 
 @NgModule({
-  declarations: [CpuComponent, AllComponent, PerformanceMainComponent],
+  declarations: [CpuComponent, AllComponent, PerformanceMainComponent, MemoryComponent],
   imports: [
     CommonModule,
     PerformanceRoutingModule,

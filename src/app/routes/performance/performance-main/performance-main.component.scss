@@ -1,3 +1,8 @@
 .contant-layout {
-    padding: 0 24px 24px;
-  }
+  padding: 0 24px 24px;
+}
+
+.content{
+  overflow-y:auto;
+  overflow-x: hidden;
+}

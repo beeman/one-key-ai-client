@@ -1,6 +1,5 @@
-
-#cpuContent {
-  height: 400px;
+#memContent {
+  flex-grow: 1;
 }
 
 .content {
@@ -9,5 +8,6 @@
 }
 
 .info {
+  height: 500px;
   overflow-y: auto;
 }
