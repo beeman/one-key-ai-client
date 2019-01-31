@@ -1,0 +1,31 @@
+<button (click)="autoinstall()">自动安装</button>
+<nz-collapse>
+  <nz-collapse-panel nzHeader="已安装驱动" nzActive="true">
+    <nz-list [nzDataSource]="driverList" [nzRenderItem]="driverTemplate">
+      <ng-template #driverTemplate let-item>
+        <nz-list-item [nzContent]="item">
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-collapse-panel>
+  <nz-collapse-panel nzHeader="设备信息" nzActive="true">
+    <nz-table *ngFor="let device of driverDevices; let i=index;" #basicTable [nzData]="device" [nzTitle]="'设备'+i">
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>值</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.key}}</td>
+          <td>{{data.value}}</td>
+          <td *ngIf="data.key==='driver'">
+            <a>安装</a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-collapse-panel>
+</nz-collapse>

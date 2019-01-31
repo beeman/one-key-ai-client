@@ -1,9 +1,6 @@
 export class PerformanceChartsOption {
-    public static getOption(title: string): echarts.EChartOption {
+    public static getOption(): echarts.EChartOption {
         const option = {
-            title: {
-                text: title
-            },
             tooltip: {
                 trigger: 'axis',
                 formatter: (params) => {
@@ -26,7 +23,7 @@ export class PerformanceChartsOption {
             yAxis: {
                 type: 'value',
                 name: '% 使用率',
-                max: 100,
+                max: 120,
                 min: 0,
                 nameLocation: 'end',
                 splitLine: {

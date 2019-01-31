@@ -7,8 +7,9 @@ const routes: Routes = [
     path: '',
     component: MainComponent,
     children: [
-      { path: '', redirectTo: 'performance', pathMatch: 'full' },
-      { path: 'performance', loadChildren: './performance/performance.module#PerformanceModule' }
+      { path: '', redirectTo: 'driver', pathMatch: 'full' },
+      { path: 'performance', loadChildren: './performance/performance.module#PerformanceModule' },
+      { path: 'driver', loadChildren: './driver/driver.module#DriverModule' }
     ]
   }
 ];

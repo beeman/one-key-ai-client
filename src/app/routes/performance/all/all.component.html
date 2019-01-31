@@ -1,3 +1,14 @@
-<!-- <button (click)="startGetMessage()">start get message</button>
-<button (click)="stopGetMessage()">stop get message</button> -->
-<textarea cols="30" rows="10" class="full-size">{{text}}</textarea>
+<div style="background: #ECECEC;padding:30px;">
+  <div nz-row [nzGutter]="8">
+    <div nz-col nzLg="12">
+      <nz-card nzTitle="CPU使用率（%）">
+        <performance-cpu-chart></performance-cpu-chart>
+      </nz-card>
+    </div>
+    <div nz-col nzLg="12">
+      <nz-card nzTitle="内存使用率（%）">
+        <performance-memory-chart></performance-memory-chart>
+      </nz-card>
+    </div>
+  </div>
+</div>

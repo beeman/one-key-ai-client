@@ -13,7 +13,7 @@ export class PerformanceService {
   private messages = [];
 
   constructor(private readonly socketService: InfoSocketService) {
-    this.message$ = this.socketService.performanceMessage().pipe(
+    this.message$ = this.socketService.getMessage('topInfo').pipe(
       map((value) => {
         const jsonValue = JSON.parse(value);
         jsonValue.top.time = this.parseTime(jsonValue.top.time);

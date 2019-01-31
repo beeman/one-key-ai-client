@@ -1,28 +1,29 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PerformanceService } from '../performance.service';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { PerformanceService } from '../../performance.service';
 import { NGXLogger } from 'ngx-logger';
-import { PerformanceChartsOption } from '../performance-charts-option';
+import { PerformanceChartsOption } from '../../performance-charts-option';
 import * as echarts from 'echarts';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-memory',
-  templateUrl: './memory.component.html',
-  styleUrls: ['./memory.component.scss']
+  selector: 'performance-memory-chart',
+  templateUrl: './memory-chart.component.html',
+  styleUrls: ['./memory-chart.component.scss']
 })
-export class MemoryComponent implements OnInit, OnDestroy {
+export class MemoryChartComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private chart: echarts.ECharts = null;
   private seriesData = [];
-  private info = [];
   private subscription: Subscription = null;
 
   constructor(private readonly performanceService: PerformanceService, private readonly logger: NGXLogger) { }
 
-  ngOnInit() {
+  ngAfterViewInit(){
     this.chart = echarts.init(<HTMLDivElement>(document.getElementById('memContent')));
-    this.chart.setOption(PerformanceChartsOption.getOption('内存 使用率'));
+    this.chart.setOption(PerformanceChartsOption.getOption());
+  }
 
+  ngOnInit() {
     // 显示保存的数据
     const messages = this.performanceService.getMessages();
     messages.forEach((value) => {
@@ -34,8 +35,6 @@ export class MemoryComponent implements OnInit, OnDestroy {
     this.subscription = this.performanceService.getMessage().subscribe((data) => {
       this.updateSeriesData(data);
       this.updateChart();
-
-      this.parseInfo(data.mem);
     });
   }
 
@@ -46,30 +45,14 @@ export class MemoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  private parseInfo(data: any): void {
-    this.info = [];
-
-    for (const key in data) {
-      this.info.push({ 'name': this.parseCpuName(key), 'value': data[key] });
-    }
-  }
-
-  private parseCpuName(name: string): string {
-    switch (name) {
-      case 'total': return '物理内存';
-      case 'used': return '使用内存';
-      case 'free': return '空闲内存';
-      case 'buffers': return '缓存内存';
-      default: return name;
-    }
-  }
-
   private updateChart(): void {
-    this.chart.setOption({
-      series: [{
-        data: this.seriesData
-      }]
-    });
+    if(this.chart){
+      this.chart.setOption({
+        series: [{
+          data: this.seriesData
+        }]
+      });
+    }
   }
 
   private updateSeriesData(data: any): void {

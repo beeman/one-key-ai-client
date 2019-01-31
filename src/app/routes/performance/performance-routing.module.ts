@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CpuComponent } from './cpu/cpu.component';
+import { CpuChartComponent } from './cpu/cpu-chart/cpu-chart.component';
 import { AllComponent } from './all/all.component';
 import { PerformanceMainComponent } from './performance-main/performance-main.component';
-import { MemoryComponent } from './memory/memory.component';
+import { MemoryChartComponent } from './memory/memory-chart/memory-chart.component';
 
 const routes: Routes = [
   {
@@ -12,8 +12,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'all' },
       { path: 'all', component: AllComponent },
-      { path: 'cpu', component: CpuComponent },
-      { path: 'mem', component: MemoryComponent },
+      { path: 'cpu', component: CpuChartComponent },
+      { path: 'mem', component: MemoryChartComponent },
 
     ]
   },

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 
 import * as io from 'socket.io-client';
 import { NGXLogger } from 'ngx-logger';
@@ -14,12 +14,16 @@ export class InfoSocketService {
     this.openSocket();
   }
 
+  public emit(event: string, ...args: any[]) {
+    return this.socket.emit(event, args);
+  }
+
   public getSocket(): SocketIOClient.Socket {
     return this.socket;
   }
 
-  public performanceMessage() {
-    return fromEvent<string>(this.socket, 'performance');
+  public getMessage(messageName: string): Observable<any> {
+    return fromEvent<string>(this.socket, messageName);
   }
 
   private closeSocket(): void {

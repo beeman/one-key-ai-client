@@ -10,29 +10,13 @@ import { NGXLogger } from 'ngx-logger';
 })
 export class AllComponent implements OnInit, OnDestroy {
 
-  public text: string;
-  private subscription: Subscription = null;
   private readonly tag = AllComponent.name;
 
   constructor(private performanceService: PerformanceService, private logger: NGXLogger) { }
 
   ngOnInit() {
-    this.startGetMessage();
   }
 
   ngOnDestroy(): void {
-    this.stopGetMessage();
-  }
-
-  public startGetMessage() {
-    this.subscription = this.performanceService.getMessage().subscribe((data) => {
-      this.text = JSON.stringify(data);
-    });
-  }
-
-  public stopGetMessage() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 }

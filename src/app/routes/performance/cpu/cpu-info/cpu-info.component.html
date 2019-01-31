@@ -1,0 +1,10 @@
+<div class="info">
+  <nz-table #basicTable [nzData]="info" [nzShowPagination]="false">
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{data.name}}</td>
+        <td>{{data.value}}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
