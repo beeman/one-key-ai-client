@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'driver-gpu',
+  selector: 'app-gpu',
   templateUrl: './gpu.component.html',
   styleUrls: ['./gpu.component.scss']
 })

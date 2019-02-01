@@ -6,7 +6,7 @@ import { PerformanceChartsOption } from '../../performance-charts-option';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'performance-cpu-chart',
+  selector: 'app-cpu-chart',
   templateUrl: './cpu-chart.component.html',
   styleUrls: ['./cpu-chart.component.scss']
 })
@@ -26,18 +26,18 @@ export class CpuChartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-  // 更新保存的数据
-  const messages = this.performanceService.getMessages();
-  messages.forEach((value) => {
-    this.udpateSeriesData(value);
-  });
-  this.updateChart();
-
-  // 更新数据
-  this.subscription = this.performanceService.getMessage().subscribe((data) => {
-    this.udpateSeriesData(data);
+    // 更新保存的数据
+    const messages = this.performanceService.getMessages();
+    messages.forEach((value) => {
+      this.udpateSeriesData(value);
+    });
     this.updateChart();
-  });
+
+    // 更新数据
+    this.subscription = this.performanceService.getMessage().subscribe((data) => {
+      this.udpateSeriesData(data);
+      this.updateChart();
+    });
   }
 
   ngOnDestroy(): void {
@@ -48,7 +48,7 @@ export class CpuChartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateChart(): void {
-    if(this.chart){
+    if (this.chart) {
       this.chart.setOption({
         series: [{
           data: this.seriesData

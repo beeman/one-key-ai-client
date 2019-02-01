@@ -15,8 +15,8 @@ export class CpuInfoComponent implements OnInit {
   private parseInfo(data: any): any[] {
     const info = [];
 
-    for (const key in data) {
-      info.push({ 'name': this.parseCpuName(key), 'value': data[key] });
+    for (const [key, value] of data) {
+      info.push({ 'name': this.parseCpuName(key), 'value': value });
     }
 
     return info;

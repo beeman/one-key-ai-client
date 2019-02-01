@@ -6,7 +6,7 @@ import * as echarts from 'echarts';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'performance-memory-chart',
+  selector: 'app-memory-chart',
   templateUrl: './memory-chart.component.html',
   styleUrls: ['./memory-chart.component.scss']
 })
@@ -18,7 +18,7 @@ export class MemoryChartComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private readonly performanceService: PerformanceService, private readonly logger: NGXLogger) { }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     setTimeout(() => {
       this.chart = echarts.init(<HTMLDivElement>(document.getElementById('memContent')));
       this.chart.setOption(PerformanceChartsOption.getOption());
@@ -48,7 +48,7 @@ export class MemoryChartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateChart(): void {
-    if(this.chart){
+    if (this.chart) {
       this.chart.setOption({
         series: [{
           data: this.seriesData
