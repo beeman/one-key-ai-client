@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./gpu.component.scss']
 })
 export class GpuComponent implements OnInit, OnDestroy {
-  private subscriptions: Subscription[] = [];
+  // private subscriptions: Subscription[] = [];
 
   public driverList = [];
   public driverDevices = [[]];
@@ -22,14 +22,12 @@ export class GpuComponent implements OnInit, OnDestroy {
 
     this.getDriverList();
     this.getDriverDevices();
-
-    this.driverService.update();
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((value) => {
-      value.unsubscribe();
-    });
+    // this.subscriptions.forEach((value) => {
+    //   value.unsubscribe();
+    // });
   }
 
   public autoinstall() {
@@ -40,13 +38,13 @@ export class GpuComponent implements OnInit, OnDestroy {
     const sub = this.driverService.getDriverList().subscribe((data) => {
       this.driverList = data;
     });
-    this.subscriptions.push(sub);
+    // this.subscriptions.push(sub);
   }
 
   public getDriverDevices() {
     const sub = this.driverService.getDriverDevices().subscribe((data) => {
       this.driverDevices = data;
     });
-    this.subscriptions.push(sub);
+    // this.subscriptions.push(sub);
   }
 }
