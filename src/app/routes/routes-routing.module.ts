@@ -7,9 +7,10 @@ const routes: Routes = [
     path: '',
     component: MainComponent,
     children: [
-      { path: '', redirectTo: 'driver', pathMatch: 'full' },
+      { path: '', redirectTo: 'images', pathMatch: 'full' },
       { path: 'performance', loadChildren: './performance/performance.module#PerformanceModule' },
-      { path: 'driver', loadChildren: './driver/driver.module#DriverModule' }
+      { path: 'driver', loadChildren: './driver/driver.module#DriverModule' },
+      { path: 'docker', loadChildren: './docker/docker.module#DockerModule' },
     ]
   }
 ];

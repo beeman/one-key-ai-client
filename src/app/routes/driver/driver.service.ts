@@ -15,10 +15,13 @@ export class DriverService {
   constructor(private socketService: InfoSocketService, private logger: NGXLogger) {
   }
 
-  public autoinstall()  {
-    this.logger.log('autoinstall');
-    this.socketService.getObservable('autoinstall').subscribe();
-    // this.socketService.emit('autoinstall');
+  /**
+   * 自动安装驱动
+   *
+   * @memberof DriverService
+   */
+  public autoinstall(): Observable<any> {
+    return this.socketService.getObservable('autoinstall');
   }
 
 

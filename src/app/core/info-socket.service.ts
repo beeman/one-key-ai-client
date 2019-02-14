@@ -39,9 +39,9 @@ export class InfoSocketService {
    * @returns {Observable<any>}
    * @memberof InfoSocketService
    */
-  public getObservable(key: string): Observable<any> {
+  public getObservable(key: string, ...args: any[]): Observable<any> {
     return new Observable(observer => {
-      this.socket.emit(key);
+      this.socket.emit(key, ...args);
       const fn = value => {
         if (value.type === 'stdout') {
           observer.next(value.message);

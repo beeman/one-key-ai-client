@@ -1,0 +1,27 @@
+<nz-table #imageTable [nzData]="images" [nzPageSize]="15">
+  <thead>
+    <tr>
+      <th>repository</th>
+      <th>tag</th>
+      <th>image_id</th>
+      <th>created</th>
+      <th>size</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let image of imageTable.data;let i=index">
+      <td>{{image.repository}}</td>
+      <td>{{image.tag}}</td>
+      <td>{{image.image_id}}</td>
+      <td>{{image.created}}</td>
+      <td>{{image.size}}</td>
+
+      <td>
+        <a (click)="in(i)">进入</a>
+        <nz-divider nzType="vertical"></nz-divider>
+        <a (click)="remove(i)">删除</a>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
