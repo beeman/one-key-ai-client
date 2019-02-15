@@ -35,16 +35,15 @@ export class InfoSocketService {
    * 获取数据并转换为Observable
    * 数据获取完毕后，发送complete信号，自动结束订阅
    *
-   * @param {string} key
-   * @returns {Observable<any>}
-   * @memberof InfoSocketService
+   * @param key 目标数据标志
+   * @returns 可订阅对象
    */
   public getObservable(key: string, ...args: any[]): Observable<any> {
     return new Observable(observer => {
       this.socket.emit(key, ...args);
       const fn = value => {
         if (value.type === 'stdout') {
-          observer.next(value.message);
+          observer.next(value.value);
         }
         if (value.type !== 'stdout') {
           observer.complete();

@@ -34,15 +34,18 @@ export class DockerService {
       if (index > 0) {
         const values = line.trim().split(new RegExp('\\s+'));
         let createdText = values[3];
-        values.forEach((value: string, index: number) => {
-          if (index > 3 && index < values.length - 1) {
+        values.forEach((value: string, i: number) => {
+          if (i > 3 && i < values.length - 1) {
             createdText += ' ' + value;
           }
         });
-        const image: DockerImage = { repository: values[0], tag: values[1], image_id: values[2], created: createdText, size: values[values.length - 1] };
-        result.push(image)
+        const image: DockerImage = {
+          repository: values[0],
+          tag: values[1], image_id: values[2], created: createdText, size: values[values.length - 1]
+        };
+        result.push(image);
       }
-    })
+    });
     return result;
   }
 }

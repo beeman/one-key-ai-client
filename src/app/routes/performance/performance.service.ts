@@ -14,12 +14,9 @@ export class PerformanceService {
   private messages = [];
 
   constructor(private readonly socketService: InfoSocketService, private readonly logger: NGXLogger) {
-    this.message$ = this.socketService.getMessageEvent('topInfo').pipe(
-      filter(value => {
-        return value.type === 'stdout';
-      }),
+    this.message$ = this.socketService.getObservable('topInfo').pipe(
       map((value) => {
-        const jsonValue = JSON.parse(value.message);
+        const jsonValue = JSON.parse(value);
         jsonValue.top.time = this.parseTime(jsonValue.top.time);
         return jsonValue;
       }),
