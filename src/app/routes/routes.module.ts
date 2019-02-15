@@ -9,7 +9,7 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     RoutesRoutingModule,
-    SharedModule
+    SharedModule,
   ]
 })
 export class RoutesModule { }

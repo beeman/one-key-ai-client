@@ -1,54 +1,58 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { InfoSocketService } from 'src/app/core/info-socket.service';
 import { NGXLogger } from 'ngx-logger';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DriverService {
-  private driverDevices$: Observable<any> = null;
-  private driverList$: Observable<any> = null;
-
-  private lastDriverDevice = [[]];
+  private lastDriverDevices = [[]];
   private lastDriverList = [];
 
-  constructor(private http: HttpClient, private socketService: InfoSocketService, private logger: NGXLogger) {
-    this.driverDevices$ = this.socketService.getMessage('driverDevices').pipe(
-      map((value) => {
-        return value['data'];
-      }),
-    );
-    this.driverList$ = this.socketService.getMessage('driverList').pipe(
-      map((value) => {
-        return value['data'];
-      }),
-    );
-
-    this.getDriverDevices().subscribe((value) => {
-      this.lastDriverDevice = value;
-    });
-
-    this.getDriverList().subscribe((value) => {
-      this.lastDriverList = value;
-    });
+  constructor(private socketService: InfoSocketService, private logger: NGXLogger) {
   }
 
-  public autoinstall(): void {
-    this.socketService.emit('autoinstall');
+  /**
+   * 自动安装驱动
+   *
+   * @memberof DriverService
+   */
+  public autoinstall(): Observable<any> {
+    return this.socketService.getObservable('autoinstall');
   }
 
+
+  /**
+   * 获取已安装驱动列表
+   *
+   * @returns {Observable<any>}
+   * @memberof DriverService
+   */
   public getDriverList(): Observable<any> {
-    // return this.http.get('http://localhost:3000/driver/list');
-    return this.driverList$;
+    return this.socketService.getObservable('driverList').pipe(
+      map(value => {
+        this.lastDriverList = value;
+        return value;
+      })
+    );
   }
 
+  /**
+   * 获取可安装驱动列表
+   *
+   * @returns {Observable<any>}
+   * @memberof DriverService
+   */
   public getDriverDevices(): Observable<any> {
-    // return this.http.get('http://localhost:3000/driver/devices');
-    return this.driverDevices$;
+    return this.socketService.getObservable('driverDevices').pipe(
+      map(value => {
+        this.lastDriverDevices = value;
+        return value;
+      })
+    );
   }
 
   public getLastDriverList(): any {
@@ -56,21 +60,6 @@ export class DriverService {
   }
 
   public getLastDriverDevices(): any {
-    return this.lastDriverDevice;
+    return this.lastDriverDevices;
   }
-
-  public update(): void {
-    this.updateDriverDevices();
-    this.updateDriverList();
-  }
-
-  private updateDriverList(): void {
-    this.socketService.emit('getDriverList');
-  }
-
-  private updateDriverDevices(): void {
-    this.socketService.emit('getDriverDevices');
-  }
-
-
 }

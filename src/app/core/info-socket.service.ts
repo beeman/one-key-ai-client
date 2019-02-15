@@ -15,14 +15,51 @@ export class InfoSocketService {
   }
 
   public emit(event: string, ...args: any[]) {
-    return this.socket.emit(event, args);
+    return this.socket.emit(event, ...args);
+  }
+
+  // public getObservable(key: string): Observable<any> {
+  //   return new Observable(observer => {
+  //     this.socket.emit(key, null, (value) => {
+  //       if (value.type !== 'exit') {
+  //         observer.next(value.message);
+  //       }
+  //       if (value.type !== 'stdout') {
+  //         observer.complete();
+  //       }
+  //     });
+  //   });
+  // }
+
+  /**
+   * 获取数据并转换为Observable
+   * 数据获取完毕后，发送complete信号，自动结束订阅
+   *
+   * @param {string} key
+   * @returns {Observable<any>}
+   * @memberof InfoSocketService
+   */
+  public getObservable(key: string, ...args: any[]): Observable<any> {
+    return new Observable(observer => {
+      this.socket.emit(key, ...args);
+      const fn = value => {
+        if (value.type === 'stdout') {
+          observer.next(value.message);
+        }
+        if (value.type !== 'stdout') {
+          observer.complete();
+          this.socket.off(key, fn);
+        }
+      };
+      this.socket.on(key, fn);
+    });
   }
 
   public getSocket(): SocketIOClient.Socket {
     return this.socket;
   }
 
-  public getMessage(messageName: string): Observable<any> {
+  public getMessageEvent(messageName: string): Observable<any> {
     return fromEvent<string>(this.socket, messageName);
   }
 
