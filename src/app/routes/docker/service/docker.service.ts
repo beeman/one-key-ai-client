@@ -15,7 +15,7 @@ export class DockerService {
   public getImages(): Observable<any> {
     let text = '';
     return new Observable(observer => {
-      this.socketService.getObservable('dockerImages').subscribe(value => {
+      this.socketService.getRepObservable('dockerImages').subscribe(value => {
         text += value;
       }, null, () => {
         const lines: string[] = text.trim().split('\n');

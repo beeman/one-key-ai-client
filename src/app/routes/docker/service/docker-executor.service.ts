@@ -36,7 +36,7 @@ export class DockerExecutorService {
 
   public run(): void {
     // TODO: run
-    this.socketService.getObservable('runDocker', `${this.dockerToRun.dockerImage.image_id}`)
+    this.socketService.getRepObservable('runDocker', `${this.dockerToRun.dockerImage.image_id}`)
       .subscribe(value => {
         this.logger.log(value);
       }, null, () => {

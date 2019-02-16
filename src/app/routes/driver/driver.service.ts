@@ -21,7 +21,7 @@ export class DriverService {
    * @memberof DriverService
    */
   public autoinstall(): Observable<any> {
-    return this.socketService.getObservable('autoinstall');
+    return this.socketService.getRepObservable('autoinstall');
   }
 
 
@@ -32,7 +32,7 @@ export class DriverService {
    * @memberof DriverService
    */
   public getDriverList(): Observable<any> {
-    return this.socketService.getObservable('driverList').pipe(
+    return this.socketService.getRepObservable('driverList').pipe(
       map(value => {
         this.lastDriverList = value;
         return value;
@@ -47,7 +47,7 @@ export class DriverService {
    * @memberof DriverService
    */
   public getDriverDevices(): Observable<any> {
-    return this.socketService.getObservable('driverDevices').pipe(
+    return this.socketService.getRepObservable('driverDevices').pipe(
       map(value => {
         this.lastDriverDevices = value;
         return value;
