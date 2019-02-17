@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { DriverService } from '../driver.service';
 import { NGXLogger } from 'ngx-logger';
+import { TerminalComponent } from 'src/app/shared/terminal/terminal.component';
 
 @Component({
   selector: 'app-gpu',
@@ -8,11 +9,16 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./gpu.component.scss']
 })
 export class GpuComponent implements OnInit, OnDestroy {
+  @ViewChild('terminalElement')
+  terminalElement: TerminalComponent;
+
   private readonly tag = GpuComponent.name;
 
   // private subscriptions: Subscription[] = [];
 
-  public driverList = [];
+  public isModalVisible = false;
+
+  public driverList: string[] = [];
   public driverDevices = [[]];
 
   constructor(private driverService: DriverService, private logger: NGXLogger) { }
@@ -31,23 +37,61 @@ export class GpuComponent implements OnInit, OnDestroy {
     // });
   }
 
-  public autoinstall() {
-    this.driverService.autoinstall().subscribe(value => {
-      this.logger.log(value);
+  public autoinstall(): void {
+    let driver = '';
+    this.driverList.forEach(value => {
+      if (value.startsWith('nvidia')) {
+        if (value > driver) {
+          driver = value;
+        }
+      }
     });
+
+    if (!driver) {
+      return;
+    }
+
+    this.showModal();
+    this.terminalElement.getTerminal().emit(`sudo apt install -y ${driver}\n`);
   }
 
-  public getDriverList() {
+  public cancelModal(): void {
+    this.isModalVisible = false;
+  }
+
+  public confirmModal(): void {
+    this.isModalVisible = false;
+  }
+
+  public updateDriverSource(): void {
+    this.showModal();
+    this.terminalElement.getTerminal().emit('sudo add-apt-repository ppa:graphics-drivers/ppa -y && sudo apt update\n');
+  }
+
+  public getDriverList(): void {
     const sub = this.driverService.getDriverList().subscribe((data) => {
       this.driverList = data;
+      this.driverList.sort((a, b) => {
+        if (a > b) {
+          return -1;
+        } else if (a < b) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
     });
     // this.subscriptions.push(sub);
   }
 
-  public getDriverDevices() {
+  public getDriverDevices(): void {
     const sub = this.driverService.getDriverDevices().subscribe((data) => {
       this.driverDevices = data;
     });
     // this.subscriptions.push(sub);
+  }
+
+  public showModal(): void {
+    this.isModalVisible = true;
   }
 }

@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { TerminalComponent } from './terminal/terminal.component';
+import { TerminalDialogComponent } from './terminal-dialog/terminal-dialog.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [TerminalComponent, TerminalDialogComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -18,7 +20,8 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    NgZorroAntdModule
+    NgZorroAntdModule,
+    TerminalComponent
   ],
 })
 export class SharedModule { }

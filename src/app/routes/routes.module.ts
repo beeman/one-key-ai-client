@@ -8,8 +8,8 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [],
   imports: [
     CommonModule,
-    RoutesRoutingModule,
     SharedModule,
+    RoutesRoutingModule,
   ]
 })
 export class RoutesModule { }

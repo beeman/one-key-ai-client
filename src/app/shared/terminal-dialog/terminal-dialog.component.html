@@ -1,0 +1,8 @@
+<button nz-button [nzType]="'primary'" (click)="showModal()"><span>Show Modal</span></button>
+<nz-modal [(nzVisible)]="isVisible" nzTitle="安装" [nzContent]="container" (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()" nzWidth="800px">
+</nz-modal>
+
+<ng-template #container>
+  <app-terminal></app-terminal>
+</ng-template>
