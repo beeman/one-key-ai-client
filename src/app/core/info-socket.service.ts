@@ -79,6 +79,6 @@ export class InfoSocketService {
 
   private openSocket(): void {
     this.closeSocket();
-    this.socket = io('http://localhost:3000');
+    this.socket = io.connect('http://localhost:3001');
   }
 }

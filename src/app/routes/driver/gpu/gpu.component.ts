@@ -38,21 +38,24 @@ export class GpuComponent implements OnInit, OnDestroy {
   }
 
   public autoinstall(): void {
-    let driver = '';
-    this.driverList.forEach(value => {
-      if (value.startsWith('nvidia')) {
-        if (value > driver) {
-          driver = value;
-        }
-      }
-    });
+    // let driver = '';
+    // this.driverList.forEach(value => {
+    //   if (value.startsWith('nvidia')) {
+    //     if (value > driver) {
+    //       driver = value;
+    //     }
+    //   }
+    // });
 
-    if (!driver) {
-      return;
-    }
+    // if (!driver) {
+    //   return;
+    // }
+
+    // this.terminalElement.getTerminal().emit(`sudo apt install aptitude && sudo aptitude install ${driver}\n`);
+
+    this.terminalElement.getTerminal().emit(`sudo ubuntu-drivers autoinstall\n`);
 
     this.showModal();
-    this.terminalElement.getTerminal().emit(`sudo apt install -y ${driver}\n`);
   }
 
   public cancelModal(): void {
