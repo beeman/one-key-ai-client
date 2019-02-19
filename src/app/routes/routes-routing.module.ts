@@ -7,7 +7,7 @@ const routes: Routes = [
     path: '',
     component: MainComponent,
     children: [
-      { path: '', redirectTo: 'driver', pathMatch: 'full' },
+      { path: '', redirectTo: 'docker', pathMatch: 'full' },
       { path: 'performance', loadChildren: './performance/performance.module#PerformanceModule' },
       { path: 'driver', loadChildren: './driver/driver.module#DriverModule' },
       { path: 'docker', loadChildren: './docker/docker.module#DockerModule' },
@@ -16,7 +16,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
 export class RoutesRoutingModule { }

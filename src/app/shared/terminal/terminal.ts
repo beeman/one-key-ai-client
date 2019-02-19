@@ -9,6 +9,7 @@ import * as winptyCompat from 'xterm/lib/addons/winptyCompat/winptyCompat';
 import { Terminal as TerminalType } from 'xterm';
 import { NGXLogger } from 'ngx-logger';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 Terminal.applyAddon(attach);
 Terminal.applyAddon(fit);
@@ -51,6 +52,32 @@ export class TerminalController {
     public getTerm(): TerminalType {
         return this.term;
     }
+
+    // public socketState(): Observable<string> {
+    //     return new Observable(observer => {
+    //         const openFun = () => {
+    //             observer.next('open');
+    //         };
+    //         const closeFun = () => {
+    //             observer.next('close');
+    //             complete();
+    //         };
+    //         const errorFun = () => {
+    //             observer.next('error');
+    //             complete();
+    //         }
+    //         const complete = () => {
+    //             observer.complete();
+    //             this.socket.removeEventListener('open', openFun);
+    //             this.socket.removeEventListener('close', closeFun);
+    //             this.socket.removeEventListener('error', errorFun);
+    //         }
+
+    //         this.socket.addEventListener('open', openFun);
+    //         this.socket.addEventListener('close', closeFun);
+    //         this.socket.addEventListener('error', errorFun);
+    //     });
+    // }
 
     private createElement(container: HTMLElement): void {
         this.term.open(container);

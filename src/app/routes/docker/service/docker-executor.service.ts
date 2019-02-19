@@ -20,6 +20,10 @@ export class DockerExecutorService {
 
   constructor(private readonly logger: NGXLogger, private readonly socketService: InfoSocketService) { }
 
+  public getParams(): DockerParamas {
+    return this.dockerToRun;
+  }
+
   public saveImage(image: DockerImage): void {
     this.dockerToRun.dockerImage = image;
   }
@@ -32,6 +36,17 @@ export class DockerExecutorService {
   public savePort(port: number): void {
     this.dockerToRun.sourcePort = port;
     this.dockerToRun.distPort = port; // 目标端口与源端口相同
+  }
+
+  public runCommand(): string {
+    let command = 'sudo docker run --runtime=nvidia -ti';
+    if (this.dockerToRun.sourcePath) {
+      command += ` -v ${this.dockerToRun.sourcePath}:${this.dockerToRun.distPath}`;
+    }
+    if (this.dockerToRun.sourcePort) {
+      command += ` -p ${this.dockerToRun.sourcePort}:${this.dockerToRun.distPort}`;
+    }
+    return command + ` ${this.dockerToRun.dockerImage.image_id} bash\n`;
   }
 
   public run(): void {

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class DockerImageSettingComponent implements OnInit {
 
   public filePath = '~/文档/docker_project';
-  public port = 9999;
+  public port: number = null;
 
   constructor(private readonly logger: NGXLogger,
     private readonly dockerExecutorService: DockerExecutorService,
@@ -32,7 +32,6 @@ export class DockerImageSettingComponent implements OnInit {
   public confirm(): void {
     this.dockerExecutorService.savePath(this.filePath);
     this.dockerExecutorService.savePort(this.port);
-    // this.router.navigate(['docker/shell']);
-    this.dockerExecutorService.run();
+    this.router.navigate(['docker/shell']);
   }
 }

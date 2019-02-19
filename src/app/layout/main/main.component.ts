@@ -40,10 +40,10 @@ export class MainComponent implements OnInit {
 
   public installDockerCE(): void {
     // GPG证书
-    const addGpgKeyCommand = 'sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -';
+    const addGpgKeyCommand = 'curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -';
 
     // 软件源
-    const addRepositoriesCommand = 'sudo echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker-ce.list';
+    const addRepositoriesCommand = 'echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker-ce.list';
 
     // 更新指令
     const updateCommand = 'sudo apt-get update -y';
@@ -77,7 +77,7 @@ export class MainComponent implements OnInit {
     // Install nvidia-docker2 and reload the Docker daemon configuration
     const installNvd2Command = 'sudo apt-get install -y nvidia-docker2 && sudo pkill -SIGHUP dockerd';
 
-    const command = `${removeNvd1Command} && ${addRepositoriesCommand} && ${installNvd2Command}\n`;
+    const command = `${removeNvd1Command} ; ${addRepositoriesCommand} && ${updateCommand} && ${installNvd2Command}\n`;
     this.execCommand(command);
 
     this.showTerminalModal();
