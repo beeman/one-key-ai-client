@@ -9,9 +9,6 @@ import { TerminalComponent } from 'src/app/shared/terminal/terminal.component';
   styleUrls: ['./gpu.component.scss']
 })
 export class GpuComponent implements OnInit, OnDestroy {
-  @ViewChild('terminalElement')
-  terminalElement: TerminalComponent;
-
   private readonly tag = GpuComponent.name;
 
   // private subscriptions: Subscription[] = [];
@@ -37,40 +34,6 @@ export class GpuComponent implements OnInit, OnDestroy {
     // });
   }
 
-  public autoinstall(): void {
-    // let driver = '';
-    // this.driverList.forEach(value => {
-    //   if (value.startsWith('nvidia')) {
-    //     if (value > driver) {
-    //       driver = value;
-    //     }
-    //   }
-    // });
-
-    // if (!driver) {
-    //   return;
-    // }
-
-    // this.terminalElement.getTerminal().emit(`sudo apt install aptitude && sudo aptitude install ${driver}\n`);
-
-    this.terminalElement.getTerminal().emit(`sudo ubuntu-drivers autoinstall\n`);
-
-    this.showModal();
-  }
-
-  public cancelModal(): void {
-    this.isModalVisible = false;
-  }
-
-  public confirmModal(): void {
-    this.isModalVisible = false;
-  }
-
-  public updateDriverSource(): void {
-    this.showModal();
-    this.terminalElement.getTerminal().emit('sudo add-apt-repository ppa:graphics-drivers/ppa -y && sudo apt update\n');
-  }
-
   public getDriverList(): void {
     const sub = this.driverService.getDriverList().subscribe((data) => {
       this.driverList = data;
@@ -92,9 +55,5 @@ export class GpuComponent implements OnInit, OnDestroy {
       this.driverDevices = data;
     });
     // this.subscriptions.push(sub);
-  }
-
-  public showModal(): void {
-    this.isModalVisible = true;
   }
 }

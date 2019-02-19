@@ -1,14 +1,48 @@
 <nz-layout class="full-height">
   <nz-header>
     <div class="logo"></div>
-    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" class="menu">
-      <li nz-menu-item>介绍</li>
-      <li nz-menu-item [routerLink]="[ '/performance']" routerLinkActive="active">性能</li>
-      <li nz-menu-item [routerLink]="[ '/driver']" routerLinkActive="active">显卡</li>
-      <li nz-menu-item [routerLink]="[ '/docker']" routerLinkActive="active">环境管理</li>
-    </ul>
+    <div nz-row nzType="flex" nzJustify="space-between">
+      <div nz-col nzSpan="16">
+        <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" class="menu">
+          <li nz-menu-item>介绍</li>
+          <li nz-menu-item [routerLink]="[ '/performance']" routerLinkActive="active">性能</li>
+          <li nz-menu-item [routerLink]="[ '/driver']" routerLinkActive="active">显卡</li>
+          <li nz-menu-item [routerLink]="[ '/docker']" routerLinkActive="active">环境管理</li>
+        </ul>
+      </div>
+      <div nz-col nzSpan="4">
+        <nz-dropdown>
+          <button nz-button nz-dropdown nzType="primary"><span>操作</span> <i nz-icon type="down"></i></button>
+          <ul nz-menu>
+            <li nz-submenu>
+              <span title>安装</span>
+              <ul>
+                <li nz-menu-item (click)="installGpuDriver()">显卡驱动</li>
+                <li nz-menu-item (click)="installDockerCE()">Docker CE</li>
+                <li nz-menu-item (click)="installNvidiaDocker()">Nvidia Docker</li>
+              </ul>
+            </li>
+          </ul>
+        </nz-dropdown>
+      </div>
+    </div>
   </nz-header>
   <nz-content class="full-height">
     <router-outlet></router-outlet>
   </nz-content>
 </nz-layout>
+
+<!-- 终端对话框 -->
+<nz-modal [(nzVisible)]="isTerminalModalVisible" nzTitle="操作" [nzContent]="terminalModalContainer" (nzOnCancel)="cancelTerminalModal()"
+  (nzOnOk)="confirmTerminalModal()" nzMaskClosable="false" nzWidth="800px">
+</nz-modal>
+
+<ng-template #terminalModalContainer>
+  <app-terminal #terminalElement></app-terminal>
+</ng-template>
+
+<!-- 更新驱动源对话框 -->
+<nz-modal [(nzVisible)]="isDriverSourceModalVisible" nzTitle="是否更新驱动源？" (nzOnCancel)="cancelUpdateDriverSource()"
+  (nzOnOk)="confirmUpdateDriverSource()" nzMaskClosable="false">
+  <p>更新驱动源可以获取最新的驱动列表</p>
+</nz-modal>

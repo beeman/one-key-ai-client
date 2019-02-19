@@ -9,7 +9,6 @@ import * as winptyCompat from 'xterm/lib/addons/winptyCompat/winptyCompat';
 import { Terminal as TerminalType } from 'xterm';
 import { NGXLogger } from 'ngx-logger';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment.prod';
 
 Terminal.applyAddon(attach);
 Terminal.applyAddon(fit);
@@ -31,17 +30,26 @@ export class TerminalController {
         this.createServerTerminal();
     }
 
-    public close(): void {
-        this.socket.close();
+    public clear(): void {
+        this.getTerm().clear();
     }
 
     public ctrlC(): void {
         this.socket.send('\u0003');
     }
 
+    public destroy(): void {
+        this.socket.close();
+        this.getTerm().dispose();
+    }
+
     public emit(data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView): void {
         this.socket.send(data);
         // (<TerminalType>(this.term)).emit('data', text + '\n');
+    }
+
+    public getTerm(): TerminalType {
+        return this.term;
     }
 
     private createElement(container: HTMLElement): void {
@@ -59,7 +67,7 @@ export class TerminalController {
             const url = 'http://localhost:3000/terminals';
             this.http.post(url, { cols: this.term.cols, rows: this.term.rows }).subscribe(value => {
                 const pid = value['processId'];
-                const port = environment.production ? 3002 : location.port;
+                const port = 3002;
                 const protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
                 const socketURL = protocol + location.hostname + ((port) ? (':' + port) : '') + '/terminals/' + pid;
 

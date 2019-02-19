@@ -1,6 +1,5 @@
 <!-- <button (click)="autoinstall()">自动安装</button> -->
-<button nz-button [nzType]="'primary'" (click)="updateDriverSource()"><span>更新驱动源</span></button>
-<button nz-button [nzType]="'primary'" (click)="autoinstall()"><span>自动安装</span></button>
+<!-- <button nz-button [nzType]="'primary'" (click)="updateDriverSource()"><span>更新驱动源</span></button> -->
 
 <nz-collapse>
   <nz-collapse-panel nzHeader="可安装驱动" nzActive="true">
@@ -33,10 +32,10 @@
   </nz-collapse-panel>
 </nz-collapse>
 
-<nz-modal [(nzVisible)]="isModalVisible" nzTitle="安装" [nzContent]="modalContainer" (nzOnCancel)="cancelModal()"
+<!-- <nz-modal [(nzVisible)]="isModalVisible" nzTitle="安装" [nzContent]="modalContainer" (nzOnCancel)="cancelModal()"
   (nzOnOk)="confirmModal()" nzWidth="800px">
 </nz-modal>
 
 <ng-template #modalContainer>
   <app-terminal #terminalElement></app-terminal>
-</ng-template>
+</ng-template> -->

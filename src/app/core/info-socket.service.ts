@@ -53,7 +53,8 @@ export class InfoSocketService {
           observer.error(`not exist command: ${value.value}\nplease try to install ${value.value}`);
         } else if (value.type === 'stderr') {
           observer.error(value.value);
-        } else {
+        }
+        if (value.type !== 'stdout') {
           observer.complete();
           this.socket.off(key, fn);
         }

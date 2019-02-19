@@ -13,19 +13,17 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
   private containerElement: HTMLElement = null;
 
   constructor(private readonly http: HttpClient, private readonly logger: NGXLogger, private elementRef: ElementRef) {
-    this.terminal = new TerminalController(http, logger);
-
   }
 
   ngOnInit() {
+    this.terminal = new TerminalController(this.http, this.logger);
   }
 
   ngOnDestroy(): void {
-    this.terminal.close();
+    this.terminal.destroy();
   }
 
   ngAfterViewInit(): void {
-    console.log('after');
     this.containerElement = this.elementRef.nativeElement.querySelector('div');
     this.terminal.createTerminal(this.containerElement);
   }
