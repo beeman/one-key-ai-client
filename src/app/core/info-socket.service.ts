@@ -3,6 +3,7 @@ import { fromEvent, Observable } from 'rxjs';
 
 import * as io from 'socket.io-client';
 import { NGXLogger } from 'ngx-logger';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +81,7 @@ export class InfoSocketService {
 
   private openSocket(): void {
     this.closeSocket();
-    this.socket = io.connect('http://localhost:3001');
+    const serverAddr = environment.serverUrl.substr(0, environment.serverUrl.lastIndexOf(':'));
+    this.socket = io.connect(serverAddr + ':3001');
   }
 }

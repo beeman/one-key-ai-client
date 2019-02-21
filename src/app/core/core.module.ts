@@ -2,18 +2,13 @@ import { NgModule, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-
-// 日志配置
-let logConfig = null;
-if (isDevMode()) {
-  logConfig = { level: NgxLoggerLevel.DEBUG };
-}
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    LoggerModule.forRoot(logConfig)
+    LoggerModule.forRoot({ level: environment.logLevel })
   ],
 })
 export class CoreModule { }

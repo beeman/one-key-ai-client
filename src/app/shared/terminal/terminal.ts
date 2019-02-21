@@ -9,7 +9,7 @@ import * as winptyCompat from 'xterm/lib/addons/winptyCompat/winptyCompat';
 import { Terminal as TerminalType } from 'xterm';
 import { NGXLogger } from 'ngx-logger';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 Terminal.applyAddon(attach);
 Terminal.applyAddon(fit);
@@ -91,7 +91,7 @@ export class TerminalController {
         // fit is called within a setTimeout, cols and rows need this.
         setTimeout(() => {
             this.initOptions(this.term);
-            const url = 'http://localhost:3000/terminals';
+            const url = environment.serverUrl + '/terminals';
             this.http.post(url, { cols: this.term.cols, rows: this.term.rows }).subscribe(value => {
                 const pid = value['processId'];
                 const port = 3002;
