@@ -19,19 +19,6 @@ export class InfoSocketService {
     return this.socket.emit(event, ...args);
   }
 
-  // public getObservable(key: string): Observable<any> {
-  //   return new Observable(observer => {
-  //     this.socket.emit(key, null, (value) => {
-  //       if (value.type !== 'exit') {
-  //         observer.next(value.message);
-  //       }
-  //       if (value.type !== 'stdout') {
-  //         observer.complete();
-  //       }
-  //     });
-  //   });
-  // }
-
   /**
    * 申请获取数据并返回为Observable
    * 数据获取完毕后，发送complete信号，自动结束订阅

@@ -1,0 +1,48 @@
+<nz-table #containerTable [nzData]="containers" [nzPageSize]="10">
+  <thead>
+    <tr>
+      <th>CONTAINER ID</th>
+      <th nzWidth="200px">IMAGE</th>
+      <th>COMMAND</th>
+      <th>CREATED</th>
+      <th>STATUS</th>
+      <th>PORTS</th>
+      <th>NAMES</th>
+      <th>ACTION</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let container of containerTable.data;let i=index">
+      <td>{{container.id}}</td>
+      <td>{{container.image}}</td>
+      <td>{{container.command}}</td>
+      <td>{{container.created}}</td>
+      <td>{{container.status}}</td>
+      <td>{{container.ports}}</td>
+      <td>{{container.names}}</td>
+
+      <td>
+        <nz-dropdown>
+          <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item (click)="stop(container.id)">
+              <a>停止</a>
+            </li>
+            <li nz-menu-item (click)="kill(container.id)">
+              <a>强制停止</a>
+            </li>
+            <li nz-menu-item (click)="start(container.id)">
+              <a>启动</a>
+            </li>
+            <li nz-menu-item (click)="restart(container.id)">
+              <a>重启</a>
+            </li>
+            <li nz-menu-item (click)="remove(container.id)">
+              <a>删除</a>
+            </li>
+          </ul>
+        </nz-dropdown>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

@@ -1,7 +1,8 @@
 export interface DockerImage {
     repository: string;
     tag: string;
-    image_id: string; 
+    id: string;
     created: string;
     size: string;
+    containers?: number;
 }

@@ -1,4 +1,4 @@
-<nz-table #imageTable [nzData]="images" [nzPageSize]="15">
+<nz-table #imageTable [nzData]="images" [nzPageSize]="10">
   <thead>
     <tr>
       <th>repository</th>
@@ -13,15 +13,24 @@
     <tr *ngFor="let image of imageTable.data;let i=index">
       <td>{{image.repository}}</td>
       <td>{{image.tag}}</td>
-      <td>{{image.image_id}}</td>
+      <td>{{image.id}}</td>
       <td>{{image.created}}</td>
       <td>{{image.size}}</td>
 
       <td>
-        <a (click)="in(i)">进入</a>
-        <nz-divider nzType="vertical"></nz-divider>
-        <a (click)="remove(i)">删除</a>
+        <nz-dropdown>
+          <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item (click)="createContainer(image.id)">
+              <a>创建容器</a>
+            </li>
+            <li nz-menu-item (click)="remove(image.id)">
+              <a>删除</a>
+            </li>
+          </ul>
+        </nz-dropdown>
       </td>
+
     </tr>
   </tbody>
 </nz-table>

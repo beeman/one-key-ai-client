@@ -46,12 +46,12 @@ export class DockerExecutorService {
     if (this.dockerToRun.sourcePort) {
       command += ` -p ${this.dockerToRun.sourcePort}:${this.dockerToRun.distPort}`;
     }
-    return command + ` ${this.dockerToRun.dockerImage.image_id} bash\n`;
+    return command + ` ${this.dockerToRun.dockerImage.id} bash\n`;
   }
 
   public run(): void {
     // TODO: run
-    this.socketService.getRepObservable('runDocker', `${this.dockerToRun.dockerImage.image_id}`)
+    this.socketService.getRepObservable('runDocker', `${this.dockerToRun.dockerImage.id}`)
       .subscribe(value => {
         this.logger.log(value);
       }, null, () => {
