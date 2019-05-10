@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { TerminalComponent } from './terminal/terminal.component';
 import { TerminalDialogComponent } from './terminal-dialog/terminal-dialog.component';
+import { ChartsModule } from './charts/charts.module';
 
 @NgModule({
   declarations: [TerminalComponent, TerminalDialogComponent],
@@ -13,7 +14,8 @@ import { TerminalDialogComponent } from './terminal-dialog/terminal-dialog.compo
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    NgZorroAntdModule
+    NgZorroAntdModule,
+    ChartsModule
   ],
   exports: [
     CommonModule,
@@ -21,7 +23,8 @@ import { TerminalDialogComponent } from './terminal-dialog/terminal-dialog.compo
     ReactiveFormsModule,
     RouterModule,
     NgZorroAntdModule,
-    TerminalComponent
+    ChartsModule,
+    TerminalComponent,
   ],
 })
 export class SharedModule { }

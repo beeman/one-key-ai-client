@@ -14,11 +14,16 @@ export class DockerImagesService {
     this.serverUrl = environment.serverUrl;
   }
 
+  public createContainer(data: any) {
+    return this.http.post(this.serverUrl + '/images/create-container', data);
+  }
+
   public getInfo(): Observable<Docker.ImageInfo[]> {
     return this.http.get<Docker.ImageInfo[]>(this.serverUrl + '/images/info');
   }
 
-  public removeImage(id: string) {
+  public removeImage(id: string): Observable<any> {
     return this.http.post(this.serverUrl + '/images/remove', { id: id });
   }
+
 }

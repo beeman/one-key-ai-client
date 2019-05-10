@@ -34,3 +34,25 @@
     </tr>
   </tbody>
 </nz-table>
+
+<nz-modal [(nzVisible)]="containerDialogVisible" nzTitle="重命名" (nzOnCancel)="containerDialogCancel()"
+  (nzOnOk)="containerDialogOk()">
+  <form nz-form [formGroup]="containerForm">
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input type="text" nz-input formControlName="name" placeholder="容器名" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSpan]="6" style="text-align: left">使用Nvidia显卡</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <nz-radio-group formControlName="isNvidia">
+          <label nz-radio nzValue="true">是</label>
+          <label nz-radio nzValue="false">否</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>

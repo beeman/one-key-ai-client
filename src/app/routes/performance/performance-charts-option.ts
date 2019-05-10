@@ -23,7 +23,6 @@ export class PerformanceChartsOption {
             yAxis: {
                 type: 'value',
                 name: '% 使用率',
-                max: 120,
                 min: 0,
                 nameLocation: 'end',
                 splitLine: {
@@ -35,6 +34,7 @@ export class PerformanceChartsOption {
                 type: 'line',
                 showSymbol: false,
                 hoverAnimation: false,
+                smooth: false,
                 data: []
             }]
         };

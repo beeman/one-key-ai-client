@@ -3,6 +3,7 @@ import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-containers',
@@ -10,15 +11,25 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./containers.component.scss']
 })
 export class ContainersComponent implements OnInit {
+  renameDialogVisible = false;
+
   private containers: DockerContainer[] = [];
+  private containerId = '';
+  private newName = '';
 
   constructor(
     private readonly containersService: DockerContainersService,
     private readonly dockerService: DockerService,
-    private readonly messageService: NzMessageService) { }
+    private readonly messageService: NzMessageService,
+    private readonly router: Router
+  ) { }
 
   ngOnInit() {
     this.updateContainers();
+  }
+
+  public exec(id: string): void {
+    this.router.navigate(['/docker/shell', { id: id }])
   }
 
   public stop(id: string): void {
@@ -39,6 +50,10 @@ export class ContainersComponent implements OnInit {
     });
   }
 
+  public stats(id: string): void {
+    this.router.navigate(['/docker/container-stats', { id: id }])
+  }
+
   public restart(id: string): void {
     this.containersService.restart(id).subscribe(value => {
       this.onData(value);
@@ -47,6 +62,22 @@ export class ContainersComponent implements OnInit {
 
   public remove(id: string): void {
     this.containersService.remove(id).subscribe(value => {
+      this.onData(value);
+    });
+  }
+
+  public rename(id: string): void {
+    this.renameDialogVisible = true;
+    this.containerId = id;
+  }
+
+  public renameCancel(): void {
+    this.renameDialogVisible = false;
+  }
+
+  public renameOk(): void {
+    this.renameDialogVisible = false;
+    this.containersService.rename(this.containerId, this.newName).subscribe(value => {
       this.onData(value);
     });
   }
@@ -68,7 +99,7 @@ export class ContainersComponent implements OnInit {
         });
         let sizeRootFs = '';
         if (container['SizeRootFs']) {
-          sizeRootFs = Math.round(container['SizeRootFs'] / 1000) / 1000 + 'MB';
+          sizeRootFs = Math.round(container['SizeRootFs'] / 1024) / 1024 + 'MB';
         }
 
         containerInfos.push({
@@ -86,6 +117,4 @@ export class ContainersComponent implements OnInit {
       this.containers = containerInfos;
     });
   }
-
-
 }

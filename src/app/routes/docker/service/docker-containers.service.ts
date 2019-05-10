@@ -18,6 +18,10 @@ export class DockerContainersService {
     return this.http.get<Docker.ContainerInfo[]>(this.serverUrl + '/containers/info');
   }
 
+  public exec(id: string) {
+    return this.http.post(this.serverUrl + '/containers/exec', { id: id });
+  }
+
   public stop(id: string) {
     return this.http.post(this.serverUrl + '/containers/stop', { id: id });
   }
@@ -37,4 +41,9 @@ export class DockerContainersService {
   public remove(id: string) {
     return this.http.post(this.serverUrl + '/containers/remove', { id: id });
   }
+
+  public rename(id: string, name: string) {
+    return this.http.post(this.serverUrl + '/containers/rename', { id: id, name: name });
+  }
+
 }

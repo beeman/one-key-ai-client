@@ -1,0 +1,19 @@
+<div style="padding:30px;overflow-y: scroll;height: 100%;">
+  <div nz-row [nzGutter]="8">
+    <div nz-col nzLg="12">
+      <app-cpu [data$]="data$"></app-cpu>
+    </div>
+    <div nz-col nzLg="12">
+      <app-memory [data$]="data$"></app-memory>
+    </div>
+    <div nz-col nzLg="12">
+      <app-network [data$]="data$"></app-network>
+    </div>
+    <div nz-col nzLg="12">
+      <app-blockio [data$]="data$"></app-blockio>
+    </div>
+    <div nz-col nzLg="12">
+      <app-pids [data$]="data$"></app-pids>
+    </div>
+  </div>
+</div>

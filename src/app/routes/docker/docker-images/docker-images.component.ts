@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { DockerService, MessageLevel } from '../service/docker.service';
-import { NGXLogger } from 'ngx-logger';
 import { DockerImage } from './docker-image';
-import { DockerExecutorService } from '../service/docker-executor.service';
-import { Router } from '@angular/router';
 import { DockerImagesService } from '../service/docker-images.service';
 import * as Docker from 'dockerode';
 import { NzMessageService } from 'ng-zorro-antd';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+interface ContainerInfo {
+  id?: string;
+  name?: string;
+  isNvidia?: boolean;
+}
 
 @Component({
   selector: 'app-docker-images',
@@ -14,24 +18,25 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./docker-images.component.scss']
 })
 export class DockerImagesComponent implements OnInit {
+  containerForm: FormGroup;
+  images: Array<DockerImage> = [];
+  containerDialogVisible: boolean = false;
 
-  public images: Array<DockerImage> = [];
+  private containerInfo: ContainerInfo = { isNvidia: false };
 
   constructor(
     private readonly dockerService: DockerService,
-    private readonly logger: NGXLogger,
-    private readonly dockerExecutorService: DockerExecutorService,
-    private readonly router: Router,
     private readonly dockerImagesService: DockerImagesService,
-    private readonly messageService: NzMessageService
+    private readonly messageService: NzMessageService,
+    private readonly formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
-    // this.dockerService.getImages().subscribe(value => {
-    //   this.images = value;
-    // });
-
     this.updateImages();
+    this.containerForm = this.formBuilder.group({
+      name: [''],
+      isNvidia: ['false']
+    });
   }
 
   public remove(id: string): void {
@@ -45,12 +50,29 @@ export class DockerImagesComponent implements OnInit {
   }
 
   public createContainer(id: string): void {
-    // this.dockerExecutorService.saveImage(this.images[index]);
-    // this.router.navigate(['docker/image-setting']);
+    this.containerDialogVisible = true;
+    this.containerInfo.id = id;
+  }
+
+  public containerDialogCancel(): void {
+    this.containerDialogVisible = false;
+  }
+
+  public containerDialogOk(): void {
+    this.containerDialogVisible = false;
+    this.containerInfo.name = this.containerForm.get('name').value;
+    this.containerInfo.isNvidia = this.containerForm.get('isNvidia').value;
+    console.log(this.containerInfo);
+
+    this.dockerImagesService.createContainer(this.containerInfo).subscribe(value => {
+      this.dockerService.showMessage(value, this.messageService);
+    });
   }
 
   private updateImages(): void {
     this.dockerImagesService.getInfo().subscribe((imageInfos) => {
+      console.log(imageInfos);
+
       const images = [];
       imageInfos.forEach((image: Docker.ImageInfo) => {
         let repository = '';
@@ -64,9 +86,9 @@ export class DockerImagesComponent implements OnInit {
         }
         const id = image.Id.split(':')[1].substr(0, 12);
         const createTime = new Date(image.Created * 1000).toLocaleString();
-        const size = Math.round(image.Size / 1000) / 1000 + 'MB';
+        const size = Math.round(image.Size / 1024) / 1024 + 'MB';
 
-        images.push({ repository: repository, tag: tag, id: id, created: createTime, size: size });
+        images.push({ repository: repository, tag: tag, id: id, created: createTime, size: size, repoTags: image.RepoTags });
       });
       this.images = images;
     });

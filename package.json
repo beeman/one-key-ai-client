@@ -27,7 +27,7 @@
     "rxjs": "~6.3.3",
     "socket.io-client": "^2.2.0",
     "tslib": "^1.9.0",
-    "xterm": "^3.11.0",
+    "xterm": "^3.12.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -41,6 +41,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "@types/socket.io-client": "^1.4.32",
+    "@types/xterm": "^3.0.0",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",

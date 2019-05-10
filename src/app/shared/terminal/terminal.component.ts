@@ -9,8 +9,11 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./terminal.component.scss']
 })
 export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('terminalContainer')
+  terminalContainer: ElementRef;
+
   private terminal: TerminalController = null;
-  private containerElement: HTMLElement = null;
+  // private containerElement: HTMLElement = null;
 
   constructor(private readonly http: HttpClient, private readonly logger: NGXLogger, private elementRef: ElementRef) {
   }
@@ -24,8 +27,7 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.containerElement = this.elementRef.nativeElement.querySelector('div');
-    this.terminal.createTerminal(this.containerElement);
+    this.terminal.createTerminal(this.terminalContainer.nativeElement);
   }
 
   public getTerminal(): TerminalController {

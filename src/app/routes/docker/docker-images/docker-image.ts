@@ -5,4 +5,5 @@ export interface DockerImage {
     created: string;
     size: string;
     containers?: number;
+    repoTags?: string[];
 }

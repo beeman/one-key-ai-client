@@ -5,7 +5,7 @@
       <th nzWidth="200px">IMAGE</th>
       <th>COMMAND</th>
       <th>CREATED</th>
-      <th>STATUS</th>
+      <th>STATE</th>
       <th>PORTS</th>
       <th>NAMES</th>
       <th>ACTION</th>
@@ -17,7 +17,7 @@
       <td>{{container.image}}</td>
       <td>{{container.command}}</td>
       <td>{{container.created}}</td>
-      <td>{{container.status}}</td>
+      <td [ngStyle]="{'color':container.state==='running'?'green':'black'}">{{container.state}}</td>
       <td>{{container.ports}}</td>
       <td>{{container.names}}</td>
 
@@ -25,20 +25,35 @@
         <nz-dropdown>
           <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
           <ul nz-menu nzSelectable>
-            <li nz-menu-item (click)="stop(container.id)">
+            <li nz-menu-item (click)="stop(container.id)" *ngIf="container.state==='running'">
               <a>停止</a>
             </li>
-            <li nz-menu-item (click)="kill(container.id)">
+            <li nz-menu-item (click)="kill(container.id)" *ngIf="container.state==='running'">
               <a>强制停止</a>
             </li>
-            <li nz-menu-item (click)="start(container.id)">
+            <li nz-menu-item (click)="start(container.id)" *ngIf="container.state!=='running'">
               <a>启动</a>
             </li>
-            <li nz-menu-item (click)="restart(container.id)">
+            <li nz-menu-item (click)="restart(container.id)" *ngIf="container.state==='running'">
               <a>重启</a>
             </li>
-            <li nz-menu-item (click)="remove(container.id)">
+            <li nz-menu-item (click)="exec(container.id)" *ngIf="container.state==='running'">
+              <a>执行</a>
+            </li>
+            <li nz-menu-item (click)="remove(container.id)" *ngIf="container.state!=='running'">
               <a>删除</a>
+            </li>
+          </ul>
+        </nz-dropdown>
+        <nz-divider nzType="vertical"></nz-divider>
+        <nz-dropdown>
+          <a nz-dropdown> 信息 <i nz-icon type="down"></i> </a>
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item (click)="stats(container.id)" *ngIf="container.state==='running'">
+              <a>状态</a>
+            </li>
+            <li nz-menu-item (click)="rename(container.id)">
+              <a>重命名</a>
             </li>
           </ul>
         </nz-dropdown>
@@ -46,3 +61,10 @@
     </tr>
   </tbody>
 </nz-table>
+
+
+<nz-modal [(nzVisible)]="renameDialogVisible" nzTitle="重命名" (nzOnCancel)="renameCancel()" (nzOnOk)="renameOk()">
+  <nz-input-group nzAddOnBefore="名称：">
+    <input type="text" nz-input [(ngModel)]="newName" />
+  </nz-input-group>
+</nz-modal>

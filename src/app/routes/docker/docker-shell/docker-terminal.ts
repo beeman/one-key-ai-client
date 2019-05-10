@@ -6,10 +6,13 @@ import * as search from 'xterm/lib/addons/search/search';
 import * as webLinks from 'xterm/lib/addons/webLinks/webLinks';
 import * as winptyCompat from 'xterm/lib/addons/winptyCompat/winptyCompat';
 
+import * as io from 'socket.io-client';
+
 import { Terminal as TerminalType } from 'xterm';
-import { NGXLogger } from 'ngx-logger';
-import { HttpClient } from '@angular/common/http';
+import { fromEvent } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { EventEmitter } from 'events';
 
 Terminal.applyAddon(attach);
 Terminal.applyAddon(fit);
@@ -18,11 +21,12 @@ Terminal.applyAddon(search);
 Terminal.applyAddon(webLinks);
 Terminal.applyAddon(winptyCompat);
 
-export class TerminalController {
+export class DockerTerminal {
     private term: Terminal;
-    private socket: WebSocket;
+    private socket: SocketIOClient.Socket;
+    private state = new EventEmitter();
 
-    constructor(private readonly http: HttpClient, private readonly logger: NGXLogger) { }
+    constructor(private readonly containerId: string) { }
 
     public createTerminal(container: HTMLElement): void {
         this.term = new Terminal({});
@@ -35,10 +39,6 @@ export class TerminalController {
         this.getTerm().clear();
     }
 
-    // public ctrlC(): void {
-    //     this.socket.send('\u0003');
-    // }
-
     public destroy(): void {
         this.socket.close();
         this.getTerm().dispose();
@@ -46,11 +46,14 @@ export class TerminalController {
 
     public emit(data: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView): void {
         this.socket.send(data);
-        // (<TerminalType>(this.term)).emit('data', text + '\n');
     }
 
     public getTerm(): TerminalType {
         return this.term;
+    }
+
+    public getState(): EventEmitter {
+        return this.state;
     }
 
     private createElement(container: HTMLElement): void {
@@ -65,18 +68,13 @@ export class TerminalController {
         // fit is called within a setTimeout, cols and rows need this.
         setTimeout(() => {
             this.initOptions(this.term);
-            const url = environment.serverUrl + '/terminals';
-            this.http.post(url, { cols: this.term.cols, rows: this.term.rows }).subscribe(value => {
-                const pid = value['processId'];
-                const port = 3002;
-                const protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
-                const socketURL = protocol + location.hostname + ((port) ? (':' + port) : '') + '/terminals/' + pid;
+            // const port = 3000;
+            // const socketURL = location.protocol + '//' + location.hostname + ':' + port;
 
-                this.socket = new WebSocket(<string>socketURL);
-                this.socket.onopen = this.runRealTerminal;
-                this.socket.onclose = this.runFakeTerminal;
-                this.socket.onerror = this.runFakeTerminal;
-            });
+            this.socket = io(environment.serverUrl);
+            this.socket.on('connect', this.runRealTerminal);
+            this.socket.on('disconnect', this.runFakeTerminal);
+            this.socket.on('error', this.runFakeTerminal);
         }, 0);
     }
 
@@ -123,8 +121,22 @@ export class TerminalController {
     }
 
     private runRealTerminal = (): void => {
-        this.term.attach(this.socket);
-        this.term._initialized = true;
+        this.socket.emit('exec', { id: this.containerId, cols: this.term.cols, rows: this.term.rows });
+
+        this.socket.on('data', (data) => {
+            this.term.write(data);
+        });
+        this.socket.on('err', (value) => {
+            this.socket.disconnect();
+            this.state.emit('err', value);
+        });
+        this.socket.on('end', (value) => {
+            this.socket.disconnect();
+            this.state.emit('end', value);
+        });
+        fromEvent(this.term, 'data').pipe(throttleTime(1)).subscribe(value => {
+            this.socket.emit('data', value);
+        });
     }
 
     private runFakeTerminal = (): void => {
