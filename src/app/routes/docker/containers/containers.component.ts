@@ -92,10 +92,15 @@ export class ContainersComponent implements OnInit {
   private updateContainers(): void {
     const containerInfos: DockerContainer[] = [];
     this.containersService.getInfo().subscribe((containers) => {
+      console.log(containers);
       containers.forEach((container) => {
         const portInfos: string[] = [];
         container.Ports.forEach((port) => {
-          portInfos.push(`${port.IP}+${port.PublicPort}->${port.PrivatePort}/${port.Type}`);
+          if (port.IP === '0.0.0.0') {
+            portInfos.push(`${port.PublicPort}->${port.PrivatePort}/${port.Type}`);
+          } else {
+            portInfos.push(`${port.IP}:${port.PublicPort}->${port.PrivatePort}/${port.Type}`);
+          }
         });
         let sizeRootFs = '';
         if (container['SizeRootFs']) {

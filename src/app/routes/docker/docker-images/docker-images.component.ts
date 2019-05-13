@@ -71,7 +71,6 @@ export class DockerImagesComponent implements OnInit {
 
   private updateImages(): void {
     this.dockerImagesService.getInfo().subscribe((imageInfos) => {
-      console.log(imageInfos);
 
       const images = [];
       imageInfos.forEach((image: Docker.ImageInfo) => {
