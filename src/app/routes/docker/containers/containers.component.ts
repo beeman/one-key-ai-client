@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
   selector: 'app-containers',
@@ -21,7 +22,8 @@ export class ContainersComponent implements OnInit {
     private readonly containersService: DockerContainersService,
     private readonly dockerService: DockerService,
     private readonly messageService: NzMessageService,
-    private readonly router: Router
+    private readonly router: Router,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) { }
 
   ngOnInit() {
@@ -62,7 +64,10 @@ export class ContainersComponent implements OnInit {
 
   public remove(id: string): void {
     this.containersService.remove(id).subscribe(value => {
-      this.onData(value);
+      const message = this.onData(value);
+      if (message.level === MessageLevel.Info) {
+        this.containersService.removeData(id, this.tokenService.get().userName).subscribe();
+      }
     });
   }
 
@@ -82,17 +87,18 @@ export class ContainersComponent implements OnInit {
     });
   }
 
-  private onData(data: any): void {
+  private onData(data: any): DockerMessage {
     const message = this.dockerService.showMessage(data, this.messageService);
     if (message.level === MessageLevel.Info) {
       this.updateContainers();
     }
+
+    return message;
   }
 
   private updateContainers(): void {
     const containerInfos: DockerContainer[] = [];
     this.containersService.getInfo().subscribe((containers) => {
-      console.log(containers);
       containers.forEach((container) => {
         const portInfos: string[] = [];
         container.Ports.forEach((port) => {
@@ -108,7 +114,7 @@ export class ContainersComponent implements OnInit {
         }
 
         containerInfos.push({
-          id: container.Id.substr(0, 12),
+          id: container.Id,
           image: container.Image,
           command: container.Command,
           created: new Date(container.Created * 1000).toLocaleString(),

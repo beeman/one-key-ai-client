@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { DockerService, MessageLevel } from '../service/docker.service';
 import { DockerImage } from './docker-image';
 import { DockerImagesService } from '../service/docker-images.service';
 import * as Docker from 'dockerode';
 import { NzMessageService } from 'ng-zorro-antd';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { DockerContainersService } from '../service/docker-containers.service';
+import { TokenService, ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 
 interface ContainerInfo {
   id?: string;
@@ -28,7 +30,9 @@ export class DockerImagesComponent implements OnInit {
     private readonly dockerService: DockerService,
     private readonly dockerImagesService: DockerImagesService,
     private readonly messageService: NzMessageService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly dockerContainersService: DockerContainersService,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) { }
 
   ngOnInit() {
@@ -64,8 +68,11 @@ export class DockerImagesComponent implements OnInit {
     this.containerInfo.isNvidia = this.containerForm.get('isNvidia').value;
     console.log(this.containerInfo);
 
-    this.dockerImagesService.createContainer(this.containerInfo).subscribe(value => {
-      this.dockerService.showMessage(value, this.messageService);
+    this.dockerImagesService.createContainer(this.containerInfo).subscribe((value: any) => {
+      const message = this.dockerService.showMessage(value, this.messageService);
+      if (message.level === MessageLevel.Info) {
+        this.dockerContainersService.saveData(value.containerId, this.tokenService.get().userName).subscribe();
+      }
     });
   }
 

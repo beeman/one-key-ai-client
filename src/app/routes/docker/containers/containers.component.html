@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let container of containerTable.data;let i=index">
-      <td>{{container.id}}</td>
+      <td>{{container.id.substr(0,12)}}</td>
       <td>{{container.image}}</td>
       <td>{{container.command}}</td>
       <td>{{container.created}}</td>

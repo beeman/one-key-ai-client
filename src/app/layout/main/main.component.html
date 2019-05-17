@@ -2,16 +2,17 @@
   <nz-header>
     <div class="logo"></div>
     <div nz-row nzType="flex" nzJustify="space-between">
-      <div nz-col nzSpan="16">
+      <div nz-col nzSpan="20">
         <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" class="menu">
           <li nz-menu-item>介绍</li>
           <li nz-menu-item [routerLink]="[ '/performance']" routerLinkActive="active">性能</li>
           <li nz-menu-item [routerLink]="[ '/driver']" routerLinkActive="active">显卡</li>
           <li nz-menu-item [routerLink]="[ '/docker/images']" routerLinkActive="active">镜像</li>
           <li nz-menu-item [routerLink]="[ '/docker/containers']" routerLinkActive="active">容器</li>
+          <li nz-menu-item [routerLink]="[ '/user/manager' ]" *ngIf="isAdmin">管理用户</li>
         </ul>
       </div>
-      <div nz-col nzSpan="4">
+      <div nz-col>
         <nz-dropdown>
           <button nz-button nz-dropdown nzType="primary"><span>操作</span> <i nz-icon type="down"></i></button>
           <ul nz-menu>
@@ -26,6 +27,17 @@
           </ul>
         </nz-dropdown>
       </div>
+      <div nz-col>
+        <nz-dropdown [nzPlacement]="'bottomRight'">
+          <button nz-button nz-dropdown nzType="primary" [nzSize]="size" nzShape="circle">
+            <i nz-icon type="setting"></i>
+          </button>
+          <ul nz-menu>
+            <li nz-menu-item (click)="login()">登入</li>
+            <li nz-menu-item (click)="logout()">登出</li>
+          </ul>
+        </nz-dropdown>
+      </div>
     </div>
   </nz-header>
   <nz-content class="full-height">
@@ -34,8 +46,8 @@
 </nz-layout>
 
 <!-- 终端对话框 -->
-<nz-modal [(nzVisible)]="isTerminalModalVisible" nzTitle="操作" [nzContent]="terminalModalContainer" (nzOnCancel)="cancelTerminalModal()"
-  (nzOnOk)="confirmTerminalModal()" nzMaskClosable="false" nzWidth="800px">
+<nz-modal [(nzVisible)]="isTerminalModalVisible" nzTitle="操作" [nzContent]="terminalModalContainer"
+  (nzOnCancel)="cancelTerminalModal()" (nzOnOk)="confirmTerminalModal()" nzMaskClosable="false" nzWidth="800px">
 </nz-modal>
 
 <ng-template #terminalModalContainer>

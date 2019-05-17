@@ -1,5 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { TerminalComponent } from 'src/app/shared/terminal/terminal.component';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { Router } from '@angular/router';
+import { UserService } from 'src/app/core/user.service';
 
 @Component({
   selector: 'app-main',
@@ -14,10 +17,19 @@ export class MainComponent implements OnInit {
   public isReverseArrow = false;
   public isTerminalModalVisible = false;
   public isDriverSourceModalVisible = false;
+  public isAdmin = false;
 
-  constructor() { }
+  constructor(
+    @Inject(DA_SERVICE_TOKEN) private readonly tokenService: ITokenService,
+    private readonly router: Router,
+    private readonly userService: UserService
+  ) { }
 
   ngOnInit() {
+    this.userService.checkAdmin(this.tokenService.get()['userName']).subscribe(value => {
+      console.log(value);
+      this.isAdmin = <boolean>value;
+    });
   }
 
   public cancelUpdateDriverSource(): void {
@@ -81,6 +93,15 @@ export class MainComponent implements OnInit {
     this.execCommand(command);
 
     this.showTerminalModal();
+  }
+
+  public login():void{
+    this.router.navigateByUrl('auth');
+  }
+
+  public logout(): void {
+    this.tokenService.clear();
+    this.router.navigateByUrl('auth');
   }
 
   private hideDriverSourceModal(): void {

@@ -46,4 +46,12 @@ export class DockerContainersService {
     return this.http.post(this.serverUrl + '/containers/rename', { id: id, name: name });
   }
 
+  public saveData(id: string, user: string) {
+    return this.http.post(this.serverUrl + '/containers/save-data', { id: id, user: user });
+  }
+
+  public removeData(id: string, user: string) {
+    return this.http.post(this.serverUrl + '/containers/remove-data', { id: id, user: user });
+  }
+
 }
