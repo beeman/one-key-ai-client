@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DockerImageSettingComponent } from './docker-image-setting.component';
+import { FileListComponent } from './file-list.component';
 
-describe('DockerImageSettingComponent', () => {
-  let component: DockerImageSettingComponent;
-  let fixture: ComponentFixture<DockerImageSettingComponent>;
+describe('FileListComponent', () => {
+  let component: FileListComponent;
+  let fixture: ComponentFixture<FileListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DockerImageSettingComponent ]
+      declarations: [ FileListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DockerImageSettingComponent);
+    fixture = TestBed.createComponent(FileListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
