@@ -14,8 +14,8 @@ export class DockerContainersService {
     this.serverUrl = environment.serverUrl;
   }
 
-  public getInfo(): Observable<Docker.ContainerInfo[]> {
-    return this.http.get<Docker.ContainerInfo[]>(this.serverUrl + '/containers/info');
+  public getInfo(userName: string): Observable<Docker.ContainerInfo[]> {
+    return this.http.post<Docker.ContainerInfo[]>(this.serverUrl + '/containers/info', { userName: userName });
   }
 
   public exec(id: string) {
@@ -46,12 +46,12 @@ export class DockerContainersService {
     return this.http.post(this.serverUrl + '/containers/rename', { id: id, name: name });
   }
 
-  public saveData(id: string, user: string) {
-    return this.http.post(this.serverUrl + '/containers/save-data', { id: id, user: user });
-  }
+  // public saveData(id: string, user: string) {
+  //   return this.http.post(this.serverUrl + '/containers/save-data', { id: id, user: user });
+  // }
 
-  public removeData(id: string, user: string) {
-    return this.http.post(this.serverUrl + '/containers/remove-data', { id: id, user: user });
-  }
+  // public removeData(id: string, user: string) {
+  //   return this.http.post(this.serverUrl + '/containers/remove-data', { id: id, user: user });
+  // }
 
 }

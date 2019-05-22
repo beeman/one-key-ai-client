@@ -1,21 +1,17 @@
 <nz-table #containerTable [nzData]="containers" [nzPageSize]="10">
   <thead>
     <tr>
-      <th>CONTAINER ID</th>
-      <th nzWidth="200px">IMAGE</th>
-      <th>COMMAND</th>
+      <th nzWidth="300px">IMAGE</th>
       <th>CREATED</th>
       <th>STATE</th>
       <th>PORTS</th>
       <th>NAMES</th>
-      <th>ACTION</th>
+      <th nzWidth="150px">ACTION</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let container of containerTable.data;let i=index">
-      <td>{{container.id.substr(0,12)}}</td>
       <td>{{container.image}}</td>
-      <td>{{container.command}}</td>
       <td>{{container.created}}</td>
       <td [ngStyle]="{'color':container.state==='running'?'green':'black'}">{{container.state}}</td>
       <td>{{container.ports}}</td>

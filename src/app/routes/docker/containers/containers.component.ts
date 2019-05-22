@@ -65,9 +65,9 @@ export class ContainersComponent implements OnInit {
   public remove(id: string): void {
     this.containersService.remove(id).subscribe(value => {
       const message = this.onData(value);
-      if (message.level === MessageLevel.Info) {
-        this.containersService.removeData(id, this.tokenService.get().userName).subscribe();
-      }
+      // if (message.level === MessageLevel.Info) {
+      //   this.containersService.removeData(id, this.tokenService.get().userName).subscribe();
+      // }
     });
   }
 
@@ -97,8 +97,10 @@ export class ContainersComponent implements OnInit {
   }
 
   private updateContainers(): void {
+    const userName = this.tokenService.get().userName;
+
     const containerInfos: DockerContainer[] = [];
-    this.containersService.getInfo().subscribe((containers) => {
+    this.containersService.getInfo(userName).subscribe((containers) => {
       containers.forEach((container) => {
         const portInfos: string[] = [];
         container.Ports.forEach((port) => {

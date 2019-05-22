@@ -39,7 +39,7 @@ export class DockerImagesComponent implements OnInit {
     this.updateImages();
     this.containerForm = this.formBuilder.group({
       name: [''],
-      isNvidia: ['false']
+      isNvidia: true
     });
   }
 
@@ -53,9 +53,9 @@ export class DockerImagesComponent implements OnInit {
     });
   }
 
-  public createContainer(id: string): void {
+  public createContainer(image: DockerImage): void {
     this.containerDialogVisible = true;
-    this.containerInfo.id = id;
+    this.containerInfo.id = image.repoTags ? image.repoTags[0] : image.id;
   }
 
   public containerDialogCancel(): void {
@@ -63,16 +63,17 @@ export class DockerImagesComponent implements OnInit {
   }
 
   public containerDialogOk(): void {
+    const userName = this.tokenService.get().userName;
+
     this.containerDialogVisible = false;
-    this.containerInfo.name = this.containerForm.get('name').value;
+    this.containerInfo.name = userName + '--' + this.containerForm.get('name').value;
     this.containerInfo.isNvidia = this.containerForm.get('isNvidia').value;
-    console.log(this.containerInfo);
 
     this.dockerImagesService.createContainer(this.containerInfo).subscribe((value: any) => {
       const message = this.dockerService.showMessage(value, this.messageService);
-      if (message.level === MessageLevel.Info) {
-        this.dockerContainersService.saveData(value.containerId, this.tokenService.get().userName).subscribe();
-      }
+      // if (message.level === MessageLevel.Info) {
+      //   this.dockerContainersService.saveData(value.containerId, userName).subscribe();
+      // }
     });
   }
 

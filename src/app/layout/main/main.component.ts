@@ -3,6 +3,7 @@ import { TerminalComponent } from 'src/app/shared/terminal/terminal.component';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main',
@@ -95,7 +96,7 @@ export class MainComponent implements OnInit {
     this.showTerminalModal();
   }
 
-  public login():void{
+  public login(): void {
     this.router.navigateByUrl('auth');
   }
 

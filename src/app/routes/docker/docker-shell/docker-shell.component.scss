@@ -1,6 +1,17 @@
+.main {
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
 .terminal-container {
-    width: 100%;
-    height: 450px;
-    margin: 0 auto;
-    padding: 2px;
+  width: 100%;
+  flex-grow: 1;
+  margin: 0 auto;
+  padding: 2px;
+}
+
+.operator-line {
+  text-align: right;
+  margin-right: 10px;
 }

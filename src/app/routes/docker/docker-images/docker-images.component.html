@@ -21,7 +21,7 @@
         <nz-dropdown>
           <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
           <ul nz-menu nzSelectable>
-            <li nz-menu-item (click)="createContainer(image.id)">
+            <li nz-menu-item (click)="createContainer(image)">
               <a>创建容器</a>
             </li>
             <li nz-menu-item (click)="remove(image.id)">
@@ -49,8 +49,8 @@
       <nz-form-label [nzSpan]="6" style="text-align: left">使用Nvidia显卡</nz-form-label>
       <nz-form-control [nzSpan]="14">
         <nz-radio-group formControlName="isNvidia">
-          <label nz-radio nzValue="true">是</label>
-          <label nz-radio nzValue="false">否</label>
+          <label nz-radio [nzValue]="true">是</label>
+          <label nz-radio [nzValue]="false">否</label>
         </nz-radio-group>
       </nz-form-control>
     </nz-form-item>
