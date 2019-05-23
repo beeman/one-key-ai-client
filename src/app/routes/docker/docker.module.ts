@@ -7,7 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { DockerShellComponent } from './docker-shell/docker-shell.component';
 import { ContainersComponent } from './containers/containers.component';
 import { ContainerStatsComponent } from './container-stats/container-stats.component';
-import { FileListComponent } from './file-list/file-list.component';
+import { FileBrowserComponent } from './file-browser/file-browser.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,8 @@ import { FileListComponent } from './file-list/file-list.component';
     DockerShellComponent,
     ContainersComponent,
     ContainerStatsComponent,
-    FileListComponent],
+    FileBrowserComponent,
+  ],
   imports: [
     CommonModule,
     DockerRoutingModule,

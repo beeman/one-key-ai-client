@@ -2,9 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, UploadChangeParam } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { FileService } from '../service/file.service';
 
 @Component({
   selector: 'app-containers',
@@ -13,6 +14,9 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 })
 export class ContainersComponent implements OnInit {
   renameDialogVisible = false;
+
+  public uploading = false;
+  public currentUploadingFile: string;
 
   private containers: DockerContainer[] = [];
   private containerId = '';
@@ -24,7 +28,9 @@ export class ContainersComponent implements OnInit {
     private readonly messageService: NzMessageService,
     private readonly router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-  ) { }
+    public fileService: FileService
+  ) {
+  }
 
   ngOnInit() {
     this.updateContainers();
@@ -85,6 +91,26 @@ export class ContainersComponent implements OnInit {
     this.containersService.rename(this.containerId, this.newName).subscribe(value => {
       this.onData(value);
     });
+  }
+
+  public uploadChange(event: UploadChangeParam) {
+    this.uploading = true;
+    this.currentUploadingFile = event.file.name;
+
+    if (event.file.status === 'done') {
+      let done = true;
+      for (let i = 0; i < event.fileList.length; ++i) {
+        const file = event.fileList[i];
+        if (file.status !== 'done') {
+          done = false;
+          break;
+        }
+      }
+      if (done) {
+        this.uploading = false;
+        this.currentUploadingFile = '上传完成';
+      }
+    }
   }
 
   private onData(data: any): DockerMessage {

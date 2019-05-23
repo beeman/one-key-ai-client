@@ -36,6 +36,5 @@ export class UserService {
 
   public updateUser(name: string, password: string, isAdmin: boolean) {
     return this.http.post(this.serverUrl + '/users/update', { name: name, password: password, isAdmin: isAdmin });
-
   }
 }

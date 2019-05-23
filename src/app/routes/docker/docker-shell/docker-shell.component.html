@@ -1,11 +1,3 @@
 <div class="main">
   <div #terminal class="terminal-container"></div>
-  <div class="operator-line">
-    <label style="margin-right: 8px">{{currentUploadingFile}}</label>
-    <nz-upload [nzAction]="uploadPath()" nzDirectory [nzCustomRequest]="customReq" (nzChange)="uploadChange($event)"
-      [nzShowUploadList]="false">
-      <button nz-button nzType="primary" [nzLoading]="uploading" [disabled]="uploading"><i nz-icon
-          type="upload"></i>上传项目</button>
-    </nz-upload>
-  </div>
 </div>
