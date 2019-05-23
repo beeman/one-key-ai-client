@@ -37,7 +37,7 @@ export class ContainersComponent implements OnInit {
   }
 
   public exec(id: string): void {
-    this.router.navigate(['/docker/shell', { id: id }])
+    this.router.navigate(['/docker/ide', { id: id }])
   }
 
   public stop(id: string): void {

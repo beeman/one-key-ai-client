@@ -4,7 +4,7 @@ import { DockerImagesComponent } from './docker-images/docker-images.component';
 import { DockerShellComponent } from './docker-shell/docker-shell.component';
 import { ContainersComponent } from './containers/containers.component';
 import { ContainerStatsComponent } from './container-stats/container-stats.component';
-import { FileBrowserComponent } from './file-browser/file-browser.component';
+import { IdeComponent } from './ide/ide.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'images', pathMatch: 'full' },
@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'containers', component: ContainersComponent },
   { path: 'container-stats', component: ContainerStatsComponent },
   { path: 'shell', component: DockerShellComponent },
-  { path: 'file', component: FileBrowserComponent },
+  { path: 'ide', component: IdeComponent },
 ];
 
 @NgModule({

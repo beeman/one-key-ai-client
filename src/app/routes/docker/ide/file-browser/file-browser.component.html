@@ -1,8 +1,8 @@
 <nz-tree [nzData]="fileList?.children" (nzClick)="activeNode($event)" (nzDblClick)="openFolder($event)">
   <ng-template #contextTemplate>
     <ul nz-menu nzInDropDown>
-      <li nz-menu-item (click)="selectDropdown()">Action 1</li>
-      <li nz-menu-item (click)="selectDropdown()">Action 2</li>
+      <li nz-menu-item (click)="selectDropdown()">打开</li>
+      <li nz-menu-item (click)="selectDropdown()">删除</li>
     </ul>
   </ng-template>
   <ng-template #nzTreeTemplate let-node>

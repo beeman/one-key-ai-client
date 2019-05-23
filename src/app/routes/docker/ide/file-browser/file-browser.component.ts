@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, TemplateRef } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FileService } from '../service/file.service';
+import { FileService } from '../../service/file.service';
 import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzDropdownService } from 'ng-zorro-antd';
 
 @Component({
