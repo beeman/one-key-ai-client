@@ -47,8 +47,10 @@ export class FileBrowserComponent implements OnInit {
     this.activedNode = data.node!;
   }
 
-  contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
+  contextMenu($event: MouseEvent, template: TemplateRef<void>, node: NzTreeNode): void {
+    console.log($event.clientY);
     $event.preventDefault();
+
     this.dropdown = this.nzDropdownService.create(new MouseEvent('', { clientY: $event.layerY, clientX: $event.clientX }), template);
   }
 

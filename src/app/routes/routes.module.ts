@@ -13,7 +13,7 @@ import { UserModule } from './user/user.module';
     SharedModule,
     RoutesRoutingModule,
     AuthModule,
-    UserModule
+    UserModule,
   ]
 })
 export class RoutesModule { }

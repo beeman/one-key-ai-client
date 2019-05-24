@@ -1,20 +1,57 @@
-<nz-tree [nzData]="fileList?.children" (nzClick)="activeNode($event)" (nzDblClick)="openFolder($event)">
-  <ng-template #contextTemplate>
+<nz-tree id="tree" [nzData]="fileList?.children" (nzClick)="activeNode($event)" (nzDblClick)="openFolder($event)">
+
+  <ng-template #dirTemplate>
     <ul nz-menu nzInDropDown>
-      <li nz-menu-item (click)="selectDropdown()">打开</li>
+      <li nz-menu-item (click)="selectDropdown()">新建文件</li>
+      <li nz-menu-item (click)="selectDropdown()">新建文件夹</li>
+      <li nz-menu-item (click)="selectDropdown()">上传文件夹</li>
+      <li nz-menu-item (click)="selectDropdown()">上传文件夹</li>
       <li nz-menu-item (click)="selectDropdown()">删除</li>
     </ul>
   </ng-template>
+  <ng-template #fileTemplate>
+    <ul nz-menu nzInDropDown>
+      <li nz-menu-item (click)="selectDropdown()">打开</li>
+      <li nz-menu-item (click)="selectDropdown()">保存</li>
+      <li nz-menu-item (click)="selectDropdown()">删除</li>
+    </ul>
+  </ng-template>
+
   <ng-template #nzTreeTemplate let-node>
-    <span class="custom-node" [class.active]="activedNode?.key === node.key">
-      <span *ngIf="!node.isLeaf" (contextmenu)="contextMenu($event, contextTemplate)">
+    <nz-dropdown *ngIf="!node.isLeaf">
+      <span nz-dropdown>
         <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
         <span class="folder-name">{{ node.title }}</span>
       </span>
-      <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event, contextTemplate)">
+      <ul nz-menu nzInDropDown>
+        <li nz-menu-item (click)="selectDropdown()">新建文件</li>
+        <li nz-menu-item (click)="selectDropdown()">新建文件夹</li>
+        <li nz-menu-item (click)="selectDropdown()">上传文件夹</li>
+        <li nz-menu-item (click)="selectDropdown()">上传文件夹</li>
+        <li nz-menu-item (click)="selectDropdown()">删除</li>
+      </ul>
+    </nz-dropdown>
+    <nz-dropdown *ngIf="node.isLeaf">
+      <span nz-dropdown>
         <i nz-icon type="file"></i>
         <span class="file-name">{{ node.title }}</span>
       </span>
-    </span>
+      <ul nz-menu nzInDropDown>
+        <li nz-menu-item (click)="selectDropdown()">打开</li>
+        <li nz-menu-item (click)="selectDropdown()">保存</li>
+        <li nz-menu-item (click)="selectDropdown()">删除</li>
+      </ul>
+    </nz-dropdown>
+
+    <!-- <span class="custom-node" [class.active]="activedNode?.key === node.key">
+      <span *ngIf="!node.isLeaf" (contextmenu)="contextMenu($event, dirTemplate,node)">
+        <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
+        <span class="folder-name">{{ node.title }}</span>
+      </span>
+      <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event, fileTemplate,node)">
+        <i nz-icon type="file"></i>
+        <span class="file-name">{{ node.title }}</span>
+      </span>
+    </span> -->
   </ng-template>
 </nz-tree>

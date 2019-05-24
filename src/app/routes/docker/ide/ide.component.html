@@ -2,9 +2,12 @@
   <nz-sider [nzWidth]="400" style="background:#ccc;">
     <app-file-browser></app-file-browser>
   </nz-sider>
-  <nz-layout class="full-height">
-    <nz-content>
-      <app-docker-shell></app-docker-shell>
+  <nz-layout class="full-height" style="padding: 0px;">
+    <nz-content style="padding: 0px;margin: 0px;">
+      <app-editor></app-editor>
     </nz-content>
+    <nz-footer style="padding: 0px;">
+      <app-docker-shell></app-docker-shell>
+    </nz-footer>
   </nz-layout>
 </nz-layout>

@@ -9,6 +9,8 @@ import { ContainersComponent } from './containers/containers.component';
 import { ContainerStatsComponent } from './container-stats/container-stats.component';
 import { FileBrowserComponent } from './ide/file-browser/file-browser.component';
 import { IdeComponent } from './ide/ide.component';
+import { EditorComponent } from './ide/editor/editor.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 @NgModule({
   declarations: [
@@ -18,11 +20,13 @@ import { IdeComponent } from './ide/ide.component';
     ContainerStatsComponent,
     FileBrowserComponent,
     IdeComponent,
+    EditorComponent,
   ],
   imports: [
     CommonModule,
     DockerRoutingModule,
-    SharedModule
+    SharedModule,
+    MonacoEditorModule.forRoot()
   ],
   exports: [
     DockerShellComponent
