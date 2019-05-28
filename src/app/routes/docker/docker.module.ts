@@ -11,6 +11,7 @@ import { FileBrowserComponent } from './ide/file-browser/file-browser.component'
 import { IdeComponent } from './ide/ide.component';
 import { EditorComponent } from './ide/editor/editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { DockerShellGroupComponent } from './docker-shell-group/docker-shell-group.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     FileBrowserComponent,
     IdeComponent,
     EditorComponent,
+    DockerShellGroupComponent,
   ],
   imports: [
     CommonModule,

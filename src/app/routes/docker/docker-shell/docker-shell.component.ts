@@ -28,10 +28,7 @@ export class DockerShellComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(value => {
-      const id = value.get('id');
-      this.terminal = new DockerTerminal(id);
-    }).unsubscribe();
+
   }
 
   ngOnDestroy(): void {
@@ -39,14 +36,23 @@ export class DockerShellComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.terminal.createTerminal(this.terminalRef.nativeElement);
-    this.terminal.getState().on('end', value => {
-      this.dockerService.showMessage({ reason: value }, this.messageService);
-      this.location.back();
-    });
-    this.terminal.getState().on('err', value => {
-      this.dockerService.showMessage(value, this.messageService);
-      this.location.back();
-    });
+    setTimeout(() => {
+      this.route.paramMap.subscribe(value => {
+        const id = value.get('id');
+        this.terminal = new DockerTerminal(id);
+
+        this.terminal.createTerminal(this.terminalRef.nativeElement);
+        // console.log((<HTMLDivElement>(this.terminalRef.nativeElement)).clientHeight);
+        this.terminal.getState().on('end', value => {
+          this.dockerService.showMessage({ reason: value }, this.messageService);
+          // this.location.back();
+        });
+        this.terminal.getState().on('err', value => {
+          this.dockerService.showMessage(value, this.messageService);
+          // this.location.back();
+        });
+      }).unsubscribe();
+    }, 0);
+
   }
 }

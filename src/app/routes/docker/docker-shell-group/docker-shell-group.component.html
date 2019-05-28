@@ -1,0 +1,12 @@
+<nz-tabset [nzType]="'card'" [nzSelectedIndex]="index" [nzTabBarExtraContent]="extraTemplate" class="container">
+  <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+      <div>{{ tab }}<i nz-icon type="close" class="ant-tabs-close-x" (click)="closeTab(tab)"></i></div>
+    </ng-template>
+    <app-docker-shell></app-docker-shell>
+  </nz-tab>
+</nz-tabset>
+
+<ng-template #extraTemplate>
+  <button nz-button (click)="newTab()">添加</button>
+</ng-template>

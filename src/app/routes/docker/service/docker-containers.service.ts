@@ -26,6 +26,10 @@ export class DockerContainersService {
     return this.http.post(this.serverUrl + '/containers/stop', { id: id });
   }
 
+  public shellLength(id: string) {
+    return this.http.post(this.serverUrl + '/containers/shell-length', { id: id });
+  }
+
   public kill(id: string) {
     return this.http.post(this.serverUrl + '/containers/kill', { id: id });
   }

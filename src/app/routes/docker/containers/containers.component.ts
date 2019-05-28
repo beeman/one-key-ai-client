@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
-import { NzMessageService, UploadChangeParam } from 'ng-zorro-antd';
+import { NzMessageService, UploadChangeParam, UploadXHRArgs } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileService } from '../service/file.service';
@@ -37,7 +37,7 @@ export class ContainersComponent implements OnInit {
   }
 
   public exec(id: string): void {
-    this.router.navigate(['/docker/ide', { id: id }])
+    this.router.navigate(['/docker/shell-group', { id: id }])
   }
 
   public stop(id: string): void {
@@ -91,6 +91,33 @@ export class ContainersComponent implements OnInit {
     this.containersService.rename(this.containerId, this.newName).subscribe(value => {
       this.onData(value);
     });
+  }
+
+  public uploadReq = (item: UploadXHRArgs) => {
+    const formData = new FormData();
+    // tslint:disable-next-line:no-any
+    formData.append(item.name, item.file as any);
+    formData.append('webkitRelativePath', item.file.webkitRelativePath);
+    formData.append('userName', this.tokenService.get().userName);
+    // const req = new HttpRequest('POST', item.action!, formData, {
+    //   reportProgress: true,
+    //   withCredentials: true,
+    // });
+    return this.fileService.uploadFile(formData).subscribe(
+      value => {
+        if (value['msg'] !== 'ok') {
+          item.onError!(value['data'], item.file!);
+          console.error(value['data']);
+        } else {
+          item.onSuccess!(value['data'], item.file!, value);
+        }
+      },
+      err => {
+        // 处理失败
+        console.error(err);
+        item.onError!(err, item.file!);
+      }
+    );
   }
 
   public uploadChange(event: UploadChangeParam) {

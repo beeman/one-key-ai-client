@@ -6,13 +6,14 @@ import { ContainersComponent } from './containers/containers.component';
 import { ContainerStatsComponent } from './container-stats/container-stats.component';
 import { IdeComponent } from './ide/ide.component';
 import { EditorComponent } from './ide/editor/editor.component';
+import { DockerShellGroupComponent } from './docker-shell-group/docker-shell-group.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'images', pathMatch: 'full' },
   { path: 'images', component: DockerImagesComponent },
   { path: 'containers', component: ContainersComponent },
   { path: 'container-stats', component: ContainerStatsComponent },
-  { path: 'shell', component: DockerShellComponent },
+  { path: 'shell-group', component: DockerShellGroupComponent },
   { path: 'ide', component: IdeComponent },
   { path: 'editor', component: EditorComponent },
 
