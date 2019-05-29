@@ -1,9 +1,10 @@
-<nz-tabset [nzType]="'card'" [nzSelectedIndex]="index" [nzTabBarExtraContent]="extraTemplate" class="container">
-  <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+<nz-tabset #tabset [nzType]="'card'" [(nzSelectedIndex)]="index" [nzTabBarExtraContent]="extraTemplate"
+  class="container" (nzSelectedIndexChange)="selectedIndexChange($event)">
+  <nz-tab *ngFor="let tab of tabs;let i=index;" [nzTitle]="titleTemplate" style="height: 100%;background: red">
     <ng-template #titleTemplate>
-      <div>{{ tab }}<i nz-icon type="close" class="ant-tabs-close-x" (click)="closeTab(tab)"></i></div>
+      <div>&ensp;{{ i+1 }}&ensp;<i nz-icon type="close" class="ant-tabs-close-x" (click)="closeTabIndex(i)"></i></div>
     </ng-template>
-    <app-docker-shell></app-docker-shell>
+    <app-docker-shell (event)="onShellEvent($event)"></app-docker-shell>
   </nz-tab>
 </nz-tabset>
 

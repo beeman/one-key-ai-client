@@ -20,6 +20,14 @@ export class FileBrowserComponent implements OnInit {
   fileList: FileNode[] = [];
   activedNode: NzTreeNode;
 
+  modalInfo: {
+    alertModalVisible: boolean;
+    modalTitle: string;
+    modalMessage: string;
+    node: NzTreeNode;
+    isDir: boolean;
+  } = { alertModalVisible: false, modalTitle: '', modalMessage: '', node: null, isDir: false };
+
   private wholeFileList: FileNode[] = [];
 
   constructor(
@@ -80,8 +88,36 @@ export class FileBrowserComponent implements OnInit {
     }
   }
 
-  removeFile(node: NzTreeNode): void {
-    // console.log(filePath);
+  onModalCancel(): void {
+    this.modalInfo.alertModalVisible = false;
+  }
+
+  onModalConfirm(): void {
+    this.modalInfo.alertModalVisible = false;
+    if (this.modalInfo.isDir) {
+      this.removeDir(this.modalInfo.node);
+    } else {
+      this.removeFile(this.modalInfo.node);
+    }
+  }
+
+  showRemoveFileModal(node: NzTreeNode): void {
+    this.modalInfo.modalTitle = '是否删除文件';
+    this.modalInfo.modalMessage = node.origin.title;
+    this.modalInfo.node = node;
+    this.modalInfo.alertModalVisible = true;
+    this.modalInfo.isDir = false;
+  }
+
+  showRemoveDirModal(node: NzTreeNode): void {
+    this.modalInfo.modalTitle = '是否删除文件夹';
+    this.modalInfo.modalMessage = node.origin.title;
+    this.modalInfo.node = node;
+    this.modalInfo.alertModalVisible = true;
+    this.modalInfo.isDir = true;
+  }
+
+  private removeFile(node: NzTreeNode): void {
     this.fileService.removeFile(node.key).subscribe(value => {
       if (value['msg'] === 'ok') {
         this.updateNode(node.parentNode);
@@ -91,7 +127,7 @@ export class FileBrowserComponent implements OnInit {
     });
   }
 
-  removeDir(node: NzTreeNode): void {
+  private removeDir(node: NzTreeNode): void {
     // console.log(filePath);
     this.fileService.removeDir(node.key).subscribe(value => {
       if (value['msg'] === 'ok') {
@@ -100,15 +136,6 @@ export class FileBrowserComponent implements OnInit {
         console.error(value['data']);
       }
     });
-  }
-
-  // selectDropdown(): void {
-  //   this.dropdown.close();
-  //   // do something
-  // }
-
-  uploadFile(): void {
-    // this.fileService.uploadReq()
   }
 
   public uploadReq = (item: UploadXHRArgs) => {

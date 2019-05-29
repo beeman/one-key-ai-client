@@ -1,10 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef, Input, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { UserService } from 'src/app/core/user.service';
-import { NzMessageService, NzSwitchComponent, P } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd';
 import { User } from '../user';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-user-editor',

@@ -28,7 +28,6 @@ export class MainComponent implements OnInit {
 
   ngOnInit() {
     this.userService.checkAdmin(this.tokenService.get()['userName']).subscribe(value => {
-      console.log(value);
       this.isAdmin = <boolean>value;
     });
   }

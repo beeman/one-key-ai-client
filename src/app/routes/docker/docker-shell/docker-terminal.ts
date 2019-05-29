@@ -25,8 +25,28 @@ export class DockerTerminal {
     private term: Terminal;
     private socket: SocketIOClient.Socket;
     private state = new EventEmitter();
+    private isAttachDom = false;
 
     constructor(private readonly containerId: string) { }
+
+    public attachDom(dom: HTMLElement): void {
+        if (this.isAttachDom) {
+            return;
+        }
+        if (dom.clientWidth === 0 || dom.clientHeight === 0) {
+            return;
+        }
+
+        if (this.term) {
+            this.term.open(dom);
+            this.term.winptyCompatInit();
+            this.term.webLinksInit();
+            this.term.fit();
+            this.term.focus();
+
+            this.isAttachDom = true;
+        }
+    }
 
     public createTerminal(container: HTMLElement): void {
         this.term = new Terminal({});
@@ -57,11 +77,9 @@ export class DockerTerminal {
     }
 
     private createElement(container: HTMLElement): void {
-        this.term.open(container);
-        this.term.winptyCompatInit();
-        this.term.webLinksInit();
-        this.term.fit();
-        this.term.focus();
+        // this.term.open(container);
+        this.attachDom(container);
+
     }
 
     private createServerTerminal(): void {
