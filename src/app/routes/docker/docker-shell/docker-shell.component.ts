@@ -3,7 +3,6 @@ import { DockerTerminal } from './docker-terminal';
 import { ActivatedRoute } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
 import { DockerService } from '../service/docker.service';
-import { Location } from '@angular/common';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
@@ -26,7 +25,6 @@ export class DockerShellComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly messageService: NzMessageService,
     private readonly dockerService: DockerService,
-    private readonly location: Location,
   ) {
   }
 
