@@ -33,5 +33,9 @@ export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
   public getTerminal(): TerminalController {
     return this.terminal;
   }
+
+  public attachDom(): void {
+    this.terminal.attachDom(this.terminalContainer.nativeElement);
+  }
 }
 

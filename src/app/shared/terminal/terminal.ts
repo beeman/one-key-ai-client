@@ -21,6 +21,7 @@ Terminal.applyAddon(winptyCompat);
 export class TerminalController {
     private term: Terminal;
     private socket: WebSocket;
+    private isAttachDom = false;
 
     constructor(private readonly http: HttpClient, private readonly logger: NGXLogger) { }
 
@@ -53,12 +54,28 @@ export class TerminalController {
         return this.term;
     }
 
+    public attachDom(dom: HTMLElement): void {
+        if (this.isAttachDom) {
+            return;
+        }
+        console.log(dom.clientWidth);
+        if (dom.clientWidth === 0 || dom.clientHeight === 0) {
+            return;
+        }
+
+        if (this.term) {
+            this.term.open(dom);
+            this.term.winptyCompatInit();
+            this.term.webLinksInit();
+            this.term.fit();
+            this.term.focus();
+
+            this.isAttachDom = true;
+        }
+    }
+
     private createElement(container: HTMLElement): void {
-        this.term.open(container);
-        this.term.winptyCompatInit();
-        this.term.webLinksInit();
-        this.term.fit();
-        this.term.focus();
+        this.attachDom(container);
     }
 
     private createServerTerminal(): void {
@@ -66,6 +83,9 @@ export class TerminalController {
         setTimeout(() => {
             this.initOptions(this.term);
             const url = environment.serverUrl + '/terminals';
+            // console.log(this.term.cols);
+            // console.log(this.term.rows);
+
             this.http.post(url, { cols: this.term.cols, rows: this.term.rows }).subscribe(value => {
                 const pid = value['processId'];
                 const port = 3002;

@@ -143,5 +143,8 @@ export class MainComponent implements OnInit {
 
   private showTerminalModal(): void {
     this.isTerminalModalVisible = true;
+    setTimeout(() => {
+      this.terminalElement.attachDom();
+    }, 500);
   }
 }

@@ -19,7 +19,7 @@
       <td>
         <button nz-button nzType="primary" (click)="editUser(data)">编辑</button>
         <nz-divider nzType="vertical"></nz-divider>
-        <button nz-button (click)="delete(data.name)" nzType="danger" [disabled]="data.name==='admin'">删除</button>
+        <button nz-button (click)="delete(data)" nzType="danger" [disabled]="data.name==='admin'">删除</button>
       </td>
     </tr>
   </tbody>
@@ -31,4 +31,13 @@
 
 <nz-modal [(nzVisible)]="userEditorVisible" nzTitle="编辑用户" [nzFooter]="null" (nzOnCancel)="doneEditUser(false)">
   <app-user-editor (done)="doneEditUser($event)"></app-user-editor>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="userInfoVisible" nzTitle="添加用户" [nzFooter]="null" (nzOnCancel)="doneAddUser(false)">
+  <app-user-info (done)="doneAddUser($event)"></app-user-info>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="userDeleteVisible" nzTitle="是否删除用户？" (nzOnCancel)="doneDeleteUser(false)"
+  (nzOnOk)="doneDeleteUser(true)">
+  {{currentUser?.name}}
 </nz-modal>

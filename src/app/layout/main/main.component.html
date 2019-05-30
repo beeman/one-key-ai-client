@@ -13,7 +13,7 @@
         </ul>
       </div>
       <div nz-col>
-        <nz-dropdown>
+        <nz-dropdown *ngIf="isAdmin">
           <button nz-button nz-dropdown nzType="primary"><span>操作</span> <i nz-icon type="down"></i></button>
           <ul nz-menu>
             <li nz-submenu>
@@ -33,7 +33,7 @@
             <i nz-icon type="setting"></i>
           </button>
           <ul nz-menu>
-            <li nz-menu-item (click)="login()">登入</li>
+            <li nz-menu-item (click)="login()">登陆</li>
             <li nz-menu-item (click)="logout()">登出</li>
           </ul>
         </nz-dropdown>
@@ -46,13 +46,10 @@
 </nz-layout>
 
 <!-- 终端对话框 -->
-<nz-modal [(nzVisible)]="isTerminalModalVisible" nzTitle="操作" [nzContent]="terminalModalContainer"
-  (nzOnCancel)="cancelTerminalModal()" (nzOnOk)="confirmTerminalModal()" nzMaskClosable="false" nzWidth="800px">
-</nz-modal>
-
-<ng-template #terminalModalContainer>
+<nz-modal [(nzVisible)]="isTerminalModalVisible" nzTitle="操作" (nzOnCancel)="cancelTerminalModal()"
+  (nzOnOk)="confirmTerminalModal()" nzMaskClosable="false" nzWidth="800px">
   <app-terminal #terminalElement></app-terminal>
-</ng-template>
+</nz-modal>
 
 <!-- 更新驱动源对话框 -->
 <nz-modal [(nzVisible)]="isDriverSourceModalVisible" nzTitle="是否更新驱动源？" (nzOnCancel)="cancelUpdateDriverSource()"

@@ -40,7 +40,7 @@ export class UserInfoComponent implements OnInit {
       return null;
     });
 
-    this.offAutoComplete();
+    // this.offAutoComplete();
   }
 
   public cancel(): void {

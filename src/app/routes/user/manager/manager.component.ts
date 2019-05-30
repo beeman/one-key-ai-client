@@ -20,7 +20,9 @@ export class ManagerComponent implements OnInit {
   users: User[] = [];
   userInfoVisible: boolean = false;
   userEditorVisible: boolean = false;
-  currentUser: User;
+  userDeleteVisible: boolean = false;
+
+  currentUser: User = null;
 
   constructor(private readonly userService: UserService) { }
 
@@ -53,17 +55,34 @@ export class ManagerComponent implements OnInit {
     this.userEditorComponent.updateUser(user);
   }
 
-  public delete(name: string): void {
-    this.userService.deleteUser(name).subscribe(value => {
-      if (value['msg'] === 'ok') {
-        this.updateUsers();
-      }
-    });
+  public delete(user: User): void {
+    this.currentUser = user;
+    this.userDeleteVisible = true;
   }
+
+  // public delete(name: string): void {
+  //   this.userService.deleteUser(name).subscribe(value => {
+  //     if (value['msg'] === 'ok') {
+  //       this.updateUsers();
+  //     }
+  //   });
+  // }
 
   public updateUsers(): void {
     this.userService.getAllUsers().subscribe((value: any) => {
       this.users = <User[]>value.data;
     });
+  }
+
+  public doneDeleteUser(done: boolean): void {
+    if (done) {
+      this.userService.deleteUser(this.currentUser.name).subscribe(value => {
+        if (value['msg'] === 'ok') {
+          this.updateUsers();
+        }
+      });
+    }
+
+    this.userDeleteVisible = false;
   }
 }
