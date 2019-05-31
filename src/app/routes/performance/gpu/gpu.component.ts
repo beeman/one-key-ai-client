@@ -21,7 +21,7 @@ export class GpuComponent implements OnInit, OnDestroy {
     this.socket.emit('nvidiaStats');
     this.socket.on('data', (data) => {
       this.stats = JSON.stringify(data);
-      console.log(data);
+      // console.log(data);
     });
   
    
