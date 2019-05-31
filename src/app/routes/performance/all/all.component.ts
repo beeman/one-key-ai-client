@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { PerformanceService } from '../performance.service';
 import { Subscription } from 'rxjs';
-import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'app-all',
@@ -9,14 +8,24 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./all.component.scss']
 })
 export class AllComponent implements OnInit, OnDestroy {
+  private statsSubscription: Subscription = null;
+  private data$ = new EventEmitter();
 
-  private readonly tag = AllComponent.name;
+  // private readonly tag = AllComponent.name;
 
-  constructor(private performanceService: PerformanceService, private logger: NGXLogger) { }
+  constructor(
+    private performanceService: PerformanceService,
+  ) { }
 
   ngOnInit() {
+    this.statsSubscription = this.performanceService.getStats().subscribe(data => {
+      this.data$.emit(data);
+    });
   }
 
   ngOnDestroy(): void {
+    if (this.statsSubscription) {
+      this.statsSubscription.unsubscribe();
+    }
   }
 }

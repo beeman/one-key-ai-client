@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DeviceStatsService } from 'src/app/core/device-stats.service';
-import { Subscription } from 'rxjs';
+import * as io from 'socket.io-client';
+import { EnvironmentService } from 'src/app/core/environment.service';
 
 @Component({
   selector: 'app-gpu',
@@ -10,22 +10,26 @@ import { Subscription } from 'rxjs';
 export class GpuComponent implements OnInit, OnDestroy {
   stats = null;
 
-  private statsSubscription: Subscription = null;
+  private socket: SocketIOClient.Socket;
 
   constructor(
-    private readonly deviceStatsService: DeviceStatsService
+    private readonly environmentService: EnvironmentService,
   ) { }
 
   ngOnInit() {
-    this.statsSubscription = this.deviceStatsService.getStats().subscribe((data: any) => {
+    this.socket = io.connect(this.environmentService.serverUrl());
+    this.socket.emit('nvidiaStats');
+    this.socket.on('data', (data) => {
       this.stats = JSON.stringify(data);
       console.log(data);
     });
+  
+   
   }
 
   ngOnDestroy(): void {
-    if (this.statsSubscription) {
-      this.statsSubscription.unsubscribe();
+    if(this.socket){
+      this.socket.close();
     }
   }
 }

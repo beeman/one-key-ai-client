@@ -54,10 +54,12 @@ export abstract class ChartComponent implements OnInit, OnDestroy, AfterViewInit
     private udpateSeriesData(data: any): void {
         const newSeriesData = this.parseData(data);
         newSeriesData.forEach((value, index) => {
-            const seriesData = this.series[index].data;
-            seriesData.push(value);
-            if (seriesData.length > 60) {
-                seriesData.shift();
+            if (this.series) {
+                const seriesData = this.series[index].data;
+                seriesData.push(value);
+                if (seriesData.length > 60) {
+                    seriesData.shift();
+                }
             }
         });
     }
