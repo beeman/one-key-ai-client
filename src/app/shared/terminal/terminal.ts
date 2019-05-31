@@ -58,7 +58,7 @@ export class TerminalController {
         if (this.isAttachDom) {
             return;
         }
-        console.log(dom.clientWidth);
+
         if (dom.clientWidth === 0 || dom.clientHeight === 0) {
             return;
         }
@@ -83,8 +83,6 @@ export class TerminalController {
         setTimeout(() => {
             this.initOptions(this.term);
             const url = environment.serverUrl + '/terminals';
-            // console.log(this.term.cols);
-            // console.log(this.term.rows);
 
             this.http.post(url, { cols: this.term.cols, rows: this.term.rows }).subscribe(value => {
                 const pid = value['processId'];

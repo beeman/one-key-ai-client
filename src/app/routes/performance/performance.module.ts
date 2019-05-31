@@ -9,9 +9,10 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { MemoryChartComponent } from './memory/memory-chart/memory-chart.component';
 import { CpuInfoComponent } from './cpu/cpu-info/cpu-info.component';
 import { MemoryInfoComponent } from './memory/memory-info/memory-info.component';
+import { GpuComponent } from './gpu/gpu.component';
 
 @NgModule({
-  declarations: [CpuChartComponent, AllComponent, PerformanceMainComponent, MemoryChartComponent, CpuInfoComponent, MemoryInfoComponent],
+  declarations: [CpuChartComponent, AllComponent, PerformanceMainComponent, MemoryChartComponent, CpuInfoComponent, MemoryInfoComponent, GpuComponent],
   imports: [
     CommonModule,
     PerformanceRoutingModule,

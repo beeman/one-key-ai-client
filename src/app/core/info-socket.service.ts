@@ -15,9 +15,9 @@ export class InfoSocketService {
     this.openSocket();
   }
 
-  public emit(event: string, ...args: any[]) {
-    return this.socket.emit(event, ...args);
-  }
+  // public emit(event: string, ...args: any[]) {
+  //   return this.socket.emit(event, ...args);
+  // }
 
   /**
    * 申请获取数据并返回为Observable

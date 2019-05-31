@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
-import { NzMessageService, UploadChangeParam, UploadXHRArgs } from 'ng-zorro-antd';
+import { NzMessageService, UploadChangeParam, UploadXHRArgs, UploadFile } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileService } from '../service/file.service';
@@ -22,6 +22,8 @@ export class ContainersComponent implements OnInit {
   private containerId = '';
   private newName = '';
 
+  // private fileList;
+
   constructor(
     private readonly containersService: DockerContainersService,
     private readonly dockerService: DockerService,
@@ -34,6 +36,23 @@ export class ContainersComponent implements OnInit {
 
   ngOnInit() {
     this.updateContainers();
+  }
+
+  public beforeUpload = (file: UploadFile, fileList: UploadFile[]): boolean => {
+    // if (!this.fileList) {
+    //   this.fileList = fileList;
+    //   fileList.forEach(value => {
+    //     const formData = new FormData();
+    //     formData.append('file', value as any);
+    //     formData.append('webkitRelativePath', value.webkitRelativePath);
+    //     formData.append('userName', this.tokenService.get().userName);
+    //     this.fileService.uploadFile(formData).subscribe(value => {
+    //       console.log(value);
+    //     });
+    //   });
+    // }
+
+    return true;
   }
 
   public exec(id: string): void {
@@ -103,6 +122,7 @@ export class ContainersComponent implements OnInit {
     //   reportProgress: true,
     //   withCredentials: true,
     // });
+
     return this.fileService.uploadFile(formData).subscribe(
       value => {
         if (value['msg'] !== 'ok') {

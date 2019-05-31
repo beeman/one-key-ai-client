@@ -4,6 +4,7 @@ import { CpuChartComponent } from './cpu/cpu-chart/cpu-chart.component';
 import { AllComponent } from './all/all.component';
 import { PerformanceMainComponent } from './performance-main/performance-main.component';
 import { MemoryChartComponent } from './memory/memory-chart/memory-chart.component';
+import { GpuComponent } from './gpu/gpu.component';
 
 const routes: Routes = [
   {
@@ -14,7 +15,7 @@ const routes: Routes = [
       { path: 'all', component: AllComponent },
       { path: 'cpu', component: CpuChartComponent },
       { path: 'mem', component: MemoryChartComponent },
-
+      { path: 'gpu', component: GpuComponent },
     ]
   },
 ];
