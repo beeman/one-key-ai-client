@@ -8,8 +8,9 @@ import { DockerContainerStatsService } from '../service/docker-container-stats.s
   styleUrls: ['./container-stats.component.scss']
 })
 export class ContainerStatsComponent implements OnInit, OnDestroy {
+  public data$ = new EventEmitter();
+
   private statsSubscription = null;
-  private data$ = new EventEmitter();
 
   constructor(
     private route: ActivatedRoute,

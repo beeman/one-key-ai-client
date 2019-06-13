@@ -17,10 +17,10 @@ export class ContainersComponent implements OnInit {
 
   public uploading = false;
   public currentUploadingFile: string;
-
-  private containers: DockerContainer[] = [];
+  public containers: DockerContainer[] = [];
+  public newName = '';
+  
   private containerId = '';
-  private newName = '';
 
   // private fileList;
 

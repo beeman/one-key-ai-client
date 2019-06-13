@@ -8,8 +8,9 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./all.component.scss']
 })
 export class AllComponent implements OnInit, OnDestroy {
+  public data$ = new EventEmitter();
+
   private statsSubscription: Subscription = null;
-  private data$ = new EventEmitter();
 
   // private readonly tag = AllComponent.name;
 
