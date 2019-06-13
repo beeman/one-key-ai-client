@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { InfoSocketService } from 'src/app/core/info-socket.service';
-import { NGXLogger } from 'ngx-logger';
 import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { EnvironmentService } from 'src/app/core/environment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +12,11 @@ export class DriverService {
   private lastDriverDevices = [[]];
   private lastDriverList = [];
 
-  constructor(private socketService: InfoSocketService, private logger: NGXLogger) {
+  constructor(
+    private http: HttpClient,
+    private environmentService: EnvironmentService
+  ) {
   }
-
-  /**
-   * 自动安装驱动
-   *
-   * @memberof DriverService
-   */
-  public autoinstall(): Observable<any> {
-    return this.socketService.getRepObservable('autoinstall');
-  }
-
 
   /**
    * 获取已安装驱动列表
@@ -32,9 +25,11 @@ export class DriverService {
    * @memberof DriverService
    */
   public getDriverList(): Observable<any> {
-    return this.socketService.getRepObservable('driverList').pipe(
-      map(value => {
-        this.lastDriverList = value;
+    return this.http.post(this.environmentService.serverUrl() + '/info/driver-list', null).pipe(
+      map((value: any) => {
+        if (value.data) {
+          this.lastDriverList = value.data;
+        }
         return value;
       })
     );
@@ -47,9 +42,9 @@ export class DriverService {
    * @memberof DriverService
    */
   public getDriverDevices(): Observable<any> {
-    return this.socketService.getRepObservable('driverDevices').pipe(
-      map(value => {
-        this.lastDriverDevices = value;
+    return this.http.post(this.environmentService.serverUrl() + '/info/driver-devices', null).pipe(
+      map((value: any) => {
+        this.lastDriverDevices = value.data;
         return value;
       })
     );
