@@ -1,12 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { DockerService, MessageLevel } from '../service/docker.service';
 import { DockerImage } from './docker-image';
 import { DockerImagesService } from '../service/docker-images.service';
 import * as Docker from 'dockerode';
 import { NzMessageService } from 'ng-zorro-antd';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { DockerContainersService } from '../service/docker-containers.service';
-import { TokenService, ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { DockerimageShellComponent } from './dockerimage-shell/dockerimage-shell.component';
 
 interface ContainerInfo {
   id?: string;
@@ -20,9 +20,17 @@ interface ContainerInfo {
   styleUrls: ['./docker-images.component.scss']
 })
 export class DockerImagesComponent implements OnInit {
+  @ViewChild('terminalElement')
+  terminalElement: DockerimageShellComponent;
+
   containerForm: FormGroup;
   images: Array<DockerImage> = [];
   containerDialogVisible: boolean = false;
+
+  pullImageDialogVisible: boolean = false;
+  imageName: string = 'hello-world';
+  imageVersion: string = 'latest';
+  pullImageShellVisible: boolean = false;
 
   private containerInfo: ContainerInfo = { isNvidia: false };
 
@@ -31,7 +39,6 @@ export class DockerImagesComponent implements OnInit {
     private readonly dockerImagesService: DockerImagesService,
     private readonly messageService: NzMessageService,
     private readonly formBuilder: FormBuilder,
-    private readonly dockerContainersService: DockerContainersService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) { }
 
@@ -75,6 +82,33 @@ export class DockerImagesComponent implements OnInit {
       //   this.dockerContainersService.saveData(value.containerId, userName).subscribe();
       // }
     });
+  }
+
+  public pullImage(): void {
+    this.pullImageDialogVisible = true;
+  }
+
+  public pullImageDialogCancel(): void {
+    this.pullImageDialogVisible = false;
+  }
+
+  public pullImageDialogOk(): void {
+    this.pullImageShellVisible = true;
+    setTimeout(() => {
+      const terminal = this.terminalElement.getTerminal();
+      setTimeout(() => {
+        terminal.startPull(`${this.imageName}:${this.imageVersion}`);
+        terminal.getState().on('end', () => {
+          this.pullImageShellVisible = false;
+          this.pullImageDialogVisible = false;
+          this.updateImages();
+        });
+        terminal.getState().on('err', (data) => {
+          this.messageService.warning(data);
+        });
+      }, 0);
+    }, 0);
+
   }
 
   private updateImages(): void {

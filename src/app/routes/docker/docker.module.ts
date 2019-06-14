@@ -12,6 +12,7 @@ import { IdeComponent } from './ide/ide.component';
 import { EditorComponent } from './ide/editor/editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { DockerShellGroupComponent } from './docker-shell-group/docker-shell-group.component';
+import { DockerimageShellComponent } from './docker-images/dockerimage-shell/dockerimage-shell.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { DockerShellGroupComponent } from './docker-shell-group/docker-shell-gro
     IdeComponent,
     EditorComponent,
     DockerShellGroupComponent,
+    DockerimageShellComponent,
   ],
   imports: [
     CommonModule,

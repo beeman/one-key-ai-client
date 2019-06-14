@@ -47,7 +47,6 @@ export class GpuComponent implements OnInit, OnDestroy {
       } else {
         this.messageService.info(data.msg);
       }
-
     });
   }
 
