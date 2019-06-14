@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { DockerService, MessageLevel } from '../service/docker.service';
 import { DockerImage } from './docker-image';
 import { DockerImagesService } from '../service/docker-images.service';
@@ -7,6 +7,8 @@ import { NzMessageService } from 'ng-zorro-antd';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { DockerimageShellComponent } from './dockerimage-shell/dockerimage-shell.component';
+import { fromEvent } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 
 interface ContainerInfo {
   id?: string;
@@ -23,13 +25,18 @@ export class DockerImagesComponent implements OnInit {
   @ViewChild('terminalElement')
   terminalElement: DockerimageShellComponent;
 
+  @ViewChild('imageNameInput')
+  imageNameInput: ElementRef;
+
+  imageSuggestions: string[] = [];
+
   containerForm: FormGroup;
   images: Array<DockerImage> = [];
   containerDialogVisible: boolean = false;
 
   pullImageDialogVisible: boolean = false;
-  imageName: string = 'hello-world';
-  imageVersion: string = 'latest';
+  imageName: string = '';
+  imageVersion: string = '';
   pullImageShellVisible: boolean = false;
 
   private containerInfo: ContainerInfo = { isNvidia: false };
@@ -48,6 +55,24 @@ export class DockerImagesComponent implements OnInit {
       name: [''],
       isNvidia: true
     });
+
+    fromEvent(this.imageNameInput.nativeElement, 'input')
+      .pipe(throttleTime(500))
+      .subscribe(() => {
+        this.dockerImagesService.searchImage(this.imageName).subscribe(data => {
+          if (data['msg'] === 'ok') {
+            const suggestions = [];
+            const images = data['data'];
+            if (!images) {
+              return;
+            }
+            images.forEach((image: any) => {
+              suggestions.push(image['name']);
+            });
+            this.imageSuggestions = suggestions;
+          }
+        });
+      });
   }
 
   public remove(id: string): void {
@@ -93,11 +118,17 @@ export class DockerImagesComponent implements OnInit {
   }
 
   public pullImageDialogOk(): void {
+    if (!this.imageName) {
+      this.messageService.warning('名称不能为空');
+      return;
+    }
+
     this.pullImageShellVisible = true;
     setTimeout(() => {
       const terminal = this.terminalElement.getTerminal();
       setTimeout(() => {
-        terminal.startPull(`${this.imageName}:${this.imageVersion}`);
+        const version = this.imageVersion ? this.imageVersion : 'latest';
+        terminal.startPull(`${this.imageName}:${version}`);
         terminal.getState().on('end', () => {
           this.pullImageShellVisible = false;
           this.pullImageDialogVisible = false;

@@ -61,14 +61,20 @@
   </form>
 </nz-modal>
 
-<nz-modal [(nzVisible)]="pullImageDialogVisible" nzTitle="获取镜像" nzWidth="800px" [nzFooter]="modalFooter">
+<nz-modal [(nzVisible)]="pullImageDialogVisible" nzTitle="获取镜像" nzWidth="800px" [nzFooter]="modalFooter"
+  (nzOnCancel)="pullImageDialogCancel()">
   <nz-input-group nzCompact>
     <label style="width: 20%;">Image：</label>
-    <input nz-input [(ngModel)]="imageName" style="width:80%;" />
+    <input nz-input #imageNameInput [(ngModel)]="imageName" style="width:80%;" [nzAutocomplete]="auto" />
+    <nz-autocomplete nzBackfill #auto>
+      <nz-auto-option *ngFor="let suggestion of imageSuggestions" [nzValue]="suggestion">
+        {{ suggestion }}
+      </nz-auto-option>
+    </nz-autocomplete>
   </nz-input-group>
   <nz-input-group nzCompact style="padding-top: 8px">
     <label style="width: 20%;">Version：</label>
-    <input nz-input [(ngModel)]="imageVersion" style="width:80%;" />
+    <input nz-input [(ngModel)]="imageVersion" style="width:80%;" placeholder="latest" />
   </nz-input-group>
   <app-dockerimage-shell *ngIf="pullImageShellVisible" #terminalElement></app-dockerimage-shell>
 

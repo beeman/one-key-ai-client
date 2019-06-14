@@ -26,7 +26,7 @@ export class DockerImagesService {
     return this.http.post(this.serverUrl + '/images/remove', { id: id });
   }
 
-  // public pullImage(name: string) {
-  //   return this.http.post(this.serverUrl + '/images/pull', { name: name });
-  // }
+  public searchImage(name: string) {
+    return this.http.post(this.serverUrl + '/images/search', { name: name });
+  }
 }
