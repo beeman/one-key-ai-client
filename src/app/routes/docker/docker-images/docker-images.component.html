@@ -7,7 +7,6 @@
     <tr>
       <th>repository</th>
       <th>tag</th>
-      <th>image_id</th>
       <th>created</th>
       <th>size</th>
       <th>Action</th>
@@ -17,7 +16,6 @@
     <tr *ngFor="let image of imageTable.data;let i=index">
       <td>{{image.repository}}</td>
       <td>{{image.tag}}</td>
-      <td>{{image.id}}</td>
       <td>{{image.created}}</td>
       <td>{{image.size}}</td>
 
@@ -28,7 +26,7 @@
             <li nz-menu-item (click)="createContainer(image)">
               <a>创建容器</a>
             </li>
-            <li nz-menu-item (click)="remove(image.id)">
+            <li nz-menu-item *ngIf="isAdmin" (click)="remove(image.id)">
               <a>删除</a>
             </li>
           </ul>

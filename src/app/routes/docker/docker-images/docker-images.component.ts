@@ -9,6 +9,8 @@ import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { DockerimageShellComponent } from './dockerimage-shell/dockerimage-shell.component';
 import { fromEvent } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
+import { DockerImageShell } from './dockerimage-shell/docker-image-shell';
+import { UserService } from 'src/app/core/user.service';
 
 interface ContainerInfo {
   id?: string;
@@ -28,6 +30,8 @@ export class DockerImagesComponent implements OnInit {
   @ViewChild('imageNameInput')
   imageNameInput: ElementRef;
 
+  terminal: DockerImageShell = null;
+
   imageSuggestions: string[] = [];
 
   containerForm: FormGroup;
@@ -39,6 +43,8 @@ export class DockerImagesComponent implements OnInit {
   imageVersion: string = '';
   pullImageShellVisible: boolean = false;
 
+  isAdmin: boolean = false;
+
   private containerInfo: ContainerInfo = { isNvidia: false };
 
   constructor(
@@ -47,9 +53,13 @@ export class DockerImagesComponent implements OnInit {
     private readonly messageService: NzMessageService,
     private readonly formBuilder: FormBuilder,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private readonly userService: UserService
   ) { }
 
   ngOnInit() {
+    this.userService.checkAdmin(this.tokenService.get()['userName']).subscribe(value => {
+      this.isAdmin = <boolean>value;
+    });
     this.updateImages();
     this.containerForm = this.formBuilder.group({
       name: [''],
@@ -88,6 +98,7 @@ export class DockerImagesComponent implements OnInit {
   public createContainer(image: DockerImage): void {
     this.containerDialogVisible = true;
     this.containerInfo.id = image.repoTags ? image.repoTags[0] : image.id;
+    this.containerInfo.name = image.repository;
   }
 
   public containerDialogCancel(): void {
@@ -98,7 +109,8 @@ export class DockerImagesComponent implements OnInit {
     const userName = this.tokenService.get().userName;
 
     this.containerDialogVisible = false;
-    this.containerInfo.name = userName + '--' + this.containerForm.get('name').value;
+    const name = this.containerForm.get('name').value ? this.containerForm.get('name').value : this.containerInfo.name;
+    this.containerInfo.name = userName + '--' + name;
     this.containerInfo.isNvidia = this.containerForm.get('isNvidia').value;
 
     this.dockerImagesService.createContainer(this.containerInfo).subscribe((value: any) => {
@@ -114,6 +126,9 @@ export class DockerImagesComponent implements OnInit {
   }
 
   public pullImageDialogCancel(): void {
+    if (this.terminal) {
+      this.terminal.stopPull();
+    }
     this.pullImageDialogVisible = false;
   }
 
@@ -125,16 +140,16 @@ export class DockerImagesComponent implements OnInit {
 
     this.pullImageShellVisible = true;
     setTimeout(() => {
-      const terminal = this.terminalElement.getTerminal();
+      this.terminal = this.terminalElement.getTerminal();
       setTimeout(() => {
         const version = this.imageVersion ? this.imageVersion : 'latest';
-        terminal.startPull(`${this.imageName}:${version}`);
-        terminal.getState().on('end', () => {
+        this.terminal.startPull(`${this.imageName}:${version}`);
+        this.terminal.getState().on('end', () => {
           this.pullImageShellVisible = false;
           this.pullImageDialogVisible = false;
           this.updateImages();
         });
-        terminal.getState().on('err', (data) => {
+        this.terminal.getState().on('err', (data) => {
           this.messageService.warning(data);
         });
       }, 0);
@@ -142,8 +157,11 @@ export class DockerImagesComponent implements OnInit {
 
   }
 
-  private updateImages(): void {
+  public updateImages(): void {
     this.dockerImagesService.getInfo().subscribe((imageInfos) => {
+      if (!imageInfos) {
+        return;
+      }
 
       const images = [];
       imageInfos.forEach((image: Docker.ImageInfo) => {

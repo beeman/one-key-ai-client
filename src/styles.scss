@@ -1,5 +1,11 @@
 @import "~xterm/dist/xterm.css";
 
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
 .full-height {
   height: 100%;
 }

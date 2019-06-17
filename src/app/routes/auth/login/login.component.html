@@ -1,5 +1,7 @@
+  <div class="full-size" style="background-image: url(assets/background.jpg);background: rebeccapurple"></div>
   <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
-    <nz-alert *ngIf="errorMessage" [nzType]="'error'" [nzMessage]="errorMessage" [nzShowIcon]="true" class="mb-lg"></nz-alert>
+    <nz-alert *ngIf="errorMessage" [nzType]="'error'" [nzMessage]="errorMessage" [nzShowIcon]="true" class="mb-lg">
+    </nz-alert>
     <nz-form-item>
       <nz-form-control>
         <nz-input-group [nzPrefix]="prefixUser">
