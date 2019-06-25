@@ -1,7 +1,23 @@
+<a #downloadElement style="visibility: hidden"></a>
+<a #scanElement style="visibility: hidden"></a>
+
 <div style="height: 100%;overflow: auto">
+  <div nz-row style="padding: 8px">
+    <div nz-col [nzSpan]="18">
+      <nz-upload nzDirectory [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
+        [nzShowUploadList]="false">
+        <button nz-button nzType="primary" [nzLoading]="projectUploading" [disabled]="projectUploading"><i nz-icon
+            type="upload"></i>上传项目</button>
+      </nz-upload>
+      <label style="margin-left: 8px">{{currentUploadingFile}}</label>
+    </div>
+    <div nz-col [nzSpan]="6" style="text-align: right">
+      <button nz-button nzType="primary" (click)="updateProjects()"><i nz-icon type="sync"></i>刷新</button>
+    </div>
+  </div>
+
   <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzDblClick)="openFolder($event)"
     (nzExpandChange)="onExpandChange($event)">
-
     <ng-template #nzTreeTemplate let-node>
       <nz-dropdown *ngIf="!node.isLeaf">
         <span nz-dropdown>
@@ -11,11 +27,12 @@
         <ul nz-menu nzInDropDown>
           <!-- <li nz-menu-item (click)="newFile()">新建文件</li>
           <li nz-menu-item (click)="newDir()">新建文件夹</li> -->
-          <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false">
+          <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
             <li nz-menu-item (click)="activeNode(node)">上传文件</li>
           </nz-upload>
           <br>
-          <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false">
+          <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false"
+            (nzChange)="uploadChange($event)">
             <li nz-menu-item (click)="activeNode(node)">上传文件夹</li>
           </nz-upload>
           <li nz-menu-item (click)="showRemoveDirModal(node)">删除</li>
@@ -30,6 +47,8 @@
           <!-- <li nz-menu-item (click)="openFile()">打开</li>
           <li nz-menu-item (click)="saveFile()">保存</li> -->
           <li nz-menu-item (click)="showRemoveFileModal(node)">删除</li>
+          <li nz-menu-item (click)="downloadFile(node)">下载</li>
+          <li nz-menu-item (click)="scan(node)">预览</li>
         </ul>
       </nz-dropdown>
 

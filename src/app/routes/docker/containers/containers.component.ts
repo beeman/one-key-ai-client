@@ -2,10 +2,9 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
-import { NzMessageService, UploadChangeParam, UploadXHRArgs, UploadFile } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { FileService } from '../service/file.service';
 
 @Component({
   selector: 'app-containers',
@@ -15,11 +14,9 @@ import { FileService } from '../service/file.service';
 export class ContainersComponent implements OnInit {
   renameDialogVisible = false;
 
-  public uploading = false;
-  public currentUploadingFile: string;
   public containers: DockerContainer[] = [];
   public newName = '';
-  
+
   private containerId = '';
 
   // private fileList;
@@ -30,7 +27,6 @@ export class ContainersComponent implements OnInit {
     private readonly messageService: NzMessageService,
     private readonly router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    public fileService: FileService
   ) {
   }
 
@@ -38,25 +34,8 @@ export class ContainersComponent implements OnInit {
     this.updateContainers();
   }
 
-  public beforeUpload = (file: UploadFile, fileList: UploadFile[]): boolean => {
-    // if (!this.fileList) {
-    //   this.fileList = fileList;
-    //   fileList.forEach(value => {
-    //     const formData = new FormData();
-    //     formData.append('file', value as any);
-    //     formData.append('webkitRelativePath', value.webkitRelativePath);
-    //     formData.append('userName', this.tokenService.get().userName);
-    //     this.fileService.uploadFile(formData).subscribe(value => {
-    //       console.log(value);
-    //     });
-    //   });
-    // }
-
-    return true;
-  }
-
   public exec(id: string): void {
-    this.router.navigate(['/docker/ide', { id: id }])
+    this.router.navigate(['/docker/ide', { id: id }]);
   }
 
   public stop(id: string): void {
@@ -112,53 +91,6 @@ export class ContainersComponent implements OnInit {
     });
   }
 
-  public uploadReq = (item: UploadXHRArgs) => {
-    const formData = new FormData();
-    // tslint:disable-next-line:no-any
-    formData.append(item.name, item.file as any);
-    formData.append('webkitRelativePath', item.file.webkitRelativePath);
-    formData.append('userName', this.tokenService.get().userName);
-    // const req = new HttpRequest('POST', item.action!, formData, {
-    //   reportProgress: true,
-    //   withCredentials: true,
-    // });
-
-    return this.fileService.uploadFile(formData).subscribe(
-      value => {
-        if (value['msg'] !== 'ok') {
-          item.onError!(value['data'], item.file!);
-          console.error(value['data']);
-        } else {
-          item.onSuccess!(value['data'], item.file!, value);
-        }
-      },
-      err => {
-        // 处理失败
-        console.error(err);
-        item.onError!(err, item.file!);
-      }
-    );
-  }
-
-  public uploadChange(event: UploadChangeParam) {
-    this.uploading = true;
-    this.currentUploadingFile = event.file.name;
-
-    if (event.file.status === 'done') {
-      let done = true;
-      for (let i = 0; i < event.fileList.length; ++i) {
-        const file = event.fileList[i];
-        if (file.status !== 'done') {
-          done = false;
-          break;
-        }
-      }
-      if (done) {
-        this.uploading = false;
-        this.currentUploadingFile = '上传完成';
-      }
-    }
-  }
 
   private onData(data: any): DockerMessage {
     const message = this.dockerService.showMessage(data, this.messageService);

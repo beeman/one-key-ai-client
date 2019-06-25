@@ -7,8 +7,9 @@ import { Location } from '@angular/common';
   styleUrls: ['./ide.component.scss']
 })
 export class IdeComponent implements OnInit {
-
-  constructor(private readonly location: Location) { }
+  constructor(
+    private readonly location: Location,
+  ) { }
 
   ngOnInit() {
   }
@@ -18,5 +19,4 @@ export class IdeComponent implements OnInit {
       this.location.back();
     }
   }
-
 }

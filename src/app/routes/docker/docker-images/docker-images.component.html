@@ -20,7 +20,10 @@
       <td>{{image.size}}</td>
 
       <td>
-        <nz-dropdown>
+        <button nz-button nzType="primary" (click)="createContainer(image)">创建容器</button>
+        <nz-divider nzType="vertical"></nz-divider>
+        <button nz-button nzType="danger" *ngIf="isAdmin" (click)="remove(image.id)">删除镜像</button>
+        <!-- <nz-dropdown>
           <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
           <ul nz-menu nzSelectable>
             <li nz-menu-item (click)="createContainer(image)">
@@ -30,7 +33,7 @@
               <a>删除</a>
             </li>
           </ul>
-        </nz-dropdown>
+        </nz-dropdown> -->
       </td>
 
     </tr>

@@ -17,6 +17,10 @@ export class FileService {
     this.serverUrl = environment.serverUrl;
   }
 
+  public getRootPath() {
+    return this.http.post(this.serverUrl + '/file/root-path', null);
+  }
+
   public getProjectRecursive(userName: string) {
     return this.http.post(this.serverUrl + '/file/projects-recursive', { userName: userName });
   }
