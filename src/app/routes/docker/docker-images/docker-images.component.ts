@@ -158,7 +158,13 @@ export class DockerImagesComponent implements OnInit {
   }
 
   public updateImages(): void {
-    this.dockerImagesService.getInfo().subscribe((imageInfos) => {
+    this.dockerImagesService.getInfo().subscribe((data) => {
+      if (data['msg'] !== 'ok') {
+        console.error(data['data']);
+        return;
+      }
+
+      const imageInfos = data['data'];
       if (!imageInfos) {
         return;
       }

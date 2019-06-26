@@ -105,7 +105,13 @@ export class ContainersComponent implements OnInit {
     const userName = this.tokenService.get().userName;
 
     const containerInfos: DockerContainer[] = [];
-    this.containersService.getInfo(userName).subscribe((containers) => {
+    this.containersService.getInfo(userName).subscribe((data) => {
+      if (data['msg'] !== 'ok') {
+        console.error(data['data']);
+        return;
+      }
+
+      const containers = data['data'];
       containers.forEach((container) => {
         const portInfos: string[] = [];
         container.Ports.forEach((port) => {
