@@ -17,6 +17,10 @@ export class FileService {
     this.serverUrl = environment.serverUrl;
   }
 
+  public compress(path: string, isFile: boolean) {
+    return this.http.post(this.serverUrl + '/file/compress', { path: path, isFile: isFile });
+  }
+
   public getRootPath() {
     return this.http.post(this.serverUrl + '/file/root-path', null);
   }
@@ -47,6 +51,10 @@ export class FileService {
 
   public removeDir(dirPath: string) {
     return this.http.post(this.serverUrl + '/file/remove-dir', { path: dirPath });
+  }
+
+  public uncompress(path: string) {
+    return this.http.post(this.serverUrl + '/file/uncompress', { path: path });
   }
 
   // public uploadReq = (item: UploadXHRArgs) => {

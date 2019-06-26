@@ -19,7 +19,7 @@
   <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzDblClick)="openFolder($event)"
     (nzExpandChange)="onExpandChange($event)">
     <ng-template #nzTreeTemplate let-node>
-      <nz-dropdown *ngIf="!node.isLeaf">
+      <nz-dropdown *ngIf="!node.isLeaf" (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
         <span nz-dropdown>
           <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
           <span class="folder-name">{{ node.title }}</span>
@@ -36,9 +36,10 @@
             <li nz-menu-item (click)="activeNode(node)">上传文件夹</li>
           </nz-upload>
           <li nz-menu-item (click)="showRemoveDirModal(node)">删除</li>
+          <li nz-menu-item (click)="compress(node)">压缩至当前目录</li>
         </ul>
       </nz-dropdown>
-      <nz-dropdown *ngIf="node.isLeaf">
+      <nz-dropdown *ngIf="node.isLeaf" (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
         <span nz-dropdown>
           <i nz-icon type="file"></i>
           <span class="file-name">{{ node.title }}</span>
@@ -49,9 +50,10 @@
           <li nz-menu-item (click)="showRemoveFileModal(node)">删除</li>
           <li nz-menu-item (click)="downloadFile(node)">下载</li>
           <li nz-menu-item (click)="scan(node)">预览</li>
+          <li nz-menu-item (click)="compress(node)" *ngIf="!canUncompress(node)">压缩至当前目录</li>
+          <li nz-menu-item (click)="uncompress(node)" *ngIf="canUncompress(node)">解压至当前目录</li>
         </ul>
       </nz-dropdown>
-
     </ng-template>
   </nz-tree>
 </div>

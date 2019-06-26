@@ -94,6 +94,20 @@ export class FileBrowserComponent implements OnInit {
     this.activedNode = node;
   }
 
+  compress(node: NzTreeNode): void {
+    this.fileService.compress(node.key, node.isLeaf).subscribe(value => {
+      if (value['msg'] === 'ok') {
+        this.updateNode(node.parentNode);
+      } else {
+        console.error(value['data']);
+      }
+    });
+  }
+
+  canUncompress(node: NzTreeNode): boolean {
+    return node.key.endsWith('.zip');
+  }
+
   downloadFile(node: NzTreeNode): void {
     const pathItems = node.key.split('/');
     const name = pathItems[pathItems.length - 1];
@@ -160,11 +174,20 @@ export class FileBrowserComponent implements OnInit {
     this.modalInfo.isDir = true;
   }
 
+  uncompress(node: NzTreeNode): void {
+    this.fileService.uncompress(node.key).subscribe(value => {
+      if (value['msg'] === 'ok') {
+        this.updateNode(node.parentNode);
+      } else {
+        console.error(value['data']);
+      }
+    });
+  }
+
   private removeFile(node: NzTreeNode): void {
     this.fileService.removeFile(node.key).subscribe(value => {
       if (value['msg'] === 'ok') {
         this.removeNode(node);
-        // this.updateNode(node.parentNode);
       } else {
         console.error(value['data']);
       }
@@ -185,12 +208,9 @@ export class FileBrowserComponent implements OnInit {
     const parentNode = node.parentNode;
     if (parentNode) {
       this.updateNode(parentNode);
-      // const index = parentNode.children.indexOf(node);
-      // parentNode.children.splice(index, 1);
-      // parentNode.update();
     } else {
       const index = this.wholeFileList.indexOf(node);
-      this.wholeFileList.splice(index, 1);
+      this.wholeFileList.splice(index - 1, 1);
       this.fileList = this.getChildNodes(this.wholeFileList);
     }
   }
@@ -255,7 +275,6 @@ export class FileBrowserComponent implements OnInit {
           item.onError!(value['data'], item.file!);
         } else {
           item.onSuccess!(value['data'], item.file!, value);
-          // this.updateNode(node);
         }
       },
       err => {
@@ -286,15 +305,19 @@ export class FileBrowserComponent implements OnInit {
   }
 
   private updateNode(node: NzTreeNode) {
-    this.fileService.getFileListRecursive(node.key).subscribe(value => {
-      const currentNode = this.findNode(this.wholeFileList, node.key);
-      currentNode.children = <any>value['data'];
-      if (node.isExpanded) {
-        node.clearChildren();
-        // node.addChildren(currentNode.children);
-        node.addChildren(this.getChildNodes(currentNode.children));
-      }
-    });
+    if (node) {
+      this.fileService.getFileListRecursive(node.key).subscribe(value => {
+        const currentNode = this.findNode(this.wholeFileList, node.key);
+        currentNode.children = <any>value['data'];
+        if (node.isExpanded) {
+          node.clearChildren();
+          // node.addChildren(currentNode.children);
+          node.addChildren(this.getChildNodes(currentNode.children));
+        }
+      });
+    } else {
+      this.updateProjects();
+    }
   }
 
   private findNode(parentNodes: FileNode[], key: string): FileNode {
