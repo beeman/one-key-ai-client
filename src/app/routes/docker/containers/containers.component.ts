@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DockerContainersService } from '../service/docker-containers.service';
 import { DockerContainer } from './docker-container';
 import { DockerService, MessageLevel, DockerMessage } from '../service/docker.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { UserService } from '../../../core/user.service';
 
 @Component({
   selector: 'app-containers',
@@ -26,7 +26,7 @@ export class ContainersComponent implements OnInit {
     private readonly dockerService: DockerService,
     private readonly messageService: NzMessageService,
     private readonly router: Router,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private userService: UserService
   ) {
   }
 
@@ -86,7 +86,7 @@ export class ContainersComponent implements OnInit {
 
   public renameOk(): void {
     this.renameDialogVisible = false;
-    this.containersService.rename(this.containerId, this.newName).subscribe(value => {
+    this.containersService.rename(this.containerId, this.newName, this.userService.userName()).subscribe(value => {
       this.onData(value);
     });
   }
@@ -102,7 +102,7 @@ export class ContainersComponent implements OnInit {
   }
 
   private updateContainers(): void {
-    const userName = this.tokenService.get().userName;
+    const userName = this.userService.userName();
 
     const containerInfos: DockerContainer[] = [];
     this.containersService.getInfo(userName).subscribe((data) => {

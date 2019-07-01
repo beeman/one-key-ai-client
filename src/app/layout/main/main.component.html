@@ -27,7 +27,7 @@
           </ul>
         </nz-dropdown>
       </div>
-      <div nz-col>
+      <!-- <div nz-col>
         <nz-dropdown [nzPlacement]="'bottomRight'">
           <button nz-button nz-dropdown nzType="primary" nzShape="circle">
             <i nz-icon type="setting"></i>
@@ -37,6 +37,10 @@
             <li nz-menu-item (click)="logout()">登出</li>
           </ul>
         </nz-dropdown>
+      </div> -->
+      <div nz-col>
+        <label style="color: seashell;margin-right: 8px">{{userName}}</label>
+        <button nz-button (click)="logout()" nzType="primary">登出</button>
       </div>
     </div>
   </nz-header>

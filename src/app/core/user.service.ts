@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 export interface User {
   name: string;
@@ -14,8 +15,15 @@ export interface User {
 export class UserService {
   private serverUrl = '';
 
-  constructor(private readonly http: HttpClient) {
+  constructor(
+    private readonly http: HttpClient,
+    @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+  ) {
     this.serverUrl = environment.serverUrl;
+  }
+
+  public userName(): string {
+    return this.tokenService.get()['userName'];
   }
 
   public checkAdmin(userName: string) {

@@ -18,6 +18,7 @@ export class MainComponent implements OnInit {
   public isTerminalModalVisible = false;
   public isDriverSourceModalVisible = false;
   public isAdmin = false;
+  public userName = '';
 
   constructor(
     @Inject(DA_SERVICE_TOKEN) private readonly tokenService: ITokenService,
@@ -29,6 +30,7 @@ export class MainComponent implements OnInit {
     this.userService.checkAdmin(this.tokenService.get()['userName']).subscribe(value => {
       this.isAdmin = <boolean>value;
     });
+    this.userName = this.userService.userName();
   }
 
   public cancelUpdateDriverSource(): void {

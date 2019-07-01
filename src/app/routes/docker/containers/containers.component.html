@@ -9,32 +9,41 @@
 <nz-table #containerTable [nzData]="containers" [nzPageSize]="10">
   <thead>
     <tr>
-      <th nzWidth="300px">IMAGE</th>
-      <th>CREATED</th>
+      <!-- <th nzWidth="300px">IMAGE</th> -->
+      <!-- <th>CREATED</th> -->
       <th>STATE</th>
-      <th>PORTS</th>
+      <th nzWidth="300px">PORTS</th>
       <th>NAMES</th>
-      <th nzWidth="150px">ACTION</th>
+      <th>ACTION</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let container of containerTable.data;let i=index">
-      <td>{{container.image}}</td>
-      <td>{{container.created}}</td>
+      <!-- <td>{{container.image}}</td> -->
+      <!-- <td>{{container.created}}</td> -->
       <td [ngStyle]="{'color':container.state==='running'?'green':'black'}">{{container.state}}</td>
       <td>{{container.ports}}</td>
       <td>{{container.names}}</td>
 
       <td>
-        <!-- <button nz-button nzType="primary" (click)="start(container.id)" *ngIf="container.state!=='running'">启动</button>
+        <button nz-button nzType="primary" (click)="start(container.id)" *ngIf="container.state!=='running'">启动</button>
+        <nz-divider nzType="vertical" *ngIf="container.state!=='running'"></nz-divider>
+        <button nz-button nzType="danger" (click)="remove(container.id)" *ngIf="container.state!=='running'">删除</button>
+        <nz-divider nzType="vertical" *ngIf="container.state!=='running'"></nz-divider>
         <button nz-button nzType="primary" (click)="exec(container.id)" *ngIf="container.state==='running'">执行</button>
+        <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
         <button nz-button nzType="danger" (click)="stop(container.id)" *ngIf="container.state==='running'">停止</button>
+        <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
         <button nz-button nzType="danger" (click)="kill(container.id)" *ngIf="container.state==='running'">强制停止</button>
-        <button nz-button nzType="primary" (click)="restart(container.id)"
-          *ngIf="container.state==='danger'">重启</button>
-        <button nz-button nzType="primary" (click)="remove(container.id)" *ngIf="container.state!=='danger'">删除</button> -->
+        <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
+        <button nz-button nzType="danger" (click)="restart(container.id)"
+          *ngIf="container.state==='running'">重启</button>
+        <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
 
-        <nz-dropdown>
+        <button nz-button (click)="stats(container.id)" *ngIf="container.state==='running'">状态</button>
+        <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
+        <button nz-button (click)="rename(container.id)">重命名</button>
+        <!-- <nz-dropdown>
           <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
           <ul nz-menu nzSelectable>
             <li nz-menu-item (click)="stop(container.id)" *ngIf="container.state==='running'">
@@ -68,7 +77,7 @@
               <a>重命名</a>
             </li>
           </ul>
-        </nz-dropdown>
+        </nz-dropdown> -->
       </td>
     </tr>
   </tbody>
