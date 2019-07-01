@@ -4,6 +4,7 @@ import { MainComponent } from '../layout/main/main.component';
 import { AuthComponent } from '../layout/auth/auth.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SimpleGuard } from '@delon/auth';
+import { IntroductionComponent } from './introduction/introduction.component';
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
     component: MainComponent,
     canActivate: [SimpleGuard],
     children: [
-      { path: '', redirectTo: 'docker', pathMatch: 'full' },
+      { path: '', redirectTo: 'introduction', pathMatch: 'full' },
+      { path: 'introduction', component: IntroductionComponent },
       { path: 'performance', loadChildren: './performance/performance.module#PerformanceModule' },
       { path: 'driver', loadChildren: './driver/driver.module#DriverModule' },
       { path: 'docker', loadChildren: './docker/docker.module#DockerModule' },

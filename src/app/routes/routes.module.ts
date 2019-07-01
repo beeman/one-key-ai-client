@@ -5,9 +5,10 @@ import { RoutesRoutingModule } from './routes-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { IntroductionComponent } from './introduction/introduction.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [IntroductionComponent],
   imports: [
     CommonModule,
     SharedModule,
