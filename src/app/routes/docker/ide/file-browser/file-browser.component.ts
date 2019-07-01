@@ -209,8 +209,10 @@ export class FileBrowserComponent implements OnInit {
     if (parentNode) {
       this.updateNode(parentNode);
     } else {
-      const index = this.wholeFileList.indexOf(node);
-      this.wholeFileList.splice(index - 1, 1);
+      const index = this.wholeFileList.findIndex((value) => {
+        return value.key == node.key;
+      });
+      this.wholeFileList.splice(index, 1);
       this.fileList = this.getChildNodes(this.wholeFileList);
     }
   }
