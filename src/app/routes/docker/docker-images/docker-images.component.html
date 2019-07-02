@@ -40,17 +40,34 @@
   </tbody>
 </nz-table>
 
-<nz-modal [(nzVisible)]="containerDialogVisible" nzTitle="重命名" (nzOnCancel)="containerDialogCancel()"
+<nz-modal [(nzVisible)]="containerDialogVisible" nzTitle="容器设置" (nzOnCancel)="containerDialogCancel()"
   (nzOnOk)="containerDialogOk()">
   <form nz-form [formGroup]="containerForm">
     <nz-form-item>
-      <nz-form-control>
+      <nz-form-label [nzSpan]="4">容器名</nz-form-label>
+      <nz-form-control [nzSpan]="20">
         <nz-input-group>
-          <input type="text" nz-input formControlName="name" placeholder="容器名" />
+          <input type="text" nz-input formControlName="name" placeholder="容器名" [value]="defaultContainerName" />
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
+    <nz-form-item *ngFor="let port of portList;let i=index;">
+      <nz-form-label [nzSpan]="4" *ngIf="i===0">开放端口</nz-form-label>
+      <nz-form-control [nzSpan]="20" [nzOffset]="i == 0 ? 0 : 4">
+        <nz-input-number [nzMin]="1024" [nzMax]="65535" [nzStep]="1" class="passenger-input"
+          [formControlName]="port.controlName"></nz-input-number>
+        <i nz-icon nzType="minus-circle-o" class="dynamic-delete-button" (click)="removePort(port, $event)"></i>
+      </nz-form-control>
+    </nz-form-item>
     <nz-form-item>
+      <nz-form-control [nzXs]="{ span: 24, offset: 0 }" [nzSm]="{ span: 20, offset: 4 }">
+        <button nz-button nzType="dashed" class="add-button" (click)="addPort($event)">
+          <i nz-icon nzType="plus"></i>
+          添加端口
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+    <!-- <nz-form-item>
       <nz-form-label [nzSpan]="6" style="text-align: left">使用Nvidia显卡</nz-form-label>
       <nz-form-control [nzSpan]="14">
         <nz-radio-group formControlName="isNvidia">
@@ -58,7 +75,7 @@
           <label nz-radio [nzValue]="false">否</label>
         </nz-radio-group>
       </nz-form-control>
-    </nz-form-item>
+    </nz-form-item> -->
   </form>
 </nz-modal>
 

@@ -4,7 +4,7 @@ import { DockerImage } from './docker-image';
 import { DockerImagesService } from '../service/docker-images.service';
 import * as Docker from 'dockerode';
 import { NzMessageService } from 'ng-zorro-antd';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { DockerimageShellComponent } from './dockerimage-shell/dockerimage-shell.component';
 import { fromEvent } from 'rxjs';
@@ -16,6 +16,13 @@ interface ContainerInfo {
   id?: string;
   name?: string;
   isNvidia?: boolean;
+  ports?: number[];
+}
+
+interface PortInfo {
+  id: number;
+  port: number;
+  controlName: string;
 }
 
 @Component({
@@ -30,22 +37,25 @@ export class DockerImagesComponent implements OnInit {
   @ViewChild('imageNameInput')
   imageNameInput: ElementRef;
 
-  terminal: DockerImageShell = null;
+  terminal: DockerImageShell = null;  // 拉取镜像的终端
 
-  imageSuggestions: string[] = [];
+  imageSuggestions: string[] = [];  // 镜像自动提示列表
+  images: Array<DockerImage> = [];  // 镜像列表
 
-  containerForm: FormGroup;
-  images: Array<DockerImage> = [];
-  containerDialogVisible: boolean = false;
+  containerForm: FormGroup; // 容器表格
+  containerDialogVisible: boolean = false;  // 创建容器对话框可见性
 
-  pullImageDialogVisible: boolean = false;
-  imageName: string = '';
-  imageVersion: string = '';
-  pullImageShellVisible: boolean = false;
+  imageName: string = ''; // 拉取镜像名
+  imageVersion: string = '';  // 拉取镜像版本
+  pullImageShellVisible: boolean = false; // 拉取镜像终端的可见性
+  pullImageDialogVisible: boolean = false;  // 拉取镜像对话框的可见性
 
-  isAdmin: boolean = false;
+  isAdmin: boolean = false; // 是否为管理员
+  defaultContainerName = "";  // 默认容器名
 
-  private containerInfo: ContainerInfo = { isNvidia: false };
+  portList: Array<PortInfo> = [{ id: 0, port: 8000, controlName: `port0` }];  // 开放的端口列表
+
+  private containerInfo: ContainerInfo = { isNvidia: true, ports: [] };
 
   constructor(
     private readonly dockerService: DockerService,
@@ -65,6 +75,10 @@ export class DockerImagesComponent implements OnInit {
       name: [''],
       isNvidia: true
     });
+    this.portList.forEach((value) => {
+      this.containerForm.addControl(value.controlName, new FormControl(value.port, Validators.required));
+    });
+
 
     fromEvent(this.imageNameInput.nativeElement, 'input')
       .pipe(throttleTime(500))
@@ -85,6 +99,29 @@ export class DockerImagesComponent implements OnInit {
       });
   }
 
+  public addPort(e?: MouseEvent) {
+    if (e) {
+      e.preventDefault();
+    }
+
+    const id = this.portList.length > 0 ? this.portList[this.portList.length - 1].id + 1 : 0;
+    const control = { id: id, port: null, controlName: `port${id}` };
+    this.portList.push(control);
+    this.containerForm.addControl(control.controlName, new FormControl(control.port, Validators.required));
+  }
+
+  public removePort(control: PortInfo, e?: MouseEvent) {
+    if (e) {
+      e.preventDefault();
+    }
+
+    if (this.portList.length > 0) {
+      const index = this.portList.indexOf(control);
+      this.portList.splice(index, 1);
+      this.containerForm.removeControl(control.controlName);
+    }
+  }
+
   public remove(id: string): void {
     // TODO:删除镜像
     this.dockerImagesService.removeImage(id).subscribe(value => {
@@ -100,6 +137,7 @@ export class DockerImagesComponent implements OnInit {
     this.containerInfo.id = image.repoTags ? image.repoTags[0] : image.id;
     const names = image.repository.split('/');
     this.containerInfo.name = names[names.length - 1];
+    this.defaultContainerName = names[names.length - 1];
   }
 
   public containerDialogCancel(): void {
@@ -107,6 +145,20 @@ export class DockerImagesComponent implements OnInit {
   }
 
   public containerDialogOk(): void {
+    for (const i in this.containerForm.controls) {
+      this.containerForm.controls[i].markAsDirty();
+      this.containerForm.controls[i].updateValueAndValidity();
+    }
+    if (!this.containerForm.valid) {
+      return;
+    }
+
+    // 记录端口
+    this.containerInfo.ports = [];
+    this.portList.forEach(value => {
+      this.containerInfo.ports.push(this.containerForm.get(value.controlName).value);
+    });
+
     const userName = this.tokenService.get().userName;
 
     this.containerDialogVisible = false;
