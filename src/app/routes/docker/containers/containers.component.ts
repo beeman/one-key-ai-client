@@ -97,17 +97,7 @@ export class ContainersComponent implements OnInit {
     });
   }
 
-
-  private onData(data: any): DockerMessage {
-    const message = this.dockerService.showMessage(data, this.messageService);
-    if (message.level === MessageLevel.Info) {
-      this.updateContainers();
-    }
-
-    return message;
-  }
-
-  private updateContainers(): void {
+  public updateContainers(): void {
     const userName = this.userService.userName();
 
     const containerInfos: DockerContainer[] = [];
@@ -147,4 +137,14 @@ export class ContainersComponent implements OnInit {
       this.containers = containerInfos;
     });
   }
+
+  private onData(data: any): DockerMessage {
+    const message = this.dockerService.showMessage(data, this.messageService);
+    if (message.level === MessageLevel.Info) {
+      this.updateContainers();
+    }
+
+    return message;
+  }
+
 }
