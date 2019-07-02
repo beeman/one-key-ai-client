@@ -53,6 +53,8 @@ export class DockerImagesComponent implements OnInit {
   isAdmin: boolean = false; // 是否为管理员
   defaultContainerName = "";  // 默认容器名
 
+  isCreatingContainer: boolean = false; //是否正在创建容器
+
   portList: Array<PortInfo> = [{ id: 0, port: 8000, controlName: `port0` }];  // 开放的端口列表
 
   private containerInfo: ContainerInfo = { isNvidia: true, ports: [] };
@@ -166,7 +168,9 @@ export class DockerImagesComponent implements OnInit {
     this.containerInfo.name = userName + '--' + name;
     this.containerInfo.isNvidia = this.containerForm.get('isNvidia').value;
 
+    this.isCreatingContainer = true;
     this.dockerImagesService.createContainer(this.containerInfo).subscribe((value: any) => {
+      this.isCreatingContainer = false;
       const message = this.dockerService.showMessage(value, this.messageService);
       // if (message.level === MessageLevel.Info) {
       //   this.dockerContainersService.saveData(value.containerId, userName).subscribe();

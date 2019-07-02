@@ -16,6 +16,8 @@ export class ContainersComponent implements OnInit {
 
   public containers: DockerContainer[] = [];
   public newName = '';
+  public isStarting: boolean = false;  // 是否正在启动容器
+  public isStopping: boolean = false;  //是否正在停止容器
 
   private containerId = '';
 
@@ -39,7 +41,9 @@ export class ContainersComponent implements OnInit {
   }
 
   public stop(id: string): void {
+    this.isStopping = true;
     this.containersService.stop(id).subscribe(value => {
+      this.isStopping = false;
       this.onData(value);
     });
   }
@@ -51,7 +55,9 @@ export class ContainersComponent implements OnInit {
   }
 
   public start(id: string): void {
+    this.isStarting = true;
     this.containersService.start(id).subscribe(value => {
+      this.isStarting = false;
       this.onData(value);
     });
   }

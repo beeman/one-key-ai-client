@@ -20,7 +20,8 @@
       <td>{{image.size}}</td>
 
       <td>
-        <button nz-button nzType="primary" (click)="createContainer(image)">创建容器</button>
+        <button nz-button nzType="primary" (click)="createContainer(image)"
+          [nzLoading]="isCreatingContainer && (containerInfo.id===image.repoTags[0] || containerInfo.id===image.id)">创建容器</button>
         <nz-divider nzType="vertical"></nz-divider>
         <button nz-button nzType="danger" *ngIf="isAdmin" (click)="remove(image.id)">删除镜像</button>
         <!-- <nz-dropdown>
