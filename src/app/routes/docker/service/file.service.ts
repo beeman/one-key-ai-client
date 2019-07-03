@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { UploadXHRArgs } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Injectable({
@@ -39,6 +38,14 @@ export class FileService {
 
   public getFileListRecursive(path: string) {
     return this.http.post(this.serverUrl + '/file/list-recursive', { path: path });
+  }
+
+  public openFile(filePath: string) {
+    return this.http.post(this.serverUrl + '/file/open-file', { path: filePath });
+  }
+
+  public saveFile(filePath: string, content: string) {
+    return this.http.post(this.serverUrl + '/file/save-file', { filePath: filePath, content: content });
   }
 
   public uploadFile(formData: FormData) {

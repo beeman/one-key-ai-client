@@ -45,13 +45,14 @@
         </ul>
       </nz-dropdown>
       <nz-dropdown *ngIf="node.isLeaf" (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
-        <span nz-dropdown>
+        <span nz-dropdown (click)="openFile(node)">
           <i nz-icon type="file"></i>
           <span class="file-name">{{ node.title }}</span>
         </span>
         <ul nz-menu nzInDropDown>
           <!-- <li nz-menu-item (click)="openFile()">打开</li>
           <li nz-menu-item (click)="saveFile()">保存</li> -->
+          <li nz-menu-item (click)="openFile(node)">打开</li>
           <li nz-menu-item (click)="showRemoveFileModal(node)">删除</li>
           <li nz-menu-item (click)="downloadFile(node)">下载</li>
           <li nz-menu-item (click)="scan(node)">预览</li>

@@ -3,6 +3,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileService } from '../../service/file.service';
 import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzDropdownService, UploadXHRArgs, UploadChangeParam } from 'ng-zorro-antd';
 import { EnvironmentService } from '../../../../core/environment.service';
+import { IdeService } from '../ide.service';
 
 interface FileNode {
   title: string;
@@ -50,7 +51,8 @@ export class FileBrowserComponent implements OnInit {
     @Inject(DA_SERVICE_TOKEN) private readonly tokenService: ITokenService,
     private readonly fileService: FileService,
     private nzDropdownService: NzDropdownService,
-    private environmentService: EnvironmentService
+    private environmentService: EnvironmentService,
+    private ideService: IdeService
   ) { }
 
   ngOnInit() {
@@ -145,6 +147,11 @@ export class FileBrowserComponent implements OnInit {
     }
   }
 
+  openFile(node: NzTreeNode): void {
+    this.activeNode(node);
+    this.ideService.getOpenFileEvent().emit(node.key);
+  }
+
   onModalCancel(): void {
     this.modalInfo.alertModalVisible = false;
   }
@@ -218,7 +225,6 @@ export class FileBrowserComponent implements OnInit {
   }
 
   public uploadProjectReq = (item: UploadXHRArgs) => {
-    console.log(item.file.webkitRelativePath);
     const formData = new FormData();
     // tslint:disable-next-line:no-any
     formData.append(item.name, item.file as any);
