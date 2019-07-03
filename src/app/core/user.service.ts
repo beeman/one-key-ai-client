@@ -26,8 +26,8 @@ export class UserService {
     return this.tokenService.get()['userName'];
   }
 
-  public checkAdmin(userName: string) {
-    return this.http.post(this.serverUrl + '/auth/check-admin', { userName: userName });
+  public checkAdmin() {
+    return this.http.post(this.serverUrl + '/auth/check-admin', { userName: this.userName() });
   }
 
   public deleteUser(name: string) {

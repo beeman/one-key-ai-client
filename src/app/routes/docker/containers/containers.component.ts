@@ -16,11 +16,10 @@ export class ContainersComponent implements OnInit {
 
   public containers: DockerContainer[] = [];
   public newName = '';
-  public isStarting: boolean = false;  // 是否正在启动容器
-  public isStopping: boolean = false;  //是否正在停止容器
+  public startContainerId = '';  // 正在启动容器的容器id
+  public stopContainerId = ''; // 正在停止容器的容器id
 
-  private containerId = '';
-
+  private renameContainerId = '';
   // private fileList;
 
   constructor(
@@ -41,9 +40,9 @@ export class ContainersComponent implements OnInit {
   }
 
   public stop(id: string): void {
-    this.isStopping = true;
+    this.stopContainerId = id;
     this.containersService.stop(id).subscribe(value => {
-      this.isStopping = false;
+      this.stopContainerId = '';
       this.onData(value);
     });
   }
@@ -55,9 +54,9 @@ export class ContainersComponent implements OnInit {
   }
 
   public start(id: string): void {
-    this.isStarting = true;
+    this.startContainerId = id;
     this.containersService.start(id).subscribe(value => {
-      this.isStarting = false;
+      this.startContainerId = '';
       this.onData(value);
     });
   }
@@ -83,7 +82,7 @@ export class ContainersComponent implements OnInit {
 
   public rename(id: string): void {
     this.renameDialogVisible = true;
-    this.containerId = id;
+    this.renameContainerId = id;
   }
 
   public renameCancel(): void {
@@ -92,7 +91,7 @@ export class ContainersComponent implements OnInit {
 
   public renameOk(): void {
     this.renameDialogVisible = false;
-    this.containersService.rename(this.containerId, this.newName, this.userService.userName()).subscribe(value => {
+    this.containersService.rename(this.renameContainerId, this.newName, this.userService.userName()).subscribe(value => {
       this.onData(value);
     });
   }

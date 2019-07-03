@@ -69,7 +69,7 @@ export class DockerImagesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userService.checkAdmin(this.tokenService.get()['userName']).subscribe(value => {
+    this.userService.checkAdmin().subscribe(value => {
       this.isAdmin = <boolean>value;
     });
     this.updateImages();

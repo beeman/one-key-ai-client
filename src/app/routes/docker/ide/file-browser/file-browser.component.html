@@ -7,7 +7,12 @@
       <nz-upload nzDirectory [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
         [nzShowUploadList]="false">
         <button nz-button nzType="primary" [nzLoading]="projectUploading" [disabled]="projectUploading"><i nz-icon
-            type="upload"></i>上传项目</button>
+            type="upload"></i>上传目录</button>
+      </nz-upload>
+      <nz-upload [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
+        [nzShowUploadList]="false">
+        <button nz-button nzType="primary" [nzLoading]="projectUploading" [disabled]="projectUploading"
+          style="margin-left: 8px"><i nz-icon type="upload"></i>上传文件</button>
       </nz-upload>
       <label style="margin-left: 8px">{{currentUploadingFile}}</label>
     </div>
@@ -33,7 +38,7 @@
           <br>
           <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false"
             (nzChange)="uploadChange($event)">
-            <li nz-menu-item (click)="activeNode(node)">上传文件夹</li>
+            <li nz-menu-item (click)="activeNode(node)">上传目录</li>
           </nz-upload>
           <li nz-menu-item (click)="showRemoveDirModal(node)">删除</li>
           <li nz-menu-item (click)="compress(node)">压缩至当前目录</li>

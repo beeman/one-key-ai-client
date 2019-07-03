@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Location } from '@angular/common';
+import { EnvironmentService } from 'src/app/core/environment.service';
 
 @Component({
   selector: 'app-ide',
@@ -7,11 +8,17 @@ import { Location } from '@angular/common';
   styleUrls: ['./ide.component.scss']
 })
 export class IdeComponent implements OnInit {
+  @ViewChild('container')
+  containerRef: ElementRef;
+
   constructor(
     private readonly location: Location,
+    private readonly environmentService: EnvironmentService
   ) { }
 
   ngOnInit() {
+    const element = <HTMLDivElement>(this.containerRef.nativeElement);
+    element.style.height = this.environmentService.getContainerHeight() + 'px';
   }
 
   onShellEvent(event: string): void {
@@ -19,4 +26,6 @@ export class IdeComponent implements OnInit {
       this.location.back();
     }
   }
+
+
 }

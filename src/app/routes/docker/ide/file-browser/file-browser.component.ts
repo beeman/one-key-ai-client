@@ -218,11 +218,13 @@ export class FileBrowserComponent implements OnInit {
   }
 
   public uploadProjectReq = (item: UploadXHRArgs) => {
+    console.log(item.file.webkitRelativePath);
     const formData = new FormData();
     // tslint:disable-next-line:no-any
     formData.append(item.name, item.file as any);
     formData.append('webkitRelativePath', item.file.webkitRelativePath);
     formData.append('userName', this.tokenService.get().userName);
+    formData.append('fileName', item.file.name);
 
     return this.fileService.uploadFile(formData).subscribe(
       value => {

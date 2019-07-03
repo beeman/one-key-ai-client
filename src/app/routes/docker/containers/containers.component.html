@@ -30,14 +30,14 @@
 
       <td>
         <button nz-button nzType="primary" (click)="start(container.id)" *ngIf="container.state!=='running'"
-          [nzLoading]="isStarting">启动</button>
+          [nzLoading]="startContainerId===container.id">启动</button>
         <nz-divider nzType="vertical" *ngIf="container.state!=='running'"></nz-divider>
         <button nz-button nzType="danger" (click)="remove(container.id)" *ngIf="container.state!=='running'">删除</button>
         <nz-divider nzType="vertical" *ngIf="container.state!=='running'"></nz-divider>
         <button nz-button nzType="primary" (click)="exec(container.id)" *ngIf="container.state==='running'">执行</button>
         <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
         <button nz-button nzType="danger" (click)="stop(container.id)" *ngIf="container.state==='running'"
-          [nzLoading]="isStopping">停止</button>
+          [nzLoading]="stopContainerId===container.id">停止</button>
         <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
 
         <!-- <button nz-button nzType="danger" (click)="kill(container.id)" *ngIf="container.state==='running'">强制停止</button>

@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, ElementRef } from '@angular/core';
 import { TerminalComponent } from 'src/app/shared/terminal/terminal.component';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/core/user.service';
+import { EnvironmentService } from 'src/app/core/environment.service';
 
 @Component({
   selector: 'app-main',
@@ -12,6 +13,9 @@ import { UserService } from 'src/app/core/user.service';
 export class MainComponent implements OnInit {
   @ViewChild('terminalElement')
   terminalElement: TerminalComponent;
+
+  @ViewChild('header')
+  headerRef: ElementRef;
 
   public isCollapsed = false;
   public isReverseArrow = false;
@@ -23,14 +27,19 @@ export class MainComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private readonly tokenService: ITokenService,
     private readonly router: Router,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly environmentService: EnvironmentService
   ) { }
 
   ngOnInit() {
-    this.userService.checkAdmin(this.tokenService.get()['userName']).subscribe(value => {
+    this.userService.checkAdmin().subscribe(value => {
       this.isAdmin = <boolean>value;
     });
     this.userName = this.userService.userName();
+  }
+
+  ngAfterViewInit(): void {
+    this.environmentService.setHeaderHeight(this.headerRef.nativeElement.clientHeight);
   }
 
   public cancelUpdateDriverSource(): void {
