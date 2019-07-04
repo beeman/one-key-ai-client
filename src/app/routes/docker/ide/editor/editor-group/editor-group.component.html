@@ -1,0 +1,14 @@
+<nz-tabset #tabset [nzTabPosition]="'top'" [nzAnimated]="true" [nzTabBarExtraContent]="extraTemplate"
+  [(nzSelectedIndex)]="selectedIndex" class="full-height" style="background: #ffffff"
+  (nzSelectedIndexChange)="changeEditor($event)">
+  <nz-tab *ngFor="let file of files" [nzTitle]="file.name">
+    <app-editor (editorEvent)="onEditorEvent($event)" [filePath]="file.path"></app-editor>
+  </nz-tab>
+</nz-tabset>
+<ng-template #extraTemplate>
+  <!-- <button (click)="add()">add</button> -->
+  <nz-select style="width: 120px;" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()" nzAllowClear
+    nzPlaceHolder="Choose">
+    <nz-option *ngFor="let id of ideService.getLanguageIds()" [nzValue]="id" [nzLabel]="id"></nz-option>
+  </nz-select>
+</ng-template>

@@ -1,8 +1,6 @@
-import { Component, OnInit, EventEmitter } from '@angular/core';
-import { throttleTime, auditTime } from 'rxjs/operators';
+import { Component, OnInit, EventEmitter, ViewChild, ElementRef, Output, Input } from '@angular/core';
 import { FileService } from '../../service/file.service';
 import { IdeService } from '../ide.service';
-import { Subscription } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -11,42 +9,64 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit {
+  @ViewChild('editor')
+  editorRef: ElementRef;
+
+  @Output('editorEvent')
+  editorEvent = new EventEmitter<any>();
+
+  @Input('filePath')
+  filePath: string;
+
   editorOptions = { theme: 'vs-dark', language: 'python', automaticLayout: true };
 
   private change: monaco.editor.IModelContentChangedEvent = null;
   private changeEvent: EventEmitter<monaco.editor.IModelContentChangedEvent> = new EventEmitter();
   private editor: monaco.editor.IStandaloneCodeEditor;
-  private openFileSubscription: Subscription = null;
-  private currentFilePath: string = '';
+  private languageId: string = 'plaintext';
 
   constructor(
     private readonly fileService: FileService,
-    private readonly ideService: IdeService,
-    private readonly messageService: NzMessageService
+    private readonly messageService: NzMessageService,
+    private readonly ideService: IdeService
   ) { }
 
   ngOnInit() {
-    this.openFileSubscription = this.ideService.getOpenFileEvent().subscribe((filePath) => {
-      this.openFile(filePath);
-    });
-
   }
 
   ngOnDestroy(): void {
-    this.openFileSubscription!.unsubscribe();
   }
 
   onEditorInit(editor: monaco.editor.IStandaloneCodeEditor) {
-    this.editor = editor;
+    // 记录支持的语言
+    if (this.ideService.getLanguages().length <= 0) {
+      this.ideService.setLanguages(monaco.languages.getLanguages());
+    }
 
-    // 调整编辑页面大小
-    const editorHeight = document.getElementsByClassName('code-editor')[0].clientHeight;
-    this.editor.getDomNode().style.height = editorHeight + 'px';
+    this.editor = editor;
 
     // 监听保存快捷键
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
       this.saveFile();
     }, '');
+
+    this.openFile();
+
+    // this.editorEvent.emit({ event: 'init', target: this });
+
+    // monaco.editor.setModelLanguage(editor.getModel(),'cpp');
+
+    // this.editorOptions.language = 'python';
+    // 调整编辑页面大小
+    // console.log(this.editorRef);
+    // const editorHeight = (<any>this.editorRef)._editorContainer.nativeElement.clientHeight;
+    // console.log(editorHeight);
+    // this.editor.getDomNode().style.height = editorHeight + 'px';
+    // this.editor.getDomNode().childNodes.
+    // (<HTMLElement>this.editor.getDomNode().getElementsByClassName('editor-container')[0]).style.height = editorHeight + 'px';
+    // (<HTMLElement>document.getElementsByClassName('editor-container')[0]).style.height = editorHeight + 'px';
+
+
     // if (navigator.userAgent.indexOf("Firefox") > 0) {
     //   this.changeEvent.pipe(throttleTime(1)).subscribe(value => {
     //     this.change = value;
@@ -75,10 +95,22 @@ export class EditorComponent implements OnInit {
     // }
   }
 
-  private openFile(filePath: string): void {
-    this.fileService.openFile(filePath).subscribe(value => {
+  public changeLanguage(language: string): void {
+    this.languageId = language;
+    monaco.editor.setModelLanguage(this.editor.getModel(), this.languageId);
+  }
+
+  public getLanguageId(): string {
+    return this.languageId;
+  }
+
+  private openFile(): void {
+    this.languageId = this.ideService.suggestLanguageId(this.filePath);
+    monaco.editor.setModelLanguage(this.editor.getModel(), this.languageId);
+    this.editorEvent.emit({ event: 'changeLanguage', language: this.languageId });
+
+    this.fileService.openFile(this.filePath).subscribe(value => {
       if (value['msg'] === 'ok') {
-        this.currentFilePath = filePath;
         this.editor!.setValue(value['data']);
       } else {
         console.error(value['data']);
@@ -87,7 +119,7 @@ export class EditorComponent implements OnInit {
   }
 
   private saveFile(): void {
-    this.fileService.saveFile(this.currentFilePath, this.editor.getValue()).subscribe(value => {
+    this.fileService.saveFile(this.filePath, this.editor.getValue()).subscribe(value => {
       if (value['msg'] === 'ok') {
       } else {
         this.messageService.warning('保存失败');
