@@ -133,6 +133,9 @@ export class ContainersComponent implements OnInit {
           sizeRootFs: sizeRootFs
         });
       });
+      containerInfos.sort((a, b) => {
+        return a.names >= b.names ? 1 : -1;
+      })
       this.containers = containerInfos;
     });
   }

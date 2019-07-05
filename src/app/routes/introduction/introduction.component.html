@@ -1,18 +1,22 @@
-<h1 style="text-align: center" nz-title>One Key AI</h1>
-<h2 nz-title>简介</h2>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;One Key AI项目用于提供一个人工智能开发/生产环境的管理平台，用户可快速创建项目所需要的环境。</span></p>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;本项目提供了一些已搭建好的人工智能开发环境，用户可直接下载相关镜像，并创建属于自己的容器进行开发。</span></p>
-<h2 nz-title>镜像</h2>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;镜像为已搭建好的环境模板，可通过网络可以下载已有镜像，进而通过镜像创建自己的开发环境。</span></p>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;镜像不可以直接执行，需通过镜像创建容器，在容器中进行操作。</span></p>
-<h2 nz-title>容器</h2>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;容器用于提供项目开发所需要的环境，可将其理解为属于自己的一台电脑，不同容器间相互独立。</span></p>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;容器在启动后才能进行开发工作，启动容器后点击“执行”按钮可进入容器，进入容器后可通过容器的远程终端进一步完善开发环境，以及进行文件的编辑、执行等操作。</span></p>
-<p><span nz-text nzType="warning" style="color: goldenrod">&nbsp;&nbsp;&nbsp;&nbsp;注：第一次启动容器后，若需要通过apt指令安装软件，请先执行apt update指令。</span></p>
-<h2 nz-title>项目</h2>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;进入容器后，用户可进行文件的上传、下载、预览、压缩、解压等功能。</span></p>
-<p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;通过“上传项目”功能，可将用户本地的项目上传至服务器，用户上传的项目对其所有容器可见。</span></p>
-<p><span nz-text nzType="warning" style="color: goldenrod">&nbsp;&nbsp;&nbsp;&nbsp;注1：若文件数目过多，建议将其压缩为zip文件后，再上传至服务器，而后进行解压，防止一次性上传过多文件导致浏览器卡死。</span></p>
-<p><span nz-text nzType="warning" style="color: goldenrod">&nbsp;&nbsp;&nbsp;&nbsp;注2：目前仅支持单文件下载，对于文件夹，可将其压缩为zip文件后，下载至本地解压。</span></p>
-
-
+<div style="padding: 8px">
+  <h1 style="text-align: center" nz-title>One Key AI</h1>
+  <h2 nz-title>简介</h2>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;One Key AI项目用于提供一个人工智能开发/生产环境的管理平台，用户可快速创建项目所需要的环境。</span></p>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;本项目提供了一些已搭建好的人工智能开发环境，用户可直接下载相关镜像，并创建属于自己的容器进行开发。</span></p>
+  <h2 nz-title>镜像</h2>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;镜像为已搭建好的环境模板，可通过网络可以下载已有镜像，进而通过镜像创建自己的开发环境。</span></p>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;镜像不可以直接执行，需通过镜像创建容器，在容器中进行操作。</span></p>
+  <h2 nz-title>容器</h2>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;容器用于提供项目开发所需要的环境，可将其理解为属于自己的一台电脑，不同容器间相互独立。</span></p>
+  <p><span
+      nz-text>&nbsp;&nbsp;&nbsp;&nbsp;容器在启动后才能进行开发工作，启动容器后点击“执行”按钮可进入容器，进入容器后可通过容器的远程终端进一步完善开发环境，以及进行文件的编辑、执行等操作。</span>
+  </p>
+  <p><span nz-text nzType="danger">&nbsp;&nbsp;&nbsp;&nbsp;注：第一次启动容器后，若需要通过apt指令安装软件，请先执行apt
+      update指令。</span></p>
+  <h2 nz-title>项目</h2>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;进入容器后，用户可进行文件的上传、下载、预览、压缩、解压等功能。</span></p>
+  <p><span nz-text>&nbsp;&nbsp;&nbsp;&nbsp;通过“上传项目”功能，可将用户本地的项目上传至服务器，用户上传的项目对其所有容器可见。</span></p>
+  <p><span nz-text
+      nzType="warning">&nbsp;&nbsp;&nbsp;&nbsp;注1：若文件数目过多，建议将其压缩为zip文件后，再上传至服务器，而后进行解压，防止一次性上传过多文件导致浏览器卡死。</span></p>
+  <p><span nz-text nzType="warning">&nbsp;&nbsp;&nbsp;&nbsp;注2：目前仅支持单文件下载，对于文件夹，可将其压缩为zip文件后，下载至本地解压。</span></p>
+</div>

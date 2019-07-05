@@ -15,7 +15,7 @@ export class EditorGroupComponent implements OnInit {
   @ViewChildren(EditorComponent)
   editorComponents: any;
 
-  files: { path: string, name: string, component?: EditorComponent }[] = [];
+  files: { path: string, name: string }[] = [];
   selectedIndex = 0;
   currentLanguage: string = '';
 
