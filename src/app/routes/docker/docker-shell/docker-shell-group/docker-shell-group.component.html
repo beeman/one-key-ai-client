@@ -1,6 +1,6 @@
 <nz-tabset #tabset [nzType]="'card'" [(nzSelectedIndex)]="index" [nzTabBarExtraContent]="extraTemplate"
   class="container" (nzSelectedIndexChange)="selectedIndexChange($event)">
-  <nz-tab *ngFor="let tab of tabs;let i=index;" [nzTitle]="titleTemplate" style="height: 100%;background: red">
+  <nz-tab *ngFor="let tab of tabs;let i=index;" [nzTitle]="titleTemplate">
     <ng-template #titleTemplate>
       <div>&ensp;{{ i+1 }}&ensp;<i nz-icon type="close" class="ant-tabs-close-x" (click)="closeTabIndex(i)"></i></div>
     </ng-template>

@@ -1,6 +1,6 @@
 <nz-tabset #tabset [nzTabPosition]="'top'" [nzAnimated]="true" [nzTabBarExtraContent]="extraTemplate"
-  [(nzSelectedIndex)]="selectedIndex" class="full-height" style="background: #ffffff"
-  (nzSelectedIndexChange)="changeEditor($event)">
+  [(nzSelectedIndex)]="selectedIndex" class="full-height" style="background: #222222"
+  [nzTabBarStyle]="{color:'#cccccc'}" (nzSelectedIndexChange)="changeEditor($event)">
   <nz-tab *ngFor="let file of files" [nzTitle]="file.name">
     <app-editor (editorEvent)="onEditorEvent($event)" [filePath]="file.path"></app-editor>
   </nz-tab>
