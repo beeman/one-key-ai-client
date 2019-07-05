@@ -105,15 +105,19 @@ export class EditorComponent implements OnInit {
   }
 
   private openFile(): void {
-    this.languageId = this.ideService.suggestLanguageId(this.filePath);
-    monaco.editor.setModelLanguage(this.editor.getModel(), this.languageId);
-    this.editorEvent.emit({ event: 'changeLanguage', language: this.languageId });
-
     this.fileService.openFile(this.filePath).subscribe(value => {
       if (value['msg'] === 'ok') {
+        this.languageId = this.ideService.suggestLanguageId(this.filePath);
+        monaco.editor.setModelLanguage(this.editor.getModel(), this.languageId);
+        this.editorEvent.emit({ event: 'changeLanguage', language: this.languageId });
+
         this.editor!.setValue(value['data']);
-      } else {
-        console.error(value['data']);
+      }
+      else if (value['msg'] === 'warning') {
+        this.messageService.warning(value['data']);
+      }
+      else {
+        this.messageService.error(value['data']);
       }
     });
   }
