@@ -21,7 +21,7 @@ export class FileBrowserComponent implements OnInit {
   @ViewChild('downloadElement', { static: false })
   downloadRef: ElementRef;  // 下载控件索引
   downloadElement: HTMLAnchorElement; // 下载控件
-  anchorEvent: MouseEvent;  // 下载事件
+  // anchorEvent: MouseEvent;  // 下载事件
 
   @ViewChild('scanElement', { static: false })
   scanRef: ElementRef;  // 下载控件索引
@@ -62,7 +62,7 @@ export class FileBrowserComponent implements OnInit {
   ngAfterViewInit(): void {
     this.downloadElement = <HTMLAnchorElement>(this.downloadRef.nativeElement);
     this.scanElement = <HTMLAnchorElement>(this.scanRef.nativeElement);
-    this.anchorEvent = new MouseEvent('click');
+    // this.anchorEvent = new MouseEvent('click');
     this.fileService.getRootPath().subscribe(value => {
       if (value['msg'] === 'ok') {
         this.rootPath = value['data'];
@@ -121,7 +121,7 @@ export class FileBrowserComponent implements OnInit {
 
     this.downloadElement.href = this.environmentService.serverUrl() + filePath;
     this.downloadElement.download = name;
-    this.downloadElement.dispatchEvent(this.anchorEvent);
+    this.downloadElement.dispatchEvent(new MouseEvent('click'));
   }
 
   scan(node: NzTreeNode): void {
@@ -129,7 +129,7 @@ export class FileBrowserComponent implements OnInit {
 
     this.scanElement.href = this.environmentService.serverUrl() + filePath;
     this.scanElement.target = '_blank';
-    this.scanElement.dispatchEvent(this.anchorEvent);
+    this.scanElement.dispatchEvent(new MouseEvent('click'));
   }
 
   // contextMenu($event: MouseEvent, template: TemplateRef<void>, node: NzTreeNode): void {
