@@ -31,3 +31,9 @@ span:hover {
 .folder-name {
   margin-left: 4px;
 }
+
+.text-single-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

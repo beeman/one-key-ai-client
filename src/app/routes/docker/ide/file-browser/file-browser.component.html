@@ -4,17 +4,24 @@
 <div style="height: 100%;overflow: auto">
   <div nz-row style="padding: 8px">
     <div nz-col [nzSpan]="18">
-      <nz-upload nzDirectory [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
-        [nzShowUploadList]="false">
-        <button nz-button nzType="primary" [nzLoading]="projectUploading" [disabled]="projectUploading"><i nz-icon
-            type="upload"></i>上传目录</button>
-      </nz-upload>
-      <nz-upload [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
-        [nzShowUploadList]="false">
-        <button nz-button nzType="primary" [nzLoading]="projectUploading" [disabled]="projectUploading"
-          style="margin-left: 8px"><i nz-icon type="upload"></i>上传文件</button>
-      </nz-upload>
-      <label style="margin-left: 8px">{{currentUploadingFile}}</label>
+      <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="uploadMenu" [nzLoading]="projectUploading"
+        [disabled]="projectUploading"><i nz-icon type="upload"></i>上传</button>
+      <nz-dropdown-menu #uploadMenu="nzDropdownMenu">
+        <ul nz-menu>
+          <nz-upload nzDirectory [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
+            [nzShowUploadList]="false">
+            <li nz-menu-item>上传目录</li>
+          </nz-upload>
+          <br>
+          <nz-upload [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
+            [nzShowUploadList]="false">
+            <li nz-menu-item>上传文件</li>
+          </nz-upload>
+        </ul>
+      </nz-dropdown-menu>
+      <label class="text-single-line" style="margin-left: 8px;">
+        {{currentUploadingFile}}
+      </label>
     </div>
     <div nz-col [nzSpan]="6" style="text-align: right">
       <button nz-button nzType="primary" (click)="updateProjects()"><i nz-icon type="sync"></i>刷新</button>
