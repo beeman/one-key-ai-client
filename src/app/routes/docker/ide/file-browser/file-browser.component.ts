@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { FileService } from '../../service/file.service';
-import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzDropdownService, UploadXHRArgs, UploadChangeParam } from 'ng-zorro-antd';
+import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMenuService, UploadXHRArgs, UploadChangeParam } from 'ng-zorro-antd';
 import { EnvironmentService } from '../../../../core/environment.service';
 import { IdeService } from '../ide.service';
 
@@ -18,12 +18,12 @@ interface FileNode {
   styleUrls: ['./file-browser.component.scss']
 })
 export class FileBrowserComponent implements OnInit {
-  @ViewChild('downloadElement')
+  @ViewChild('downloadElement', { static: false })
   downloadRef: ElementRef;  // 下载控件索引
   downloadElement: HTMLAnchorElement; // 下载控件
   anchorEvent: MouseEvent;  // 下载事件
 
-  @ViewChild('scanElement')
+  @ViewChild('scanElement', { static: false })
   scanRef: ElementRef;  // 下载控件索引
   scanElement: HTMLAnchorElement; // 下载控件
 
@@ -50,12 +50,16 @@ export class FileBrowserComponent implements OnInit {
   constructor(
     @Inject(DA_SERVICE_TOKEN) private readonly tokenService: ITokenService,
     private readonly fileService: FileService,
-    private nzDropdownService: NzDropdownService,
+    private nzDropdownService: NzContextMenuService,
     private environmentService: EnvironmentService,
     private ideService: IdeService
   ) { }
 
   ngOnInit() {
+
+  }
+
+  ngAfterViewInit(): void {
     this.downloadElement = <HTMLAnchorElement>(this.downloadRef.nativeElement);
     this.scanElement = <HTMLAnchorElement>(this.scanRef.nativeElement);
     this.anchorEvent = new MouseEvent('click');
@@ -128,11 +132,11 @@ export class FileBrowserComponent implements OnInit {
     this.scanElement.dispatchEvent(this.anchorEvent);
   }
 
-  contextMenu($event: MouseEvent, template: TemplateRef<void>, node: NzTreeNode): void {
-    $event.preventDefault();
+  // contextMenu($event: MouseEvent, template: TemplateRef<void>, node: NzTreeNode): void {
+  //   $event.preventDefault();
 
-    this.dropdown = this.nzDropdownService.create(new MouseEvent('', { clientY: $event.layerY, clientX: $event.clientX }), template);
-  }
+  //   this.dropdown = this.nzDropdownService.create(new MouseEvent('', { clientY: $event.layerY, clientX: $event.clientX }), template);
+  // }
 
   onExpandChange(event: NzFormatEmitEvent): void {
     if (event.eventName === 'expand') {

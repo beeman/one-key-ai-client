@@ -8,7 +8,7 @@ import { EnvironmentService } from 'src/app/core/environment.service';
   styleUrls: ['./ide.component.scss']
 })
 export class IdeComponent implements OnInit {
-  @ViewChild('container')
+  @ViewChild('container', { static: false })
   containerRef: ElementRef;
 
   constructor(
@@ -17,6 +17,10 @@ export class IdeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+   
+  }
+
+  ngAfterViewInit(): void {
     const element = <HTMLDivElement>(this.containerRef.nativeElement);
     element.style.height = this.environmentService.getContainerHeight() + 'px';
   }

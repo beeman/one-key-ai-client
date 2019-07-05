@@ -7,7 +7,7 @@ import { DockerImageShell } from './docker-image-shell';
   styleUrls: ['./dockerimage-shell.component.scss']
 })
 export class DockerimageShellComponent implements OnInit {
-  @ViewChild('terminalContainer')
+  @ViewChild('terminalContainer', { static: false })
   terminalContainer: ElementRef;
 
   // private terminal: TerminalController = null;

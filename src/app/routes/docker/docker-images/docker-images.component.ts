@@ -31,10 +31,10 @@ interface PortInfo {
   styleUrls: ['./docker-images.component.scss']
 })
 export class DockerImagesComponent implements OnInit {
-  @ViewChild('terminalElement')
+  @ViewChild('terminalElement', { static: false })
   terminalElement: DockerimageShellComponent;
 
-  @ViewChild('imageNameInput')
+  @ViewChild('imageNameInput', { static: false })
   imageNameInput: ElementRef;
 
   terminal: DockerImageShell = null;  // 拉取镜像的终端
@@ -82,6 +82,9 @@ export class DockerImagesComponent implements OnInit {
     });
 
 
+  }
+
+  ngAfterViewInit(): void {
     fromEvent(this.imageNameInput.nativeElement, 'input')
       .pipe(throttleTime(500))
       .subscribe(() => {

@@ -9,7 +9,7 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit {
-  @ViewChild('editor')
+  @ViewChild('editor', { static: false })
   editorRef: ElementRef;
 
   @Output('editorEvent')

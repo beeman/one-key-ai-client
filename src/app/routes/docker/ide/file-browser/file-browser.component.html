@@ -24,11 +24,12 @@
   <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzDblClick)="openFolder($event)"
     (nzExpandChange)="onExpandChange($event)">
     <ng-template #nzTreeTemplate let-node>
-      <nz-dropdown *ngIf="!node.isLeaf" (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
-        <span nz-dropdown>
-          <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
-          <span class="folder-name">{{ node.title }}</span>
-        </span>
+      <span *ngIf="!node.isLeaf" nz-dropdown [nzDropdownMenu]="folderMenu" (click)="activeNode(node)"
+        [class.active]="activedNode?.key === node.key">
+        <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
+        <span class="folder-name">{{ node.title }}</span>
+      </span>
+      <nz-dropdown-menu #folderMenu="nzDropdownMenu">
         <ul nz-menu nzInDropDown>
           <!-- <li nz-menu-item (click)="newFile()">新建文件</li>
           <li nz-menu-item (click)="newDir()">新建文件夹</li> -->
@@ -43,12 +44,14 @@
           <li nz-menu-item (click)="showRemoveDirModal(node)">删除</li>
           <li nz-menu-item (click)="compress(node)">压缩至当前目录</li>
         </ul>
-      </nz-dropdown>
-      <nz-dropdown *ngIf="node.isLeaf" (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
-        <span nz-dropdown (click)="openFile(node)">
-          <i nz-icon type="file"></i>
-          <span class="file-name">{{ node.title }}</span>
-        </span>
+      </nz-dropdown-menu>
+
+      <span nz-dropdown [nzDropdownMenu]="fileMenu" (click)="openFile(node)" *ngIf="node.isLeaf"
+        (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
+        <i nz-icon type="file"></i>
+        <span class="file-name">{{ node.title }}</span>
+      </span>
+      <nz-dropdown-menu #fileMenu="nzDropdownMenu">
         <ul nz-menu nzInDropDown>
           <!-- <li nz-menu-item (click)="openFile()">打开</li>
           <li nz-menu-item (click)="saveFile()">保存</li> -->
@@ -59,7 +62,7 @@
           <li nz-menu-item (click)="compress(node)" *ngIf="!canUncompress(node)">压缩至当前目录</li>
           <li nz-menu-item (click)="uncompress(node)" *ngIf="canUncompress(node)">解压至当前目录</li>
         </ul>
-      </nz-dropdown>
+      </nz-dropdown-menu>
     </ng-template>
   </nz-tree>
 </div>

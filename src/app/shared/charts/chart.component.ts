@@ -6,7 +6,7 @@ export abstract class ChartComponent implements OnInit, OnDestroy, AfterViewInit
     @Input()
     data$: Observable<any>;
 
-    @ViewChild('element')
+    @ViewChild('element', { static: false })
     elementRef: ElementRef;
 
     protected chart: echarts.ECharts = null;

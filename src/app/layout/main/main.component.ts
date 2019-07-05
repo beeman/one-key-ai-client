@@ -11,10 +11,10 @@ import { EnvironmentService } from 'src/app/core/environment.service';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  @ViewChild('terminalElement')
+  @ViewChild('terminalElement', { static: false })
   terminalElement: TerminalComponent;
 
-  @ViewChild('header')
+  @ViewChild('header', { static: false })
   headerRef: ElementRef;
 
   public isCollapsed = false;

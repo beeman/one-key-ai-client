@@ -9,7 +9,7 @@ import { EditorComponent } from '../editor.component';
   styleUrls: ['./editor-group.component.scss']
 })
 export class EditorGroupComponent implements OnInit {
-  @ViewChild('tabset')
+  @ViewChild('tabset', { static: false })
   tabsetRef: any;
 
   @ViewChildren(EditorComponent)

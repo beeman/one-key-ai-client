@@ -9,10 +9,10 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./user-info.component.scss']
 })
 export class UserInfoComponent implements OnInit {
-  @ViewChild('name')
+  @ViewChild('name', { static: false })
   nameRef: ElementRef;
 
-  @ViewChild('password')
+  @ViewChild('password', { static: false })
   passwordRef: ElementRef;
 
   @Output()

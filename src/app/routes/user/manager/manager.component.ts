@@ -11,10 +11,10 @@ import { UserEditorComponent } from '../user-editor/user-editor.component';
   styleUrls: ['./manager.component.scss']
 })
 export class ManagerComponent implements OnInit {
-  @ViewChild(UserInfoComponent)
+  @ViewChild(UserInfoComponent, { static: false })
   private userInfoComponent: UserInfoComponent;
 
-  @ViewChild(UserEditorComponent)
+  @ViewChild(UserEditorComponent, { static: false })
   private userEditorComponent: UserEditorComponent;
 
   users: User[] = [];

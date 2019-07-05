@@ -50,8 +50,8 @@
         <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
         <button nz-button (click)="rename(container.id)">重命名</button> -->
 
-        <nz-dropdown>
-          <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
+        <a nz-dropdown [nzDropdownMenu]="menu"> 操作 <i nz-icon type="down"></i> </a>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu nzSelectable>
             <li nz-menu-item (click)="kill(container.id)" *ngIf="container.state==='running'">
               <a>强制停止</a>
@@ -66,7 +66,7 @@
               <a>重命名</a>
             </li>
           </ul>
-        </nz-dropdown>
+        </nz-dropdown-menu>
         <!-- <nz-dropdown>
           <a nz-dropdown> 操作 <i nz-icon type="down"></i> </a>
           <ul nz-menu nzSelectable>

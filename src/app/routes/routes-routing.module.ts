@@ -14,10 +14,10 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'introduction', pathMatch: 'full' },
       { path: 'introduction', component: IntroductionComponent },
-      { path: 'performance', loadChildren: './performance/performance.module#PerformanceModule' },
-      { path: 'driver', loadChildren: './driver/driver.module#DriverModule' },
-      { path: 'docker', loadChildren: './docker/docker.module#DockerModule' },
-      { path: 'user', loadChildren: './user/user.module#UserModule' },
+      { path: 'performance', loadChildren: () => import('./performance/performance.module').then(m => m.PerformanceModule) },
+      { path: 'driver', loadChildren: () => import('./driver/driver.module').then(m => m.DriverModule) },
+      { path: 'docker', loadChildren: () => import('./docker/docker.module').then(m => m.DockerModule) },
+      { path: 'user', loadChildren: () => import('./user/user.module').then(m => m.UserModule) },
     ],
   },
   {

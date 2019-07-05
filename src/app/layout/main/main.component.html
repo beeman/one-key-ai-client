@@ -13,7 +13,7 @@
         </ul>
       </div>
       <div nz-col>
-        <nz-dropdown *ngIf="isAdmin">
+        <!-- <nz-dropdown *ngIf="isAdmin">
           <button nz-button nz-dropdown nzType="primary"><span>操作</span> <i nz-icon type="down"></i></button>
           <ul nz-menu>
             <li nz-submenu>
@@ -25,7 +25,22 @@
               </ul>
             </li>
           </ul>
-        </nz-dropdown>
+        </nz-dropdown> -->
+
+        <button *ngIf="isAdmin" nz-button nz-dropdown [nzDropdownMenu]="menu" nzType="primary"><span>操作</span> <i
+            nz-icon type="down"></i></button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-submenu>
+              <span title>安装</span>
+              <ul>
+                <li nz-menu-item (click)="installGpuDriver()">显卡驱动</li>
+                <li nz-menu-item (click)="installDockerCE()">Docker CE</li>
+                <li nz-menu-item (click)="installNvidiaDocker()">Nvidia Docker</li>
+              </ul>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </div>
       <!-- <div nz-col>
         <nz-dropdown [nzPlacement]="'bottomRight'">

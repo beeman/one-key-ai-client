@@ -11,7 +11,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
   styleUrls: ['./docker-shell.component.scss']
 })
 export class DockerShellComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('terminal')
+  @ViewChild('terminal', { static: false })
   terminalRef: ElementRef;
 
   @Output()

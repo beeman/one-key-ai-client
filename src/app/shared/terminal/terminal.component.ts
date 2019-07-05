@@ -9,7 +9,7 @@ import { Terminal } from './terminal';
   styleUrls: ['./terminal.component.scss']
 })
 export class TerminalComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('terminalContainer')
+  @ViewChild('terminalContainer', { static: false })
   terminalContainer: ElementRef;
 
   // private terminal: TerminalController = null;

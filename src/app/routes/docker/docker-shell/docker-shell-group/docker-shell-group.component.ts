@@ -12,7 +12,7 @@ export class DockerShellGroupComponent implements OnInit, AfterViewInit {
   @ViewChildren(DockerShellComponent)
   dockerShellGroup: QueryList<DockerShellComponent>;
 
-  @ViewChild('tabset')
+  @ViewChild('tabset', { static: false })
   tabsetRef: any;
 
   index = 0;
