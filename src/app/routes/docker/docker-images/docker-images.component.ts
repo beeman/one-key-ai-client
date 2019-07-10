@@ -225,7 +225,7 @@ export class DockerImagesComponent implements OnInit {
       }
 
       const imageInfos = data['data'];
-      if (!imageInfos) {
+      if (!imageInfos || imageInfos.length <= 0) {
         return;
       }
 

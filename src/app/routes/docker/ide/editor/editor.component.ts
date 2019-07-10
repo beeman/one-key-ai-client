@@ -24,6 +24,7 @@ export class EditorComponent implements OnInit {
   private changeEvent: EventEmitter<monaco.editor.IModelContentChangedEvent> = new EventEmitter();
   private editor: monaco.editor.IStandaloneCodeEditor;
   private languageId: string = 'plaintext';
+  private contentChanged: boolean = false;  // 文本是否发生变化
 
   constructor(
     private readonly fileService: FileService,
@@ -49,6 +50,10 @@ export class EditorComponent implements OnInit {
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
       this.saveFile();
     }, '');
+
+    this.editor.onDidChangeModelContent((e: monaco.editor.IModelContentChangedEvent) => {
+      this.contentChanged = true;
+    });
 
     this.openFile();
 
@@ -104,6 +109,22 @@ export class EditorComponent implements OnInit {
     return this.languageId;
   }
 
+  public isContentChanged(): boolean {
+    return this.contentChanged;
+  }
+
+
+  public saveFile(callback: () => void = null): void {
+    this.fileService.saveFile(this.filePath, this.editor.getValue()).subscribe(value => {
+      if (value['msg'] === 'ok') {
+        this.contentChanged = false;  // 设置文本未变化
+        callback();
+      } else {
+        this.messageService.error(`保存失败:${value['data']}`);
+      }
+    });
+  }
+
   private openFile(): void {
     this.fileService.openFile(this.filePath).subscribe(value => {
       if (value['msg'] === 'ok') {
@@ -112,6 +133,8 @@ export class EditorComponent implements OnInit {
         this.editorEvent.emit({ event: 'changeLanguage', language: this.languageId });
 
         this.editor!.setValue(value['data']);
+
+        this.contentChanged = false; // 默认文本未发生变化
       }
       else if (value['msg'] === 'warning') {
         this.messageService.warning(value['data']);
@@ -121,15 +144,4 @@ export class EditorComponent implements OnInit {
       }
     });
   }
-
-  private saveFile(): void {
-    this.fileService.saveFile(this.filePath, this.editor.getValue()).subscribe(value => {
-      if (value['msg'] === 'ok') {
-      } else {
-        this.messageService.warning('保存失败');
-        console.error(value['data']);
-      }
-    });
-  }
-
 }

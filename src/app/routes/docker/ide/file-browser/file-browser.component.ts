@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject, TemplateRef, ViewChild, ElementRef } from '@angular/core';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FileService } from '../../service/file.service';
 import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMenuService, UploadXHRArgs, UploadChangeParam } from 'ng-zorro-antd';
 import { EnvironmentService } from '../../../../core/environment.service';
 import { IdeService } from '../ide.service';
+import { UserService } from 'src/app/core/user.service';
 
 interface FileNode {
   title: string;
@@ -48,7 +48,7 @@ export class FileBrowserComponent implements OnInit {
   private wholeFileList: FileNode[] = []; // 所有文件信息
 
   constructor(
-    @Inject(DA_SERVICE_TOKEN) private readonly tokenService: ITokenService,
+    private readonly userService: UserService,
     private readonly fileService: FileService,
     private nzDropdownService: NzContextMenuService,
     private environmentService: EnvironmentService,
@@ -72,7 +72,7 @@ export class FileBrowserComponent implements OnInit {
   }
 
   public updateProjects(): void {
-    this.fileService.getProjectRecursive(this.tokenService.get().userName).subscribe(
+    this.fileService.getProjectRecursive(this.userService.userName()).subscribe(
       value => {
         if (value['msg'] === 'ok') {
           // this.fileList = value['data'];
@@ -114,6 +114,11 @@ export class FileBrowserComponent implements OnInit {
     return node.key.endsWith('.zip');
   }
 
+  // 是否可以打开
+  canOpen(node: NzTreeNode): boolean {
+    return !this.isImage(node) && !this.canUncompress(node);
+  }
+
   downloadFile(node: NzTreeNode): void {
     const pathItems = node.key.split('/');
     const name = pathItems[pathItems.length - 1];
@@ -122,6 +127,18 @@ export class FileBrowserComponent implements OnInit {
     this.downloadElement.href = this.environmentService.serverUrl() + filePath;
     this.downloadElement.download = name;
     this.downloadElement.dispatchEvent(new MouseEvent('click'));
+  }
+
+  isImage(node: NzTreeNode): boolean {
+    const tails = ['.png', 'jpg', 'ico'];
+
+    for (let i = 0; i < tails.length; ++i) {
+      if (node.key.endsWith(tails[i])) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   scan(node: NzTreeNode): void {
@@ -153,6 +170,10 @@ export class FileBrowserComponent implements OnInit {
 
   openFile(node: NzTreeNode): void {
     this.activeNode(node);
+
+    if (!this.canOpen(node)) {
+      return;
+    }
     this.ideService.getOpenFileEvent().emit(node.key);
   }
 
@@ -167,6 +188,10 @@ export class FileBrowserComponent implements OnInit {
     } else {
       this.removeFile(this.modalInfo.node);
     }
+  }
+
+  projectPath(): string {
+    return `/home/${this.userService.userName()}`;
   }
 
   showRemoveFileModal(node: NzTreeNode): void {
@@ -233,7 +258,7 @@ export class FileBrowserComponent implements OnInit {
     // tslint:disable-next-line:no-any
     formData.append(item.name, item.file as any);
     formData.append('webkitRelativePath', item.file.webkitRelativePath);
-    formData.append('userName', this.tokenService.get().userName);
+    formData.append('userName', this.userService.userName());
     formData.append('fileName', item.file.name);
 
     return this.fileService.uploadFile(formData).subscribe(

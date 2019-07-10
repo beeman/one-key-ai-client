@@ -27,7 +27,7 @@
       <button nz-button nzType="primary" (click)="updateProjects()"><i nz-icon type="sync"></i>刷新</button>
     </div>
   </div>
-
+  <p style="padding-left: 8px">{{projectPath()}}</p>
   <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzDblClick)="openFolder($event)"
     (nzExpandChange)="onExpandChange($event)">
     <ng-template #nzTreeTemplate let-node>
@@ -62,11 +62,11 @@
         <ul nz-menu nzInDropDown>
           <!-- <li nz-menu-item (click)="openFile()">打开</li>
           <li nz-menu-item (click)="saveFile()">保存</li> -->
-          <li nz-menu-item (click)="openFile(node)">打开</li>
+          <li nz-menu-item (click)="openFile(node)" *ngIf="canOpen(node)">打开</li>
           <li nz-menu-item (click)="showRemoveFileModal(node)">删除</li>
           <li nz-menu-item (click)="downloadFile(node)">下载</li>
-          <li nz-menu-item (click)="scan(node)">预览</li>
-          <li nz-menu-item (click)="compress(node)" *ngIf="!canUncompress(node)">压缩至当前目录</li>
+          <li nz-menu-item (click)="scan(node)" *ngIf="isImage(node)">预览</li>
+          <!-- <li nz-menu-item (click)="compress(node)" *ngIf="!canUncompress(node)">压缩至当前目录</li> -->
           <li nz-menu-item (click)="uncompress(node)" *ngIf="canUncompress(node)">解压至当前目录</li>
         </ul>
       </nz-dropdown-menu>

@@ -1,14 +1,26 @@
 <nz-tabset #tabset [nzTabPosition]="'top'" [nzAnimated]="true" [nzTabBarExtraContent]="extraTemplate"
   [(nzSelectedIndex)]="selectedIndex" class="full-height" style="background: #222222"
   [nzTabBarStyle]="{color:'#cccccc'}" (nzSelectedIndexChange)="changeEditor($event)">
-  <nz-tab *ngFor="let file of files" [nzTitle]="file.name">
+  <nz-tab *ngFor="let file of files" [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+      <div>
+        {{ file.name }}
+        <i nz-icon nzType="close" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
+      </div>
+    </ng-template>
     <app-editor (editorEvent)="onEditorEvent($event)" [filePath]="file.path"></app-editor>
   </nz-tab>
 </nz-tabset>
 <ng-template #extraTemplate>
   <!-- <button (click)="add()">add</button> -->
-  <nz-select style="width: 120px;" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()" nzAllowClear
-    nzPlaceHolder="Choose">
+  <nz-select style="width: 120px;" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()" nzAllowClear>
     <nz-option *ngFor="let id of ideService.getLanguageIds()" [nzValue]="id" [nzLabel]="id"></nz-option>
   </nz-select>
 </ng-template>
+
+<!-- 保存对话框 -->
+<nz-modal [(nzVisible)]="saveModalVisible" [nzTitle]="'保存文件'" (nzOnCancel)="onSaveModalCancel()"
+  (nzOnOk)="onSaveModalConfirm()">
+  <p>文件内容发生变化，是否保存？</p>
+  <p *ngFor="let file of filesToSave">{{file.name}}</p>
+</nz-modal>

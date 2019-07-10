@@ -3,6 +3,11 @@ import { IdeService } from '../../ide.service';
 import { Subscription } from 'rxjs';
 import { EditorComponent } from '../editor.component';
 
+interface FileInfo {
+  path: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-editor-group',
   templateUrl: './editor-group.component.html',
@@ -15,9 +20,13 @@ export class EditorGroupComponent implements OnInit {
   @ViewChildren(EditorComponent)
   editorComponents: any;
 
-  files: { path: string, name: string }[] = [];
+  files: FileInfo[] = []; // 文件列表
   selectedIndex = 0;
   currentLanguage: string = '';
+
+  filesToSave: FileInfo[] = []; // 待保存的文件
+  saveModalVisible: boolean = false;  // 保存文件对话框
+  isCloseFile: boolean = false;  // 是否关闭文件
 
   private contentElement: HTMLElement = null;
   private openFileSubscription: Subscription = null;
@@ -55,6 +64,21 @@ export class EditorGroupComponent implements OnInit {
     this.currentLanguage = this.getEditor(index).getLanguageId();
   }
 
+  public closeFile(file: FileInfo): void {
+    const index = this.findIndex(file.path);
+
+    // 若文件内容发生变化，提示是否删除
+    const isChanged = this.getEditor(index).isContentChanged();
+    if (isChanged) {
+      this.filesToSave = [file];
+      this.isCloseFile = true;
+      this.saveModalVisible = true;
+      return;
+    }
+
+    this.files.splice(index, 1);
+  }
+
   public onEditorEvent(event: any): void {
     if (event.event === 'changeLanguage') {
       this.currentLanguage = this.getCurrentEditor().getLanguageId();
@@ -66,18 +90,42 @@ export class EditorGroupComponent implements OnInit {
     // }
   }
 
+  public onSaveModalCancel(): void {
+    this.saveModalVisible = false;
+  }
+
+  public onSaveModalConfirm(): void {
+    this.filesToSave.forEach(file => {
+      const index = this.findIndex(file.path);
+      this.getEditor(index).saveFile(() => {
+        if (this.isCloseFile) {
+          this.files.splice(index, 1);
+        }
+        this.saveModalVisible = false;
+      });
+    });
+  }
+
   private getCurrentEditor(): EditorComponent {
     return this.getEditor(this.selectedIndex);
   }
 
+  private findIndex(filePath: string): number {
+    return this.files.findIndex((value => {
+      return value.path === filePath;
+    }));
+  }
+
+  private getAllEditors(): EditorComponent[] {
+    return this.editorComponents._results;
+  }
+
   private getEditor(index: number): EditorComponent {
-    return this.editorComponents._results[index];
+    return this.getAllEditors()[index];
   }
 
   private openFile(filePath: string): void {
-    const tabIndex = this.files.findIndex((value => {
-      return value.path === filePath;
-    }));
+    const tabIndex = this.findIndex(filePath);
 
     if (tabIndex >= 0) {
       this.selectedIndex = tabIndex;
@@ -92,4 +140,5 @@ export class EditorGroupComponent implements OnInit {
       (<HTMLElement>this.contentElement.children[this.selectedIndex]).style.height = this.editorHeight;
     }, 0);
   }
+
 }
