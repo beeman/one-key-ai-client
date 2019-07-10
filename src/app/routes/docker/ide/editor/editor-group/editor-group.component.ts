@@ -40,6 +40,12 @@ export class EditorGroupComponent implements OnInit {
     this.openFileSubscription = this.ideService.getOpenFileEvent().subscribe((filePath) => {
       this.openFile(filePath);
     });
+
+    // window.onbeforeunload = (event) => {
+    //   console.log('change');
+    //   window.stop();
+    //   // window.event.returnValue=false;
+    // };
   }
 
   ngAfterViewInit(): void {
@@ -77,6 +83,22 @@ export class EditorGroupComponent implements OnInit {
     }
 
     this.files.splice(index, 1);
+  }
+
+  public tabIcon(file: FileInfo): string {
+    console.log('tab icon');
+    return this.isFileChanged(file) ? 'close-circle' : 'close';
+  }
+
+  public isFileChanged(file: FileInfo): boolean {
+    const index = this.findIndex(file.path);
+    const component = this.getEditor(index);
+
+    if (component) {
+      return this.getEditor(index)!.isContentChanged();
+    } else {
+      return false;
+    }
   }
 
   public onEditorEvent(event: any): void {

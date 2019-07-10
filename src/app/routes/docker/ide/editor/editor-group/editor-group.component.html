@@ -5,7 +5,10 @@
     <ng-template #titleTemplate>
       <div>
         {{ file.name }}
-        <i nz-icon nzType="close" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
+        <i nz-icon [nzType]="tabIcon(file)" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
+        <!-- <i *ngIf="!isFileChanged(file)" nz-icon nzType="close" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
+        <i *ngIf="isFileChanged(file)" nz-icon nzType="close-circle" (click)="closeFile(file)"
+          class="ant-tabs-close-x"></i> -->
       </div>
     </ng-template>
     <app-editor (editorEvent)="onEditorEvent($event)" [filePath]="file.path"></app-editor>

@@ -118,7 +118,9 @@ export class EditorComponent implements OnInit {
     this.fileService.saveFile(this.filePath, this.editor.getValue()).subscribe(value => {
       if (value['msg'] === 'ok') {
         this.contentChanged = false;  // 设置文本未变化
-        callback();
+        if (callback !== null) {
+          callback();
+        }
       } else {
         this.messageService.error(`保存失败:${value['data']}`);
       }
