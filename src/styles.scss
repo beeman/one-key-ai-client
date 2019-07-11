@@ -26,3 +26,8 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+// tab标签箭头颜色
+.ant-tabs-tab-arrow-show svg {
+  fill: #cccccc;
+}

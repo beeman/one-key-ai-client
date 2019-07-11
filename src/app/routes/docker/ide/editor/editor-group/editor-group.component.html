@@ -23,7 +23,13 @@
 
 <!-- 保存对话框 -->
 <nz-modal [(nzVisible)]="saveModalVisible" [nzTitle]="'保存文件'" (nzOnCancel)="onSaveModalCancel()"
-  (nzOnOk)="onSaveModalConfirm()">
+  [nzFooter]="saveModalFooter">
   <p>文件内容发生变化，是否保存？</p>
   <p *ngFor="let file of filesToSave">{{file.name}}</p>
+
+  <ng-template #saveModalFooter>
+    <button nz-button nzType="primary" (click)="onSaveModalConfirm()" [nzLoading]="isConfirmLoading">是</button>
+    <button nz-button nzType="default" (click)="onSaveModalDeny()">否</button>
+    <button nz-button nzType="default" (click)="onSaveModalCancel()">取消</button>
+  </ng-template>
 </nz-modal>

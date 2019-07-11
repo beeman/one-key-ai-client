@@ -86,7 +86,6 @@ export class EditorGroupComponent implements OnInit {
   }
 
   public tabIcon(file: FileInfo): string {
-    console.log('tab icon');
     return this.isFileChanged(file) ? 'close-circle' : 'close';
   }
 
@@ -125,6 +124,16 @@ export class EditorGroupComponent implements OnInit {
         }
         this.saveModalVisible = false;
       });
+    });
+  }
+
+  public onSaveModalDeny(): void {
+    this.saveModalVisible = false;
+    this.filesToSave.forEach(file => {
+      const index = this.findIndex(file.path);
+      if (this.isCloseFile) {
+        this.files.splice(index, 1);
+      }
     });
   }
 
