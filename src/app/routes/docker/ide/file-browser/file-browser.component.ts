@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FileService } from '../../service/file.service';
-import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMenuService, UploadXHRArgs, UploadChangeParam } from 'ng-zorro-antd';
+import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMenuService, UploadXHRArgs, UploadChangeParam, NzDropdownMenuComponent } from 'ng-zorro-antd';
 import { EnvironmentService } from '../../../../core/environment.service';
 import { IdeService } from '../ide.service';
 import { UserService } from 'src/app/core/user.service';
@@ -27,13 +27,19 @@ export class FileBrowserComponent implements OnInit {
   scanRef: ElementRef;  // 下载控件索引
   scanElement: HTMLAnchorElement; // 下载控件
 
+  @ViewChild('folderMenu', { static: false })
+  folderMenu: NzDropdownMenuComponent;
+
+  @ViewChild('fileMenu', { static: false })
+  fileMenu: NzDropdownMenuComponent;
+
   projectUploading = false; // 项目上传状态
   currentUploadingFile: string; // 当前上传的文件
   uploading = false;  // 上传状态（非项目）
 
   dropdown: NzDropdownContextComponent;
   fileList: FileNode[] = [];  // 项目列表
-  activedNode: NzTreeNode;  // 选中的节点
+  activedNode: NzTreeNode = null;  // 选中的节点
 
   private rootPath = '';  // 项目文件保存的根目录
 
@@ -50,7 +56,7 @@ export class FileBrowserComponent implements OnInit {
   constructor(
     private readonly userService: UserService,
     private readonly fileService: FileService,
-    private nzDropdownService: NzContextMenuService,
+    private nzContextMenuService: NzContextMenuService,
     private environmentService: EnvironmentService,
     private ideService: IdeService
   ) { }
@@ -69,6 +75,9 @@ export class FileBrowserComponent implements OnInit {
       }
     });
     this.updateProjects();
+    this.fileMenu.visible$.subscribe(value => {
+      console.log(value);
+    });
   }
 
   public updateProjects(): void {
@@ -85,19 +94,65 @@ export class FileBrowserComponent implements OnInit {
     );
   }
 
-  openFolder(data: NzTreeNode | Required<NzFormatEmitEvent>): void {
-    if (data instanceof NzTreeNode) {
-      data.isExpanded = !data.isExpanded;
-    } else {
-      const node = data.node;
-      if (node) {
-        node.isExpanded = !node.isExpanded;
-      }
+  closeContextMenu(event: MouseEvent): void {
+    if (event.preventDefault) {
+      event.preventDefault();
     }
+    if (this.fileMenu.open || this.folderMenu.open) {
+      this.nzContextMenuService.close();
+    }
+  }
+
+  openNode(event: NzFormatEmitEvent): void {
+    this.activeNode(event.node);
+    if (this.fileMenu.open || this.folderMenu.open) {
+      this.nzContextMenuService.close();
+    }
+
+    if (event.node.isLeaf) {
+      this.openFile(event.node);
+    } else {
+      this.openFolder(event.node);
+    }
+  }
+
+  openFolder(node: NzTreeNode): void {
+    if (!node) {
+      return;
+    }
+
+    node.isExpanded = !node.isExpanded;
+    this.expandFolder(node);
+  }
+
+  openFile(node: NzTreeNode): void {
+    if (!node) {
+      return;
+    }
+
+    if (!this.canOpen(node)) {
+      return;
+    }
+    this.ideService.getOpenFileEvent().emit(node.key);
   }
 
   activeNode(node: NzTreeNode): void {
     this.activedNode = node;
+  }
+
+  contextMenu(event: NzFormatEmitEvent) {
+    event.event.preventDefault();
+    if (this.fileMenu.open || this.folderMenu.open) {
+      this.nzContextMenuService.close();
+      return;
+    }
+
+    this.activeNode(event.node);
+    if (event.node.isLeaf) {
+      this.nzContextMenuService.create(event.event, this.fileMenu);
+    } else {
+      this.nzContextMenuService.create(event.event, this.folderMenu);
+    }
   }
 
   compress(node: NzTreeNode): void {
@@ -111,12 +166,12 @@ export class FileBrowserComponent implements OnInit {
   }
 
   canUncompress(node: NzTreeNode): boolean {
-    return node.key.endsWith('.zip');
+    return node && node.isLeaf && node.key.endsWith('.zip');
   }
 
   // 是否可以打开
   canOpen(node: NzTreeNode): boolean {
-    return !this.isImage(node) && !this.canUncompress(node);
+    return node && !this.isImage(node) && !this.canUncompress(node);
   }
 
   downloadFile(node: NzTreeNode): void {
@@ -129,7 +184,15 @@ export class FileBrowserComponent implements OnInit {
     this.downloadElement.dispatchEvent(new MouseEvent('click'));
   }
 
+  isLeaf(node: NzTreeNode) {
+    return node && node.isLeaf;
+  }
+
   isImage(node: NzTreeNode): boolean {
+    if (!node || !node.isLeaf) {
+      return false;
+    }
+
     const tails = ['.png', 'jpg', 'ico'];
 
     for (let i = 0; i < tails.length; ++i) {
@@ -142,6 +205,10 @@ export class FileBrowserComponent implements OnInit {
   }
 
   scan(node: NzTreeNode): void {
+    if (!node) {
+      return;
+    }
+
     const filePath = node.key.substr(this.rootPath.length);
 
     this.scanElement.href = this.environmentService.serverUrl() + filePath;
@@ -149,32 +216,21 @@ export class FileBrowserComponent implements OnInit {
     this.scanElement.dispatchEvent(new MouseEvent('click'));
   }
 
-  // contextMenu($event: MouseEvent, template: TemplateRef<void>, node: NzTreeNode): void {
-  //   $event.preventDefault();
-
-  //   this.dropdown = this.nzDropdownService.create(new MouseEvent('', { clientY: $event.layerY, clientX: $event.clientX }), template);
-  // }
-
   onExpandChange(event: NzFormatEmitEvent): void {
     if (event.eventName === 'expand') {
       const node = event.node;
-      if (node) {
-        if (node.getChildren().length === 0 && node.isExpanded) {
-          node.addChildren(this.getChildNodes(this.findNode(this.wholeFileList, node.key).children));
-        } else if (!node.isExpanded) {
-          node.clearChildren();
-        }
-      }
+      this.expandFolder(node);
     }
   }
 
-  openFile(node: NzTreeNode): void {
-    this.activeNode(node);
-
-    if (!this.canOpen(node)) {
-      return;
+  private expandFolder(node: NzTreeNode): void {
+    if (node) {
+      if (node.getChildren().length === 0 && node.isExpanded) {
+        node.addChildren(this.getChildNodes(this.findNode(this.wholeFileList, node.key).children));
+      } else if (!node.isExpanded) {
+        node.clearChildren();
+      }
     }
-    this.ideService.getOpenFileEvent().emit(node.key);
   }
 
   onModalCancel(): void {
@@ -194,20 +250,36 @@ export class FileBrowserComponent implements OnInit {
     return `/home/${this.userService.userName()}`;
   }
 
-  showRemoveFileModal(node: NzTreeNode): void {
-    this.modalInfo.modalTitle = '是否删除文件';
+  showRemoveModal(node: NzTreeNode): void {
+    if (node.isLeaf) {
+      this.modalInfo.modalTitle = '是否删除文件';
+      this.modalInfo.isDir = false;
+    } else {
+      this.modalInfo.modalTitle = '是否删除文件夹';
+      this.modalInfo.isDir = true;
+    }
+
     this.modalInfo.modalMessage = node.origin.title;
     this.modalInfo.node = node;
     this.modalInfo.alertModalVisible = true;
+  }
+
+  showRemoveFileModal(node: NzTreeNode): void {
+    this.modalInfo.modalTitle = '是否删除文件';
     this.modalInfo.isDir = false;
+
+    this.modalInfo.modalMessage = node.origin.title;
+    this.modalInfo.node = node;
+    this.modalInfo.alertModalVisible = true;
   }
 
   showRemoveDirModal(node: NzTreeNode): void {
     this.modalInfo.modalTitle = '是否删除文件夹';
+    this.modalInfo.isDir = true;
+
     this.modalInfo.modalMessage = node.origin.title;
     this.modalInfo.node = node;
     this.modalInfo.alertModalVisible = true;
-    this.modalInfo.isDir = true;
   }
 
   uncompress(node: NzTreeNode): void {

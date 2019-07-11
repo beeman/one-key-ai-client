@@ -1,7 +1,7 @@
 <a #downloadElement style="visibility: hidden"></a>
 <a #scanElement style="visibility: hidden"></a>
 
-<div style="height: 100%;overflow: auto">
+<div style="height: 100%;overflow: auto" (contextmenu)="closeContextMenu($event)">
   <div nz-row style="padding: 8px">
     <div nz-col [nzSpan]="18">
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="uploadMenu" [nzLoading]="projectUploading"
@@ -28,53 +28,85 @@
     </div>
   </div>
   <p style="padding-left: 8px">{{projectPath()}}</p>
-  <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzDblClick)="openFolder($event)"
-    (nzExpandChange)="onExpandChange($event)">
-    <ng-template #nzTreeTemplate let-node>
-      <span *ngIf="!node.isLeaf" nz-dropdown [nzDropdownMenu]="folderMenu" (click)="activeNode(node)"
+  <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzExpandChange)="onExpandChange($event)"
+    [nzTreeTemplate]="nzTreeTemplate" (nzContextMenu)="contextMenu($event)" (nzClick)="openNode($event)">
+
+  </nz-tree>
+  <ng-template #nzTreeTemplate let-node>
+    <!-- 滑过触发 -->
+    <!-- <span *ngIf="!node.isLeaf" nz-dropdown [nzDropdownMenu]="folderMenu" (click)="activeNode(node)"
         [class.active]="activedNode?.key === node.key">
         <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
         <span class="folder-name">{{ node.title }}</span>
-      </span>
-      <nz-dropdown-menu #folderMenu="nzDropdownMenu">
-        <ul nz-menu nzInDropDown>
-          <!-- <li nz-menu-item (click)="newFile()">新建文件</li>
-          <li nz-menu-item (click)="newDir()">新建文件夹</li> -->
-          <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
-            <li nz-menu-item (click)="activeNode(node)">上传文件</li>
-          </nz-upload>
-          <br>
-          <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false"
-            (nzChange)="uploadChange($event)">
-            <li nz-menu-item (click)="activeNode(node)">上传目录</li>
-          </nz-upload>
-          <li nz-menu-item (click)="showRemoveDirModal(node)">删除</li>
-          <li nz-menu-item (click)="compress(node)">压缩至当前目录</li>
-        </ul>
-      </nz-dropdown-menu>
+      </span> -->
 
-      <span nz-dropdown [nzDropdownMenu]="fileMenu" (click)="openFile(node)" *ngIf="node.isLeaf"
+    <!-- 右击触发 -->
+    <span *ngIf="!node.isLeaf" [class.active]="activedNode?.key === node.key">
+      <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'"></i>
+      <span class="folder-name">{{ node.title }}</span>
+    </span>
+    <!-- <nz-dropdown-menu #folderMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
+          <li nz-menu-item (click)="activeNode(node)">上传文件</li>
+        </nz-upload>
+        <br>
+        <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false"
+          (nzChange)="uploadChange($event)">
+          <li nz-menu-item (click)="activeNode(node)">上传目录</li>
+        </nz-upload>
+        <li nz-menu-item (click)="showRemoveModal(node)">删除</li>
+        <li nz-menu-item (click)="compress(node)">压缩至当前目录</li>
+      </ul>
+    </nz-dropdown-menu> -->
+
+    <!-- 滑过触发 -->
+    <!-- <span nz-dropdown [nzDropdownMenu]="fileMenu" (click)="openFile(node)" *ngIf="node.isLeaf"
         (click)="activeNode(node)" [class.active]="activedNode?.key === node.key">
         <i nz-icon type="file"></i>
         <span class="file-name">{{ node.title }}</span>
-      </span>
-      <nz-dropdown-menu #fileMenu="nzDropdownMenu">
-        <ul nz-menu nzInDropDown>
-          <!-- <li nz-menu-item (click)="openFile()">打开</li>
-          <li nz-menu-item (click)="saveFile()">保存</li> -->
-          <li nz-menu-item (click)="openFile(node)" *ngIf="canOpen(node)">打开</li>
-          <li nz-menu-item (click)="showRemoveFileModal(node)">删除</li>
-          <li nz-menu-item (click)="downloadFile(node)">下载</li>
-          <li nz-menu-item (click)="scan(node)" *ngIf="isImage(node)">预览</li>
-          <!-- <li nz-menu-item (click)="compress(node)" *ngIf="!canUncompress(node)">压缩至当前目录</li> -->
-          <li nz-menu-item (click)="uncompress(node)" *ngIf="canUncompress(node)">解压至当前目录</li>
-        </ul>
-      </nz-dropdown-menu>
-    </ng-template>
-  </nz-tree>
-</div>
+      </span> -->
 
-<nz-modal [(nzVisible)]="modalInfo.alertModalVisible" [nzTitle]="modalInfo.modalTitle" (nzOnCancel)="onModalCancel()"
-  (nzOnOk)="onModalConfirm()">
-  <p>{{modalInfo.modalMessage}}</p>
-</nz-modal>
+    <!-- 右击触发 -->
+    <span *ngIf="node.isLeaf" [class.active]="activedNode?.key === node.key">
+      <i nz-icon type="file"></i>
+      <span class="file-name">{{ node.title }}</span>
+    </span>
+    <!-- <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="openFile(node)" *ngIf="canOpen(node)">打开</li>
+        <li nz-menu-item (click)="scan(node)" *ngIf="isImage(node)">预览</li>
+        <li nz-menu-item (click)="downloadFile(node)">下载</li>
+        <li nz-menu-item (click)="showRemoveModal(node)">删除</li>
+        <li nz-menu-item (click)="uncompress(node)" *ngIf="canUncompress(node)">解压至当前目录</li>
+      </ul>
+    </nz-dropdown-menu> -->
+
+  </ng-template>
+  <nz-dropdown-menu #folderMenu="nzDropdownMenu">
+    <ul nz-menu (contextmenu)="closeContextMenu($event)">
+      <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
+        <li nz-menu-item>上传文件</li>
+      </nz-upload>
+      <br>
+      <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
+        <li nz-menu-item>上传目录</li>
+      </nz-upload>
+      <li nz-menu-item (click)="showRemoveModal(activedNode)">删除</li>
+      <li nz-menu-item (click)="compress(activedNode)">压缩至当前目录</li>
+    </ul>
+  </nz-dropdown-menu>
+  <nz-dropdown-menu #fileMenu="nzDropdownMenu">
+    <ul nz-menu (contextmenu)="closeContextMenu($event)">
+      <li nz-menu-item (click)="openFile(activedNode)" *ngIf="canOpen(activedNode)">打开</li>
+      <li nz-menu-item (click)="scan(activedNode)" *ngIf="isImage(activedNode)">预览</li>
+      <li nz-menu-item (click)="downloadFile(activedNode)">下载</li>
+      <li nz-menu-item (click)="showRemoveModal(activedNode)">删除</li>
+      <li nz-menu-item (click)="uncompress(activedNode)" *ngIf="canUncompress(activedNode)">解压至当前目录</li>
+    </ul>
+  </nz-dropdown-menu>
+
+  <nz-modal [(nzVisible)]="modalInfo.alertModalVisible" [nzTitle]="modalInfo.modalTitle" (nzOnCancel)="onModalCancel()"
+    (nzOnOk)="onModalConfirm()">
+    <p>{{modalInfo.modalMessage}}</p>
+  </nz-modal>
