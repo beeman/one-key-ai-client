@@ -4,6 +4,8 @@ import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMen
 import { EnvironmentService } from '../../../../core/environment.service';
 import { IdeService } from '../ide.service';
 import { UserService } from 'src/app/core/user.service';
+import { ActivatedRoute } from '@angular/router';
+import { DockerContainersService } from '../../service/docker-containers.service';
 
 interface FileNode {
   title: string;
@@ -41,6 +43,9 @@ export class FileBrowserComponent implements OnInit {
   fileList: FileNode[] = [];  // 项目列表
   activedNode: NzTreeNode = null;  // 选中的节点
 
+  projectPaths: string[] = []; // 项目路径
+
+  private userName: string = ''; // 用户名
   private rootPath = '';  // 项目文件保存的根目录
 
   modalInfo: {
@@ -58,11 +63,31 @@ export class FileBrowserComponent implements OnInit {
     private readonly fileService: FileService,
     private nzContextMenuService: NzContextMenuService,
     private environmentService: EnvironmentService,
-    private ideService: IdeService
+    private ideService: IdeService,
+    private readonly route: ActivatedRoute,
+    private readonly dockerContainerService: DockerContainersService
   ) { }
 
   ngOnInit() {
+    this.userName = this.userService.userName();
 
+    this.route.paramMap.subscribe(value => {
+      const id = value.get('id');
+      this.dockerContainerService.configVolumes(id).subscribe(value => {
+        if (value['msg'] === 'ok') {
+          const items: string[] = value['data'];
+          const keyWrods = `docker/projects`;
+          for (let i = 0; i < items.length; ++i) {
+            const item = items[i];
+            const words = item.split(':');
+            if (words.length === 2 && words[0].indexOf(keyWrods) >= 0) {
+              this.projectPaths = words[1].split('/');
+              break;
+            }
+          }
+        }
+      });
+    }).unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -81,7 +106,7 @@ export class FileBrowserComponent implements OnInit {
   }
 
   public updateProjects(): void {
-    this.fileService.getProjectRecursive(this.userService.userName()).subscribe(
+    this.fileService.getProjectRecursive(this.userName).subscribe(
       value => {
         if (value['msg'] === 'ok') {
           // this.fileList = value['data'];
@@ -246,10 +271,6 @@ export class FileBrowserComponent implements OnInit {
     }
   }
 
-  projectPath(): string {
-    return `/home/${this.userService.userName()}`;
-  }
-
   showRemoveModal(node: NzTreeNode): void {
     if (node.isLeaf) {
       this.modalInfo.modalTitle = '是否删除文件';
@@ -330,7 +351,7 @@ export class FileBrowserComponent implements OnInit {
     // tslint:disable-next-line:no-any
     formData.append(item.name, item.file as any);
     formData.append('webkitRelativePath', item.file.webkitRelativePath);
-    formData.append('userName', this.userService.userName());
+    formData.append('userName', this.userName);
     formData.append('fileName', item.file.name);
 
     return this.fileService.uploadFile(formData).subscribe(

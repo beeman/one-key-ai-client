@@ -27,7 +27,11 @@
       <button nz-button nzType="primary" (click)="updateProjects()"><i nz-icon type="sync"></i>刷新</button>
     </div>
   </div>
-  <p style="padding-left: 8px">{{projectPath()}}</p>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item *ngFor="let item of projectPaths">
+      {{item}}
+    </nz-breadcrumb-item>
+  </nz-breadcrumb>
   <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzExpandChange)="onExpandChange($event)"
     [nzTreeTemplate]="nzTreeTemplate" (nzContextMenu)="contextMenu($event)" (nzClick)="openNode($event)">
 

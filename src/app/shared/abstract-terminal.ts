@@ -92,8 +92,8 @@ export abstract class AbstractTerminal {
 
             this.socket = io(environment.serverUrl);
             this.socket.on('connect', this.runRealTerminal);
-            this.socket.on('disconnect', this.runFakeTerminal);
-            this.socket.on('error', this.runFakeTerminal);
+            this.socket.on('disconnect', this.disconnectPrompt);
+            this.socket.on('error', this.disconnectPrompt);
         }, 0);
     }
 
@@ -144,6 +144,10 @@ export abstract class AbstractTerminal {
     private runRealTerminal = (): void => {
         this.startConnect();
 
+        if (this.socket.hasListeners('data')) {
+            return;
+        }
+
         this.socket.on('data', (data) => {
             this.term.write(data);
         });
@@ -160,7 +164,7 @@ export abstract class AbstractTerminal {
         });
     }
 
-    private runFakeTerminal = (): void => {
+    private disconnectPrompt = (): void => {
         if (this.term._initialized) {
             return;
         }
@@ -172,6 +176,11 @@ export abstract class AbstractTerminal {
 
         this.term.writeln('服务器连接失败');
         this.term.prompt();
+
+    }
+
+    private runFakeTerminal = (): void => {
+        this.disconnectPrompt();
 
         this.term._core.register(this.term.addDisposableListener('key', (key, ev) => {
             const printable = !ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey;

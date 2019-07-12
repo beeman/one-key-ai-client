@@ -34,7 +34,7 @@
         <nz-divider nzType="vertical" *ngIf="container.state!=='running'"></nz-divider>
         <button nz-button nzType="danger" (click)="remove(container.id)" *ngIf="container.state!=='running'">删除</button>
         <nz-divider nzType="vertical" *ngIf="container.state!=='running'"></nz-divider>
-        <button nz-button nzType="primary" (click)="exec(container.id)" *ngIf="container.state==='running'">执行</button>
+        <button nz-button nzType="primary" (click)="exec(container.id)" *ngIf="container.state==='running'">进入</button>
         <nz-divider nzType="vertical" *ngIf="container.state==='running'"></nz-divider>
         <button nz-button nzType="danger" (click)="stop(container.id)" *ngIf="container.state==='running'"
           [nzLoading]="stopContainerId===container.id">停止</button>

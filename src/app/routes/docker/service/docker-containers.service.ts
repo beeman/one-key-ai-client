@@ -18,6 +18,10 @@ export class DockerContainersService {
     return this.http.post<Docker.ContainerInfo[]>(this.serverUrl + '/containers/info', { userName: userName });
   }
 
+  public configVolumes(id: string) {
+    return this.http.post(this.serverUrl + '/containers/host-config-binds', { id: id });
+  }
+
   public exec(id: string) {
     return this.http.post(this.serverUrl + '/containers/exec', { id: id });
   }
