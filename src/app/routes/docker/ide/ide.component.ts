@@ -26,6 +26,9 @@ export class IdeComponent implements OnInit {
     this.route.paramMap.subscribe(value => {
       const id = value.get('id');
       this.dockerContainerService.configVolumes(id).subscribe(value => {
+        if (!value['data']) {
+          return;
+        }
         if (value['msg'] === 'ok') {
           const items: string[] = value['data'];
           const keyWrods = `docker/projects`;

@@ -93,6 +93,8 @@
   </ng-template>
   <nz-dropdown-menu #folderMenu="nzDropdownMenu">
     <ul nz-menu (contextmenu)="closeContextMenu($event)">
+      <li nz-menu-item (click)="newFile(activedNode)">新建文件</li>
+      <li nz-menu-item (click)="newDir(activedNode)">新建目录</li>
       <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
         <li nz-menu-item>上传文件</li>
       </nz-upload>
@@ -114,7 +116,13 @@
     </ul>
   </nz-dropdown-menu>
 
-  <nz-modal [(nzVisible)]="modalInfo.alertModalVisible" [nzTitle]="modalInfo.modalTitle" (nzOnCancel)="onModalCancel()"
+  <nz-modal [(nzVisible)]="removeModalInfo.visible" [nzTitle]="removeModalInfo.title"
+    (nzOnCancel)="onRemoveModalCancel()" (nzOnOk)="onRemoveModalConfirm()">
+    <p>{{removeModalInfo.message}}</p>
+  </nz-modal>
+
+  <!-- <nz-modal [(nzVisible)]="modalInfo.alertModalVisible" [nzTitle]="modalInfo.modalTitle" (nzOnCancel)="onModalCancel()"
     (nzOnOk)="onModalConfirm()">
     <p>{{modalInfo.modalMessage}}</p>
-  </nz-modal>
+  </nz-modal> -->
+</div>

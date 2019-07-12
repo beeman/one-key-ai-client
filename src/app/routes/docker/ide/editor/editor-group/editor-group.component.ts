@@ -101,7 +101,7 @@ export class EditorGroupComponent implements OnInit {
     if (!file) {
       return;
     }
-    if (this.currentLanguage==='python') {
+    if (this.currentLanguage === 'python') {
       const containerFilePath = this.ideService.changeToContainerPath(file.path);;
       const command = `python ${containerFilePath}`;
 
@@ -186,6 +186,10 @@ export class EditorGroupComponent implements OnInit {
         this.filesToSave.push(this.files[index]);
       }
     });
+
+    if (this.filesToSave.length === 0) {
+      return;
+    }
     this.isCloseFile = false;
     this.saveModalVisible = true;
   }

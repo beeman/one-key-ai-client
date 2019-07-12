@@ -49,13 +49,19 @@ export class FileBrowserComponent implements OnInit {
 
   private subscriptions: Subscription[] = [];
 
-  modalInfo: {
-    alertModalVisible: boolean;
-    modalTitle: string;
-    modalMessage: string;
+  removeModalInfo: {
+    visible: boolean;
+    title: string;
+    message: string;
     node: NzTreeNode;
     isDir: boolean;
-  } = { alertModalVisible: false, modalTitle: '', modalMessage: '', node: null, isDir: false };
+  } = { visible: false, title: '', message: '', node: null, isDir: false };
+
+  newFileModalInfo: {
+    visible: boolean;
+    title: string;
+    isDir: boolean;
+  } = { visible: false, title: '', isDir: false };
 
   private wholeFileList: FileNode[] = []; // 所有文件信息
 
@@ -99,7 +105,7 @@ export class FileBrowserComponent implements OnInit {
     });
     this.updateProjects();
     this.fileMenu.visible$.subscribe(value => {
-      console.log(value);
+      // console.log(value);
     });
   }
 
@@ -227,6 +233,14 @@ export class FileBrowserComponent implements OnInit {
     return false;
   }
 
+  newFile(node: NzTreeNode): void {
+
+  }
+
+  newDir(node: NzTreeNode): void {
+
+  }
+
   scan(node: NzTreeNode): void {
     if (!node) {
       return;
@@ -256,49 +270,31 @@ export class FileBrowserComponent implements OnInit {
     }
   }
 
-  onModalCancel(): void {
-    this.modalInfo.alertModalVisible = false;
+  onRemoveModalCancel(): void {
+    this.removeModalInfo.visible = false;
   }
 
-  onModalConfirm(): void {
-    this.modalInfo.alertModalVisible = false;
-    if (this.modalInfo.isDir) {
-      this.removeDir(this.modalInfo.node);
+  onRemoveModalConfirm(): void {
+    this.removeModalInfo.visible = false;
+    if (this.removeModalInfo.isDir) {
+      this.removeDir(this.removeModalInfo.node);
     } else {
-      this.removeFile(this.modalInfo.node);
+      this.removeFile(this.removeModalInfo.node);
     }
   }
 
   showRemoveModal(node: NzTreeNode): void {
     if (node.isLeaf) {
-      this.modalInfo.modalTitle = '是否删除文件';
-      this.modalInfo.isDir = false;
+      this.removeModalInfo.title = '是否删除文件';
+      this.removeModalInfo.isDir = false;
     } else {
-      this.modalInfo.modalTitle = '是否删除文件夹';
-      this.modalInfo.isDir = true;
+      this.removeModalInfo.title = '是否删除目录';
+      this.removeModalInfo.isDir = true;
     }
 
-    this.modalInfo.modalMessage = node.origin.title;
-    this.modalInfo.node = node;
-    this.modalInfo.alertModalVisible = true;
-  }
-
-  showRemoveFileModal(node: NzTreeNode): void {
-    this.modalInfo.modalTitle = '是否删除文件';
-    this.modalInfo.isDir = false;
-
-    this.modalInfo.modalMessage = node.origin.title;
-    this.modalInfo.node = node;
-    this.modalInfo.alertModalVisible = true;
-  }
-
-  showRemoveDirModal(node: NzTreeNode): void {
-    this.modalInfo.modalTitle = '是否删除文件夹';
-    this.modalInfo.isDir = true;
-
-    this.modalInfo.modalMessage = node.origin.title;
-    this.modalInfo.node = node;
-    this.modalInfo.alertModalVisible = true;
+    this.removeModalInfo.message = node.origin.title;
+    this.removeModalInfo.node = node;
+    this.removeModalInfo.visible = true;
   }
 
   uncompress(node: NzTreeNode): void {
