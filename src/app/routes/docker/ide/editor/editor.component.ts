@@ -53,6 +53,7 @@ export class EditorComponent implements OnInit {
 
     this.editor.onDidChangeModelContent((e: monaco.editor.IModelContentChangedEvent) => {
       this.contentChanged = true;
+      this.editorEvent.emit({ event: 'contentChanged', data: { changed: true, path: this.filePath } });
     });
 
     this.openFile();
@@ -118,6 +119,8 @@ export class EditorComponent implements OnInit {
     this.fileService.saveFile(this.filePath, this.editor.getValue()).subscribe(value => {
       if (value['msg'] === 'ok') {
         this.contentChanged = false;  // 设置文本未变化
+        this.editorEvent.emit({ event: 'contentChanged', data: { changed: false, path: this.filePath } });
+
         if (callback !== null) {
           callback();
         }
@@ -132,11 +135,12 @@ export class EditorComponent implements OnInit {
       if (value['msg'] === 'ok') {
         this.languageId = this.ideService.suggestLanguageId(this.filePath);
         monaco.editor.setModelLanguage(this.editor.getModel(), this.languageId);
-        this.editorEvent.emit({ event: 'changeLanguage', language: this.languageId });
+        this.editorEvent.emit({ event: 'languageChanged', language: this.languageId });
 
         this.editor!.setValue(value['data']);
 
         this.contentChanged = false; // 默认文本未发生变化
+        this.editorEvent.emit({ event: 'contentChanged', data: { changed: false, path: this.filePath } });
       }
       else if (value['msg'] === 'warning') {
         this.messageService.warning(value['data']);

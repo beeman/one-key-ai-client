@@ -4,8 +4,7 @@ import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMen
 import { EnvironmentService } from '../../../../core/environment.service';
 import { IdeService } from '../ide.service';
 import { UserService } from 'src/app/core/user.service';
-import { ActivatedRoute } from '@angular/router';
-import { DockerContainersService } from '../../service/docker-containers.service';
+import { Subscription } from 'rxjs';
 
 interface FileNode {
   title: string;
@@ -48,6 +47,8 @@ export class FileBrowserComponent implements OnInit {
   private userName: string = ''; // 用户名
   private rootPath = '';  // 项目文件保存的根目录
 
+  private subscriptions: Subscription[] = [];
+
   modalInfo: {
     alertModalVisible: boolean;
     modalTitle: string;
@@ -64,30 +65,27 @@ export class FileBrowserComponent implements OnInit {
     private nzContextMenuService: NzContextMenuService,
     private environmentService: EnvironmentService,
     private ideService: IdeService,
-    private readonly route: ActivatedRoute,
-    private readonly dockerContainerService: DockerContainersService
   ) { }
 
   ngOnInit() {
     this.userName = this.userService.userName();
 
-    this.route.paramMap.subscribe(value => {
-      const id = value.get('id');
-      this.dockerContainerService.configVolumes(id).subscribe(value => {
-        if (value['msg'] === 'ok') {
-          const items: string[] = value['data'];
-          const keyWrods = `docker/projects`;
-          for (let i = 0; i < items.length; ++i) {
-            const item = items[i];
-            const words = item.split(':');
-            if (words.length === 2 && words[0].indexOf(keyWrods) >= 0) {
-              this.projectPaths = words[1].split('/');
-              break;
-            }
-          }
+    const sub = this.ideService.getEvent().subscribe(data => {
+      if (data.event === 'projectMapChanged') {
+        const map: string[] = data.data;
+        if (map && map.length === 2) {
+          this.projectPaths = map[1].split('/');
         }
-      });
-    }).unsubscribe();
+      }
+    });
+
+    this.subscriptions.push(sub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => {
+      sub!.unsubscribe();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -158,7 +156,7 @@ export class FileBrowserComponent implements OnInit {
     if (!this.canOpen(node)) {
       return;
     }
-    this.ideService.getOpenFileEvent().emit(node.key);
+    this.ideService.getEvent().emit({ event: 'openFile', data: node.key });
   }
 
   activeNode(node: NzTreeNode): void {

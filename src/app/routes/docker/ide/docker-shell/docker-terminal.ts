@@ -1,4 +1,4 @@
-import { AbstractTerminal } from '../../../shared/abstract-terminal';
+import { AbstractTerminal } from '../../../../shared/abstract-terminal';
 
 export class DockerTerminal extends AbstractTerminal {
     constructor(private readonly containerId: string) {

@@ -4,7 +4,7 @@ import { DockerImagesComponent } from './docker-images/docker-images.component';
 import { ContainersComponent } from './containers/containers.component';
 import { ContainerStatsComponent } from './container-stats/container-stats.component';
 import { IdeComponent } from './ide/ide.component';
-import { DockerShellGroupComponent } from './docker-shell/docker-shell-group/docker-shell-group.component';
+import { DockerShellGroupComponent } from './ide/docker-shell/docker-shell-group/docker-shell-group.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'images', pathMatch: 'full' },

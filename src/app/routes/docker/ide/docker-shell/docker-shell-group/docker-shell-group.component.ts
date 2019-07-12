@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, AfterViewInit, ViewRef, ViewChild, ElementRef } from '@angular/core';
-import { DockerContainersService } from '../../service/docker-containers.service';
+import { DockerContainersService } from '../../../service/docker-containers.service';
 import { ActivatedRoute } from '@angular/router';
 import { DockerShellComponent } from '../docker-shell.component';
 

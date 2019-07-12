@@ -2,10 +2,18 @@ import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { IdeService } from '../../ide.service';
 import { Subscription } from 'rxjs';
 import { EditorComponent } from '../editor.component';
+import { NzMessageService } from 'ng-zorro-antd';
 
-interface FileInfo {
+class FileInfo {
   path: string;
   name: string;
+  icon: string;
+
+  constructor(path: string, name: string, icon: string = 'close') {
+    this.path = path;
+    this.name = name;
+    this.icon = icon;
+  }
 }
 
 @Component({
@@ -33,12 +41,15 @@ export class EditorGroupComponent implements OnInit {
   private editorHeight: string = '100px';
 
   constructor(
-    public readonly ideService: IdeService
+    public readonly ideService: IdeService,
+    private readonly messageService: NzMessageService
   ) { }
 
   ngOnInit() {
-    this.openFileSubscription = this.ideService.getOpenFileEvent().subscribe((filePath) => {
-      this.openFile(filePath);
+    this.openFileSubscription = this.ideService.getEvent().subscribe((data) => {
+      if (data.event === 'openFile') {
+        this.openFile(data.data);
+      }
     });
 
     // window.onbeforeunload = (event) => {
@@ -85,24 +96,52 @@ export class EditorGroupComponent implements OnInit {
     this.files.splice(index, 1);
   }
 
-  public tabIcon(file: FileInfo): string {
-    return this.isFileChanged(file) ? 'close-circle' : 'close';
-  }
+  public execFile(): void {
+    const file = this.files[this.selectedIndex];
+    if (!file) {
+      return;
+    }
+    if (file.name.endsWith('.py')) {
+      const containerFilePath = this.ideService.changeToContainerPath(file.path);;
+      const command = `python ${containerFilePath}`;
 
-  public isFileChanged(file: FileInfo): boolean {
-    const index = this.findIndex(file.path);
-    const component = this.getEditor(index);
-
-    if (component) {
-      return this.getEditor(index)!.isContentChanged();
+      this.ideService.getEvent().emit({ event: 'execCommand', data: command })
     } else {
-      return false;
+      this.messageService.info('仅支持python文件');
     }
   }
 
+  // public tabIcon(file: FileInfo): string {
+  //   return this.isFileChanged(file) ? 'close-circle' : 'close';
+  // }
+
+  // public isFileChanged(file: FileInfo): boolean {
+  //   const index = this.findIndex(file.path);
+  //   const component = this.getEditor(index);
+
+  //   if (component) {
+  //     return this.getEditor(index)!.isContentChanged();
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
   public onEditorEvent(event: any): void {
-    if (event.event === 'changeLanguage') {
+    if (event.event === 'languageChanged') {
       this.currentLanguage = this.getCurrentEditor().getLanguageId();
+    }
+    if (event.event === 'contentChanged') {
+      const data = event.data;
+      const index = this.files.findIndex(value => {
+        return value.path === data.path;
+      });
+      if (index >= 0) {
+        if (data.changed) {
+          this.files[index].icon = 'close-circle';
+        } else {
+          this.files[index].icon = 'close';
+        }
+      }
     }
     // if (event.event === 'init' && this.lauguageIds.length <= 0) {
     //   this.ideService.getLanguages().forEach(value => {
@@ -116,6 +155,9 @@ export class EditorGroupComponent implements OnInit {
   }
 
   public onSaveModalConfirm(): void {
+    if (this.filesToSave.length === 0) {
+      this.saveModalVisible = false;
+    }
     this.filesToSave.forEach(file => {
       const index = this.findIndex(file.path);
       this.getEditor(index).saveFile(() => {
@@ -135,6 +177,17 @@ export class EditorGroupComponent implements OnInit {
         this.files.splice(index, 1);
       }
     });
+  }
+
+  public saveAllFiles(): void {
+    this.filesToSave = [];
+    this.getAllEditors().forEach((editor, index) => {
+      if (editor.isContentChanged()) {
+        this.filesToSave.push(this.files[index]);
+      }
+    });
+    this.isCloseFile = false;
+    this.saveModalVisible = true;
   }
 
   private getCurrentEditor(): EditorComponent {
@@ -164,7 +217,7 @@ export class EditorGroupComponent implements OnInit {
     }
 
     const items = filePath.split('/');
-    this.files.push({ path: filePath, name: items[items.length - 1] });
+    this.files.push(new FileInfo(filePath, items[items.length - 1]));
     this.selectedIndex = this.files.length - 1;
 
     setTimeout(() => {

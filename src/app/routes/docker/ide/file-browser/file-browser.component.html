@@ -24,7 +24,11 @@
       </label>
     </div>
     <div nz-col [nzSpan]="6" style="text-align: right">
-      <button nz-button nzType="primary" (click)="updateProjects()"><i nz-icon type="sync"></i>刷新</button>
+      <button nz-button nzType="primary" nzShape="circle" (click)="updateProjects()" nz-tooltip nzTitle="刷新"><i nz-icon
+          type="sync"></i></button>
+
+      <!-- <i (click)="updateProjects()" nz-tooltip nzTitle="刷新"><i nz-icon type="sync"></i></i> -->
+      <!-- <i (click)="saveAllFiles()" nz-tooltip nzTitle="保存全部文件" style="margin-left: 4px"><i nz-icon type="save"></i></i> -->
     </div>
   </div>
   <nz-breadcrumb>

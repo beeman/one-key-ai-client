@@ -5,7 +5,7 @@
     <ng-template #titleTemplate>
       <div>
         {{ file.name }}
-        <i nz-icon [nzType]="tabIcon(file)" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
+        <i nz-icon [nzType]="file.icon" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
         <!-- <i *ngIf="!isFileChanged(file)" nz-icon nzType="close" (click)="closeFile(file)" class="ant-tabs-close-x"></i>
         <i *ngIf="isFileChanged(file)" nz-icon nzType="close-circle" (click)="closeFile(file)"
           class="ant-tabs-close-x"></i> -->
@@ -16,7 +16,12 @@
 </nz-tabset>
 <ng-template #extraTemplate>
   <!-- <button (click)="add()">add</button> -->
-  <nz-select style="width: 120px;" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()" nzAllowClear>
+  <button nz-button nzType="link" nzShape="circle" (click)="execFile()" nzGhost nz-tooltip nzTitle="执行文件"><i nz-icon
+      type="caret-right"></i></button>
+  <button nz-button nzType="link" nzShape="circle" (click)="saveAllFiles()" nzGhost nz-tooltip nzTitle="保存全部文件"><i
+      nz-icon type="save"></i></button>
+  <nz-select style="width: 120px;margin-left: 8px" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()"
+    nzAllowClear>
     <nz-option *ngFor="let id of ideService.getLanguageIds()" [nzValue]="id" [nzLabel]="id"></nz-option>
   </nz-select>
 </ng-template>
@@ -24,7 +29,7 @@
 <!-- 保存对话框 -->
 <nz-modal [(nzVisible)]="saveModalVisible" [nzTitle]="'保存文件'" (nzOnCancel)="onSaveModalCancel()"
   [nzFooter]="saveModalFooter">
-  <p>文件内容发生变化，是否保存？</p>
+  <p>是否保存文件？</p>
   <p *ngFor="let file of filesToSave">{{file.name}}</p>
 
   <ng-template #saveModalFooter>
