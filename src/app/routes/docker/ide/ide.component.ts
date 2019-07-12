@@ -50,7 +50,7 @@ export class IdeComponent implements OnInit {
 
   onShellEvent(event: string): void {
     if (event === 'end') {
-      this.location.back();
+      // this.location.back();
     }
   }
 

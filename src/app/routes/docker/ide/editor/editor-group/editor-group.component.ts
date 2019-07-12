@@ -101,7 +101,7 @@ export class EditorGroupComponent implements OnInit {
     if (!file) {
       return;
     }
-    if (file.name.endsWith('.py')) {
+    if (this.currentLanguage==='python') {
       const containerFilePath = this.ideService.changeToContainerPath(file.path);;
       const command = `python ${containerFilePath}`;
 
