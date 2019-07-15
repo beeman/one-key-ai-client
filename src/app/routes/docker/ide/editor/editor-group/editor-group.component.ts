@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, ChangeDetectorRef } from '@angular/core';
 import { IdeService } from '../../ide.service';
 import { Subscription } from 'rxjs';
 import { EditorComponent } from '../editor.component';
 import { NzMessageService } from 'ng-zorro-antd';
+import { IntroductionComponent } from '../../introduction/introduction.component';
 
 class FileInfo {
   path: string;
@@ -25,6 +26,9 @@ export class EditorGroupComponent implements OnInit {
   @ViewChild('tabset', { static: false })
   tabsetRef: any;
 
+  @ViewChild('introduction', { static: false })
+  introductionRef: any;
+
   @ViewChildren(EditorComponent)
   editorComponents: any;
 
@@ -42,7 +46,8 @@ export class EditorGroupComponent implements OnInit {
 
   constructor(
     public readonly ideService: IdeService,
-    private readonly messageService: NzMessageService
+    private readonly messageService: NzMessageService,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -61,11 +66,7 @@ export class EditorGroupComponent implements OnInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      const element = this.tabsetRef.elementRef.nativeElement;
-      const wholeHeight = element.clientHeight;
-      this.contentElement = element.lastChild;
-      const offsetTop = this.contentElement.offsetTop;
-      this.editorHeight = wholeHeight - offsetTop + 'px';
+      this.initSize();
     }, 0);
   }
 
@@ -141,7 +142,14 @@ export class EditorGroupComponent implements OnInit {
         } else {
           this.files[index].icon = 'close';
         }
+
+        this.updateComponent();
       }
+    }
+
+    if (event.event === 'saveAllFiles') {
+      this.saveAllFiles();
+      this.updateComponent();
     }
     // if (event.event === 'init' && this.lauguageIds.length <= 0) {
     //   this.ideService.getLanguages().forEach(value => {
@@ -179,6 +187,16 @@ export class EditorGroupComponent implements OnInit {
     });
   }
 
+  public onIntroductionEvent(event: any): void {
+    if (event.event === 'ngAfterViewInit') {
+      setTimeout(() => {
+        this.initSize();
+
+        (<HTMLElement>this.contentElement.children[this.selectedIndex]).style.height = this.editorHeight;
+      }, 0);
+    }
+  }
+
   public saveAllFiles(): void {
     this.filesToSave = [];
     this.getAllEditors().forEach((editor, index) => {
@@ -190,6 +208,7 @@ export class EditorGroupComponent implements OnInit {
     if (this.filesToSave.length === 0) {
       return;
     }
+
     this.isCloseFile = false;
     this.saveModalVisible = true;
   }
@@ -229,4 +248,16 @@ export class EditorGroupComponent implements OnInit {
     }, 0);
   }
 
+  private initSize(): void {
+    const element = this.tabsetRef.elementRef.nativeElement;
+    const wholeHeight = element.clientHeight;
+    this.contentElement = element.lastChild;
+    const offsetTop = this.contentElement.offsetTop;
+    this.editorHeight = wholeHeight - offsetTop + 'px';
+  }
+
+  private updateComponent(): void {
+    this.changeDetectorRef.markForCheck();
+    this.changeDetectorRef.detectChanges();
+  }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FileService } from '../../service/file.service';
-import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMenuService, UploadXHRArgs, UploadChangeParam, NzDropdownMenuComponent } from 'ng-zorro-antd';
+import { NzTreeNode, NzFormatEmitEvent, NzDropdownContextComponent, NzContextMenuService, UploadXHRArgs, UploadChangeParam, NzDropdownMenuComponent, NzMessageService } from 'ng-zorro-antd';
 import { EnvironmentService } from '../../../../core/environment.service';
 import { IdeService } from '../ide.service';
 import { UserService } from 'src/app/core/user.service';
 import { Subscription } from 'rxjs';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 interface FileNode {
   title: string;
@@ -61,7 +62,9 @@ export class FileBrowserComponent implements OnInit {
     visible: boolean;
     title: string;
     isDir: boolean;
-  } = { visible: false, title: '', isDir: false };
+    formGroup: FormGroup;
+    node: NzTreeNode;
+  } = { visible: false, title: '', isDir: false, formGroup: null, node: null };
 
   private wholeFileList: FileNode[] = []; // 所有文件信息
 
@@ -71,10 +74,15 @@ export class FileBrowserComponent implements OnInit {
     private nzContextMenuService: NzContextMenuService,
     private environmentService: EnvironmentService,
     private ideService: IdeService,
+    private formBuilder: FormBuilder,
+    private messageMessage: NzMessageService
   ) { }
 
   ngOnInit() {
     this.userName = this.userService.userName();
+    this.newFileModalInfo.formGroup = this.formBuilder.group({
+      name: [null, [Validators.required]]
+    });
 
     const sub = this.ideService.getEvent().subscribe(data => {
       if (data.event === 'projectMapChanged') {
@@ -234,11 +242,34 @@ export class FileBrowserComponent implements OnInit {
   }
 
   newFile(node: NzTreeNode): void {
-
+    this.newFileModalInfo.title = '新建文件';
+    this.newFileModalInfo.isDir = false;
+    this.newFileModalInfo.formGroup.reset();
+    this.newFileModalInfo.node = node;
+    this.newFileModalInfo.visible = true;
   }
 
   newDir(node: NzTreeNode): void {
+    this.newFileModalInfo.title = '新建目录';
+    this.newFileModalInfo.isDir = true;
+    this.newFileModalInfo.formGroup.reset();
+    this.newFileModalInfo.node = node;
+    this.newFileModalInfo.visible = true;
+  }
 
+  onNewFileModal(event: boolean): void {
+    if (event && this.newFileModalInfo.formGroup !== null && this.newFileModalInfo.node !== null) {
+      const path = this.newFileModalInfo.node.key;
+      const name = this.newFileModalInfo.formGroup.get('name').value;
+      this.fileService.newFile(path + '/' + name, this.newFileModalInfo.isDir).subscribe(value => {
+        if (value['msg'] === 'ok') {
+          this.updateNode(this.newFileModalInfo.node);
+        } else {
+          this.messageMessage.warning(value['data']);
+        }
+      });
+    }
+    this.newFileModalInfo.visible = false;
   }
 
   scan(node: NzTreeNode): void {

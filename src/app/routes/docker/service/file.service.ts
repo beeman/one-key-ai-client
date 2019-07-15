@@ -40,6 +40,10 @@ export class FileService {
     return this.http.post(this.serverUrl + '/file/list-recursive', { path: path });
   }
 
+  public newFile(path: string, isDir: boolean) {
+    return this.http.post(this.serverUrl + '/file/new-file', { path: path, isDir: isDir });
+  }
+
   public openFile(filePath: string) {
     return this.http.post(this.serverUrl + '/file/open-file', { path: filePath });
   }

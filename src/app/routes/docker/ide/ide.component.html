@@ -1,17 +1,17 @@
-  <div #container class="full-height">
-    <nz-layout class="full-height">
-      <nz-sider [nzWidth]="300" style="background:#ccc;">
-        <app-file-browser></app-file-browser>
-      </nz-sider>
-      <nz-layout class="full-height" style="padding: 0px;overflow-y:hidden;">
-        <nz-content style="padding: 0px;margin: 0px;height: 50%;">
-          <!-- <app-editor></app-editor> -->
-          <app-editor-group></app-editor-group>
-        </nz-content>
-        <nz-content style="padding: 0px;height: 50%;">
-          <app-docker-shell (event)="onShellEvent($event)"></app-docker-shell>
-          <!-- <app-docker-shell-group></app-docker-shell-group> -->
-        </nz-content>
-      </nz-layout>
+<div #container class="full-height">
+  <nz-layout class="full-height">
+    <nz-sider [nzWidth]="300" style="background:#ccc;">
+      <app-file-browser></app-file-browser>
+    </nz-sider>
+    <nz-layout class="full-height" style="padding: 0px;overflow-y:hidden;">
+      <nz-content style="padding: 0px;margin: 0px;height: 50%;">
+        <!-- <app-editor></app-editor> -->
+        <app-editor-group></app-editor-group>
+      </nz-content>
+      <nz-content style="padding: 0px;height: 50%;">
+        <app-docker-shell (event)="onShellEvent($event)"></app-docker-shell>
+        <!-- <app-docker-shell-group></app-docker-shell-group> -->
+      </nz-content>
     </nz-layout>
-  </div>
+  </nz-layout>
+</div>

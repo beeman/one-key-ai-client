@@ -38,7 +38,6 @@
   </nz-breadcrumb>
   <nz-tree id="tree" nzAsyncData [nzData]="fileList" (nzExpandChange)="onExpandChange($event)"
     [nzTreeTemplate]="nzTreeTemplate" (nzContextMenu)="contextMenu($event)" (nzClick)="openNode($event)">
-
   </nz-tree>
   <ng-template #nzTreeTemplate let-node>
     <!-- 滑过触发 -->
@@ -93,15 +92,21 @@
   </ng-template>
   <nz-dropdown-menu #folderMenu="nzDropdownMenu">
     <ul nz-menu (contextmenu)="closeContextMenu($event)">
-      <li nz-menu-item (click)="newFile(activedNode)">新建文件</li>
-      <li nz-menu-item (click)="newDir(activedNode)">新建目录</li>
-      <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
-        <li nz-menu-item>上传文件</li>
-      </nz-upload>
-      <br>
-      <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
-        <li nz-menu-item>上传目录</li>
-      </nz-upload>
+      <li nz-submenu nzTitle="新建">
+        <ul>
+          <li nz-menu-item (click)="newFile(activedNode)">文件</li>
+          <li nz-menu-item (click)="newDir(activedNode)">目录</li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="上传">
+        <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
+          <li nz-menu-item>文件</li>
+        </nz-upload>
+        <br>
+        <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
+          <li nz-menu-item>目录</li>
+        </nz-upload>
+      </li>
       <li nz-menu-item (click)="showRemoveModal(activedNode)">删除</li>
       <li nz-menu-item (click)="compress(activedNode)">压缩至当前目录</li>
     </ul>
@@ -121,8 +126,21 @@
     <p>{{removeModalInfo.message}}</p>
   </nz-modal>
 
-  <!-- <nz-modal [(nzVisible)]="modalInfo.alertModalVisible" [nzTitle]="modalInfo.modalTitle" (nzOnCancel)="onModalCancel()"
-    (nzOnOk)="onModalConfirm()">
-    <p>{{modalInfo.modalMessage}}</p>
-  </nz-modal> -->
+  <nz-modal [(nzVisible)]="newFileModalInfo.visible" [nzTitle]="newFileModalInfo.title"
+    (nzOnCancel)="onNewFileModal(false)" (nzOnOk)="onNewFileModal(true)" [nzFooter]="null">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="newFileModalInfo.formGroup">
+      <nz-form-item style="width: 100%">
+        <nz-form-control nzErrorTip="请输入名称!" style="width: 100%">
+          <nz-input-group>
+            <input formControlName="name" nz-input placeholder="名称" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <div nz-row style="margin-top: 24px;text-align: right">
+        <button nz-button (click)="onNewFileModal(false)" style="margin-left: 8px">取消</button>
+        <button nz-button nzType="primary" (click)="onNewFileModal(true)" [disabled]="!newFileModalInfo.formGroup.valid"
+          style="margin-left: 8px">确定</button>
+      </div>
+    </form>
+  </nz-modal>
 </div>

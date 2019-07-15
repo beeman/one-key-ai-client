@@ -1,6 +1,9 @@
 <nz-tabset #tabset [nzTabPosition]="'top'" [nzAnimated]="true" [nzTabBarExtraContent]="extraTemplate"
   [(nzSelectedIndex)]="selectedIndex" class="full-height" style="background: #222222"
   [nzTabBarStyle]="{color:'#cccccc'}" (nzSelectedIndexChange)="changeEditor($event)">
+  <nz-tab *ngIf="files.length===0" nzTitle="介绍">
+    <app-introduction #introduction (event)='onIntroductionEvent($event)'></app-introduction>
+  </nz-tab>
   <nz-tab *ngFor="let file of files" [nzTitle]="titleTemplate">
     <ng-template #titleTemplate>
       <div>
@@ -15,15 +18,17 @@
   </nz-tab>
 </nz-tabset>
 <ng-template #extraTemplate>
-  <!-- <button (click)="add()">add</button> -->
-  <button nz-button nzType="link" nzShape="circle" (click)="execFile()" nzGhost nz-tooltip nzTitle="执行文件"><i nz-icon
-      type="caret-right"></i></button>
-  <button nz-button nzType="link" nzShape="circle" (click)="saveAllFiles()" nzGhost nz-tooltip nzTitle="保存全部文件"><i
-      nz-icon type="save"></i></button>
-  <nz-select style="width: 120px;margin-left: 8px" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()"
-    nzAllowClear>
-    <nz-option *ngFor="let id of ideService.getLanguageIds()" [nzValue]="id" [nzLabel]="id"></nz-option>
-  </nz-select>
+  <div *ngIf="files.length>0">
+    <!-- <button (click)="add()">add</button> -->
+    <button nz-button nzType="link" nzShape="circle" (click)="execFile()" nzGhost nz-tooltip nzTitle="执行文件"><i nz-icon
+        type="caret-right"></i></button>
+    <button nz-button nzType="link" nzShape="circle" (click)="saveAllFiles()" nzGhost nz-tooltip nzTitle="保存全部文件"><i
+        nz-icon type="save"></i></button>
+    <nz-select style="width: 120px;margin-left: 8px" [(ngModel)]="currentLanguage" (ngModelChange)="changeLanguage()"
+      nzAllowClear>
+      <nz-option *ngFor="let id of ideService.getLanguageIds()" [nzValue]="id" [nzLabel]="id"></nz-option>
+    </nz-select>
+  </div>
 </ng-template>
 
 <!-- 保存对话框 -->

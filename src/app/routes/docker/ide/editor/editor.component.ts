@@ -51,6 +51,11 @@ export class EditorComponent implements OnInit {
       this.saveFile();
     }, '');
 
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_S, () => {
+      // this.saveFile();
+      this.editorEvent.emit({ event: 'saveAllFiles' });
+    }, '');
+
     this.editor.onDidChangeModelContent((e: monaco.editor.IModelContentChangedEvent) => {
       this.contentChanged = true;
       this.editorEvent.emit({ event: 'contentChanged', data: { changed: true, path: this.filePath } });
