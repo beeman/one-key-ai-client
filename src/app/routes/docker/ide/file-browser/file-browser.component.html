@@ -94,8 +94,8 @@
     <ul nz-menu (contextmenu)="closeContextMenu($event)">
       <li nz-submenu nzTitle="新建">
         <ul>
-          <li nz-menu-item (click)="newFile()">文件</li>
-          <li nz-menu-item (click)="newDir()">目录</li>
+          <li nz-menu-item (click)="newFile(null)">文件</li>
+          <li nz-menu-item (click)="newDir(null)">目录</li>
         </ul>
       </li>
       <li nz-submenu nzTitle="上传">
