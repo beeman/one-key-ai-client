@@ -136,6 +136,16 @@ export class FileBrowserComponent implements OnInit {
     );
   }
 
+
+  closeContextMenu(event: MouseEvent): void {
+    if (event.preventDefault) {
+      event.preventDefault();
+    }
+    if (this.fileMenu.open || this.folderMenu.open) {
+      this.nzContextMenuService.close();
+    }
+  }
+
   onContainerContextMenu(event: MouseEvent): void {
     if (event.preventDefault) {
       event.preventDefault();
