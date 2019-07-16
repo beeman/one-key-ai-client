@@ -139,7 +139,9 @@ export class DockerImagesComponent implements OnInit {
 
   public createContainer(image: DockerImage): void {
     this.containerDialogVisible = true;
-    this.containerInfo.id = image.repoTags ? image.repoTags[0] : image.id;
+    // console.log(image);
+    // this.containerInfo.id = image.repoTags ? image.repoTags[0] : image.id;
+    this.containerInfo.id=image.id;
     const names = image.repository.split('/');
     this.containerInfo.name = names[names.length - 1];
     this.defaultContainerName = names[names.length - 1];

@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, ViewChild, ElementRef, Output, Input }
 import { FileService } from '../../service/file.service';
 import { IdeService } from '../ide.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { EnvironmentService } from 'src/app/core/environment.service';
+import { throttleTime, auditTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-editor',
@@ -29,7 +31,8 @@ export class EditorComponent implements OnInit {
   constructor(
     private readonly fileService: FileService,
     private readonly messageService: NzMessageService,
-    private readonly ideService: IdeService
+    private readonly ideService: IdeService,
+    private readonly environmentService: EnvironmentService
   ) { }
 
   ngOnInit() {
@@ -63,47 +66,7 @@ export class EditorComponent implements OnInit {
 
     this.openFile();
 
-    // this.editorEvent.emit({ event: 'init', target: this });
-
-    // monaco.editor.setModelLanguage(editor.getModel(),'cpp');
-
-    // this.editorOptions.language = 'python';
-    // 调整编辑页面大小
-    // console.log(this.editorRef);
-    // const editorHeight = (<any>this.editorRef)._editorContainer.nativeElement.clientHeight;
-    // console.log(editorHeight);
-    // this.editor.getDomNode().style.height = editorHeight + 'px';
-    // this.editor.getDomNode().childNodes.
-    // (<HTMLElement>this.editor.getDomNode().getElementsByClassName('editor-container')[0]).style.height = editorHeight + 'px';
-    // (<HTMLElement>document.getElementsByClassName('editor-container')[0]).style.height = editorHeight + 'px';
-
-
-    // if (navigator.userAgent.indexOf("Firefox") > 0) {
-    //   this.changeEvent.pipe(throttleTime(1)).subscribe(value => {
-    //     this.change = value;
-    //   });
-    //   this.changeEvent.pipe(auditTime(1)).subscribe(value => {
-    //     if (this.change === value) {
-    //     } else {
-    //       editor.trigger('', 'undo', '');
-    //       // if (value.changes[0].range.startColumn !== value.changes[0].range.endColumn) {
-    //       //   editor.trigger('', 'undo', '');
-    //       // } else {
-    //       //   editor.executeEdits('', [{
-    //       //     text: null,
-    //       //     range: new monaco.Range(
-    //       //       value.changes[0].range.startLineNumber,
-    //       //       value.changes[0].range.startColumn - 1,
-    //       //       value.changes[0].range.startLineNumber,
-    //       //       value.changes[0].range.startColumn)
-    //       //   }]);
-    //       // }
-    //     }
-    //   });
-    //   editor.onDidChangeModelContent(e => {
-    //     this.changeEvent.emit(e);
-    //   });
-    // }
+    this.fixBrowserBugs();
   }
 
   public changeLanguage(language: string): void {
@@ -155,4 +118,35 @@ export class EditorComponent implements OnInit {
       }
     });
   }
+
+  private fixBrowserBugs(): void {
+    const browser = this.environmentService.getBrowserVersion();
+    if (browser['firefox'] && browser['firefox'] < 68.0) {
+      this.changeEvent.pipe(throttleTime(1)).subscribe(value => {
+        this.change = value;
+      });
+      this.changeEvent.pipe(auditTime(1)).subscribe(value => {
+        if (this.change === value) {
+        } else {
+          this.editor.trigger('', 'undo', '');
+          // if (value.changes[0].range.startColumn !== value.changes[0].range.endColumn) {
+          //   editor.trigger('', 'undo', '');
+          // } else {
+          //   editor.executeEdits('', [{
+          //     text: null,
+          //     range: new monaco.Range(
+          //       value.changes[0].range.startLineNumber,
+          //       value.changes[0].range.startColumn - 1,
+          //       value.changes[0].range.startLineNumber,
+          //       value.changes[0].range.startColumn)
+          //   }]);
+          // }
+        }
+      });
+      this.editor.onDidChangeModelContent(e => {
+        this.changeEvent.emit(e);
+      });
+    }
+  }
+
 }
