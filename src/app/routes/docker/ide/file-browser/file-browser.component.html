@@ -1,7 +1,7 @@
 <a #downloadElement style="visibility: hidden"></a>
 <a #scanElement style="visibility: hidden"></a>
 
-<div style="height: 100%;overflow: auto" (contextmenu)="closeContextMenu($event)">
+<div style="height: 100%;overflow: auto" (contextmenu)="onContainerContextMenu($event)">
   <div nz-row style="padding: 8px">
     <div nz-col [nzSpan]="18">
       <button nz-button nzType="primary" nz-dropdown [nzDropdownMenu]="uploadMenu" [nzLoading]="projectUploading"
@@ -90,6 +90,27 @@
     </nz-dropdown-menu> -->
 
   </ng-template>
+  <nz-dropdown-menu #projectMenu="nzDropdownMenu">
+    <ul nz-menu (contextmenu)="closeContextMenu($event)">
+      <li nz-submenu nzTitle="新建">
+        <ul>
+          <li nz-menu-item (click)="newFile()">文件</li>
+          <li nz-menu-item (click)="newDir()">目录</li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="上传">
+        <nz-upload nzDirectory [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
+          [nzShowUploadList]="false">
+      <li nz-menu-item>目录</li>
+      </nz-upload>
+      <br>
+      <nz-upload [nzCustomRequest]="uploadProjectReq" (nzChange)="uploadProjectChange($event)"
+        [nzShowUploadList]="false">
+        <li nz-menu-item>文件</li>
+      </nz-upload>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
   <nz-dropdown-menu #folderMenu="nzDropdownMenu">
     <ul nz-menu (contextmenu)="closeContextMenu($event)">
       <li nz-submenu nzTitle="新建">
@@ -100,12 +121,12 @@
       </li>
       <li nz-submenu nzTitle="上传">
         <nz-upload [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
-          <li nz-menu-item>文件</li>
-        </nz-upload>
-        <br>
-        <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
-          <li nz-menu-item>目录</li>
-        </nz-upload>
+      <li nz-menu-item>文件</li>
+      </nz-upload>
+      <br>
+      <nz-upload nzDirectory [nzCustomRequest]="uploadReq" [nzShowUploadList]="false" (nzChange)="uploadChange($event)">
+        <li nz-menu-item>目录</li>
+      </nz-upload>
       </li>
       <li nz-menu-item (click)="showRemoveModal(activedNode)">删除</li>
       <li nz-menu-item (click)="compress(activedNode)">压缩至当前目录</li>

@@ -35,6 +35,9 @@ export class FileBrowserComponent implements OnInit {
   @ViewChild('fileMenu', { static: false })
   fileMenu: NzDropdownMenuComponent;
 
+  @ViewChild('projectMenu', { static: false })
+  projectMenu: NzDropdownMenuComponent;
+
   projectUploading = false; // 项目上传状态
   currentUploadingFile: string; // 当前上传的文件
   uploading = false;  // 上传状态（非项目）
@@ -43,10 +46,11 @@ export class FileBrowserComponent implements OnInit {
   fileList: FileNode[] = [];  // 项目列表
   activedNode: NzTreeNode = null;  // 选中的节点
 
+  projectPathMap: string[] = [];  // 主机与docker容器间的路径映射
   projectPaths: string[] = []; // 项目路径
 
   private userName: string = ''; // 用户名
-  private rootPath = '';  // 项目文件保存的根目录
+  private rootPath = '';  // 项目文件保存的根目录(宿主机)
 
   private subscriptions: Subscription[] = [];
 
@@ -87,6 +91,7 @@ export class FileBrowserComponent implements OnInit {
     const sub = this.ideService.getEvent().subscribe(data => {
       if (data.event === 'projectMapChanged') {
         const map: string[] = data.data;
+        this.projectPathMap = map;
         if (map && map.length === 2) {
           this.projectPaths = map[1].split('/');
         }
@@ -131,12 +136,14 @@ export class FileBrowserComponent implements OnInit {
     );
   }
 
-  closeContextMenu(event: MouseEvent): void {
+  onContainerContextMenu(event: MouseEvent): void {
     if (event.preventDefault) {
       event.preventDefault();
     }
     if (this.fileMenu.open || this.folderMenu.open) {
       this.nzContextMenuService.close();
+    } else {
+      this.nzContextMenuService.create(event, this.projectMenu);
     }
   }
 
@@ -259,7 +266,17 @@ export class FileBrowserComponent implements OnInit {
 
   onNewFileModal(event: boolean): void {
     if (event && this.newFileModalInfo.formGroup !== null && this.newFileModalInfo.node !== null) {
-      const path = this.newFileModalInfo.node.key;
+      let path = '';
+      if (this.newFileModalInfo.node) {
+        path = this.newFileModalInfo.node.key;
+      } else {
+        if (this.projectPathMap && this.projectPathMap.length === 2) {
+          path = this.projectPathMap[0];
+        } else {
+          this.messageMessage.warning('创建失败');
+          return;
+        }
+      }
       const name = this.newFileModalInfo.formGroup.get('name').value;
       this.fileService.newFile(path + '/' + name, this.newFileModalInfo.isDir).subscribe(value => {
         if (value['msg'] === 'ok') {

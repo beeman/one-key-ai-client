@@ -112,6 +112,10 @@ export class EditorGroupComponent implements OnInit {
     }
   }
 
+  public canExec(): boolean {
+    return this.currentLanguage === 'python';
+  }
+
   // public tabIcon(file: FileInfo): string {
   //   return this.isFileChanged(file) ? 'close-circle' : 'close';
   // }
