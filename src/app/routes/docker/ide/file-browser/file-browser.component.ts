@@ -118,7 +118,6 @@ export class FileBrowserComponent implements OnInit {
     });
     this.updateProjects();
     this.fileMenu.visible$.subscribe(value => {
-      // console.log(value);
     });
   }
 
@@ -321,10 +320,6 @@ export class FileBrowserComponent implements OnInit {
   private expandFolder(node: NzTreeNode): void {
     if (node) {
       if (node.getChildren().length === 0 && node.isExpanded) {
-        console.log(this.wholeFileList);
-        console.log(node.key);
-    console.log(this.findNode(this.wholeFileList, node.key));
-
         node.addChildren(this.getChildNodes(this.findNode(this.wholeFileList, node.key).children));
       } else if (!node.isExpanded) {
         node.clearChildren();
