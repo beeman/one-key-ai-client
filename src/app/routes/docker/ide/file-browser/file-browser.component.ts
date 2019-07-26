@@ -275,11 +275,12 @@ export class FileBrowserComponent implements OnInit {
   }
 
   onNewFileModal(event: boolean): void {
-    if (event && this.newFileModalInfo.formGroup !== null && this.newFileModalInfo.node !== null) {
+    if (event && this.newFileModalInfo.formGroup !== null) {
       let path = '';
       if (this.newFileModalInfo.node) {
         path = this.newFileModalInfo.node.key;
       } else {
+        console.log(this.projectPathMap);
         if (this.projectPathMap && this.projectPathMap.length === 2) {
           path = this.projectPathMap[0];
         } else {

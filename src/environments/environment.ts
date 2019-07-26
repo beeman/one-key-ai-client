@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   logLevel: 1,
-  serverUrl: 'http://10.0.180.237:80',
+  serverUrl: 'http://10.0.181.84:80',
 };
 
 /*
