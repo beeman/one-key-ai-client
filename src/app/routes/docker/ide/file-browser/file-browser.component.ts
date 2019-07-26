@@ -280,7 +280,6 @@ export class FileBrowserComponent implements OnInit {
       if (this.newFileModalInfo.node) {
         path = this.newFileModalInfo.node.key;
       } else {
-        console.log(this.projectPathMap);
         if (this.projectPathMap && this.projectPathMap.length === 2) {
           path = this.projectPathMap[0];
         } else {
@@ -322,6 +321,10 @@ export class FileBrowserComponent implements OnInit {
   private expandFolder(node: NzTreeNode): void {
     if (node) {
       if (node.getChildren().length === 0 && node.isExpanded) {
+        console.log(this.wholeFileList);
+        console.log(node.key);
+    console.log(this.findNode(this.wholeFileList, node.key));
+
         node.addChildren(this.getChildNodes(this.findNode(this.wholeFileList, node.key).children));
       } else if (!node.isExpanded) {
         node.clearChildren();
@@ -511,7 +514,7 @@ export class FileBrowserComponent implements OnInit {
       if (node.key === key) {
         return node;
       }
-      else if (key.startsWith(node.key)) {
+      else if (key.startsWith(node.key+'/')) {
         return this.findNode(node.children, key);
       }
     }
